@@ -1,0 +1,326 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="ソース ファイル\Library">
+      <UniqueIdentifier>{9c1dd7ae-a485-45d8-81dc-65ce744c78ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game">
+      <UniqueIdentifier>{8f2a67b0-1477-45b3-9be7-44c0dc530922}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Scene">
+      <UniqueIdentifier>{af88bc16-8854-4f81-9813-424c49841647}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\Camera">
+      <UniqueIdentifier>{2f4f6487-cb86-4c0d-83f9-743df0b17a37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\CharacterBase">
+      <UniqueIdentifier>{393a2369-cfde-4ee5-a8b6-8ab3218eef79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\Vector">
+      <UniqueIdentifier>{23601c50-35c4-4c5a-8dd2-ea8dda79b183}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Ground">
+      <UniqueIdentifier>{de362e12-26a8-4967-ac4d-9068ed487843}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Player">
+      <UniqueIdentifier>{aa595e40-ad6a-420c-8baf-ab284f13b687}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\Mouse">
+      <UniqueIdentifier>{f231202c-8b30-4fac-a071-795fa44cdc12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\Simplelib">
+      <UniqueIdentifier>{544d46cc-1e5c-4373-b8a5-7eda5ba208ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\Simplelib\SkinMesh">
+      <UniqueIdentifier>{72e562a6-9bf8-4f1c-b765-10a5dda8a485}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Title">
+      <UniqueIdentifier>{a5716893-169b-43c7-aeea-3353294601ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Enemy">
+      <UniqueIdentifier>{0a9194b8-fcbb-4533-806c-b6b075ed6c96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\ImageSprite">
+      <UniqueIdentifier>{61f45653-50ae-4da6-a783-d4d9656011b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\DirectX">
+      <UniqueIdentifier>{98beb188-2fa0-48b6-9ed9-5e46decf580b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\XFile">
+      <UniqueIdentifier>{1e8d0599-c77a-42a6-8195-1f21b700bacf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\Shader">
+      <UniqueIdentifier>{f4627701-f65c-4c86-98c2-32807abad3da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\Shader\ToonShader">
+      <UniqueIdentifier>{4042df32-29c7-450d-9603-a3cc2176a2a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\Client">
+      <UniqueIdentifier>{f9a89f10-72f2-49e0-ab2c-6fbad828ac18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\Client\Client">
+      <UniqueIdentifier>{0737f5c4-c63d-45d9-a420-21be7d3c10be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\Client\Data">
+      <UniqueIdentifier>{09533b5f-13f5-4343-9266-749e572f60be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\Client\ExtensionMutex">
+      <UniqueIdentifier>{537e3219-d04c-41d5-9d9d-cab12041f626}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\Client\Cipher">
+      <UniqueIdentifier>{443af70d-2400-4239-84c0-d46249056420}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\Client\Cipher\OpenSSLAES">
+      <UniqueIdentifier>{c34a88c8-d682-4178-b145-329d46ed3085}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\Client\Socket">
+      <UniqueIdentifier>{af4ac866-463d-41ee-9923-50c3752c0a49}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\GameMain.cpp">
+      <Filter>ソース ファイル\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\SceneBase.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\SceneControl.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Ground.cpp">
+      <Filter>ソース ファイル\Game\Ground</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\SimpleLib\Helper.cpp">
+      <Filter>ソース ファイル\Library\Simplelib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\SimpleLib\CDirectXGraphics.cpp">
+      <Filter>ソース ファイル\Library\Simplelib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\SimpleLib\CMatrix.cpp">
+      <Filter>ソース ファイル\Library\Simplelib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\SimpleLib\CMesh.cpp">
+      <Filter>ソース ファイル\Library\Simplelib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\SimpleLib\CQuat.cpp">
+      <Filter>ソース ファイル\Library\Simplelib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\SimpleLib\CSurface.cpp">
+      <Filter>ソース ファイル\Library\Simplelib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\SimpleLib\CTexture.cpp">
+      <Filter>ソース ファイル\Library\Simplelib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\SimpleLib\CVector3.cpp">
+      <Filter>ソース ファイル\Library\Simplelib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\SimpleLib\SkinMesh\SkinMeshLoader.cpp">
+      <Filter>ソース ファイル\Library\Simplelib\SkinMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\SimpleLib\SkinMesh\CBoneController.cpp">
+      <Filter>ソース ファイル\Library\Simplelib\SkinMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\SimpleLib\SkinMesh\CSkinMesh.cpp">
+      <Filter>ソース ファイル\Library\Simplelib\SkinMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\SimpleLib\SkinMesh\KeyframeAnimation.cpp">
+      <Filter>ソース ファイル\Library\Simplelib\SkinMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Title\TitleMain.cpp">
+      <Filter>ソース ファイル\Title</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Player\Player.cpp">
+      <Filter>ソース ファイル\Game\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Enemy\Enemy.cpp">
+      <Filter>ソース ファイル\Game\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\Camera\Camera.cpp">
+      <Filter>ソース ファイル\Library\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\CharacterBase\CharacterBase.cpp">
+      <Filter>ソース ファイル\Library\CharacterBase</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\DirectX\D3D.cpp">
+      <Filter>ソース ファイル\Library\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\ImageSprite\ImageSprite.cpp">
+      <Filter>ソース ファイル\Library\ImageSprite</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\Mouse\Mouse.cpp">
+      <Filter>ソース ファイル\Library\Mouse</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\Vertex\Vertex.cpp">
+      <Filter>ソース ファイル\Library\Vector</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\XFile\CheckMesh.cpp">
+      <Filter>ソース ファイル\Library\XFile</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\XFile\XFILE.cpp">
+      <Filter>ソース ファイル\Library\XFile</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\Shader\ToonShader\ToonShader.cpp">
+      <Filter>ソース ファイル\Library\Shader\ToonShader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\Client\Socket.cpp">
+      <Filter>ソース ファイル\Library\Client\Socket</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\Client\ExtensionMutex.cpp">
+      <Filter>ソース ファイル\Library\Client\ExtensionMutex</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\Client\Data.cpp">
+      <Filter>ソース ファイル\Library\Client\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\Client\Client.cpp">
+      <Filter>ソース ファイル\Library\Client\Client</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\Client\Cipher\OpenSSLAES.cpp">
+      <Filter>ソース ファイル\Library\Client\Cipher\OpenSSLAES</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\Client\Cipher\Cipher.cpp">
+      <Filter>ソース ファイル\Library\Client\Cipher</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Game\GameMain.h">
+      <Filter>ソース ファイル\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\SceneBase.h">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\SceneControl.h">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Ground.h">
+      <Filter>ソース ファイル\Game\Ground</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\SimpleLib\CVector3.h">
+      <Filter>ソース ファイル\Library\Simplelib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\SimpleLib\Helper.h">
+      <Filter>ソース ファイル\Library\Simplelib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\SimpleLib\SimpleLib.h">
+      <Filter>ソース ファイル\Library\Simplelib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\SimpleLib\CDirectXGraphics.h">
+      <Filter>ソース ファイル\Library\Simplelib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\SimpleLib\CMatrix.h">
+      <Filter>ソース ファイル\Library\Simplelib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\SimpleLib\CMesh.h">
+      <Filter>ソース ファイル\Library\Simplelib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\SimpleLib\CMTRand.h">
+      <Filter>ソース ファイル\Library\Simplelib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\SimpleLib\CQuat.h">
+      <Filter>ソース ファイル\Library\Simplelib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\SimpleLib\CSurface.h">
+      <Filter>ソース ファイル\Library\Simplelib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\SimpleLib\CTexture.h">
+      <Filter>ソース ファイル\Library\Simplelib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\SimpleLib\SkinMesh\SkinMeshLoader.h">
+      <Filter>ソース ファイル\Library\Simplelib\SkinMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\SimpleLib\SkinMesh\CBoneController.h">
+      <Filter>ソース ファイル\Library\Simplelib\SkinMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\SimpleLib\SkinMesh\CSkinMesh.h">
+      <Filter>ソース ファイル\Library\Simplelib\SkinMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\SimpleLib\SkinMesh\KeyframeAnimation.h">
+      <Filter>ソース ファイル\Library\Simplelib\SkinMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Title\TitleMain.h">
+      <Filter>ソース ファイル\Title</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Player\Player.h">
+      <Filter>ソース ファイル\Game\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Enemy\Enemy.h">
+      <Filter>ソース ファイル\Game\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\LibraryInclude.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\Camera\Camera.h">
+      <Filter>ソース ファイル\Library\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\CharacterBase\CharacterBase.h">
+      <Filter>ソース ファイル\Library\CharacterBase</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\DirectX\D3D.h">
+      <Filter>ソース ファイル\Library\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\ImageSprite\ImageSprite.h">
+      <Filter>ソース ファイル\Library\ImageSprite</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\Mouse\Mouse.h">
+      <Filter>ソース ファイル\Library\Mouse</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\Vertex\Vertex.h">
+      <Filter>ソース ファイル\Library\Vector</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\XFile\CheckMesh.h">
+      <Filter>ソース ファイル\Library\XFile</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\XFile\XFILE.h">
+      <Filter>ソース ファイル\Library\XFile</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\Shader\ToonShader\ToonShader.h">
+      <Filter>ソース ファイル\Library\Shader\ToonShader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\ShaderInclude.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\StandardLibraryInclude.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Include.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\Client\Socket.h">
+      <Filter>ソース ファイル\Library\Client\Socket</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\Client\ExtensionMutex.h">
+      <Filter>ソース ファイル\Library\Client\ExtensionMutex</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\Client\Data.h">
+      <Filter>ソース ファイル\Library\Client\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\Client\Client.h">
+      <Filter>ソース ファイル\Library\Client\Client</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\Client\Cipher\OpenSSLAES.h">
+      <Filter>ソース ファイル\Library\Client\Cipher\OpenSSLAES</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\Client\Cipher\Cipher.h">
+      <Filter>ソース ファイル\Library\Client\Cipher</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="src\Library\Shader\ToonShader\ToonShader.fx">
+      <Filter>ソース ファイル\Library\Shader\ToonShader</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>

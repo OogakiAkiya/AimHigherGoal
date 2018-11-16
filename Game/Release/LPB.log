@@ -1,0 +1,60 @@
+﻿FXC : warning X4717: Effects deprecated for D3DCompiler_47
+  
+  compilation object save succeeded; see C:\AimHighterGoals\Game\Shader\ToonShader.cso
+  Enemy.cpp
+src\Game\Enemy\Enemy.cpp(85): warning C4305: '=': 'double' から 'float' へ切り詰めます。
+src\Game\Enemy\Enemy.cpp(246): warning C4305: '-=': 'double' から 'float' へ切り詰めます。
+src\Game\Enemy\Enemy.cpp(301): warning C4305: '+=': 'double' から 'float' へ切り詰めます。
+src\Game\Enemy\Enemy.cpp(365): warning C4305: '-=': 'double' から 'float' へ切り詰めます。
+  GameMain.cpp
+c:\aimhightergoals\game\src\game\Player/Player.h(41): warning C4305: '初期化中': 'double' から 'float' へ切り詰めます。
+  Ground.cpp
+src\Game\Ground.cpp(10): warning C4244: '引数': 'const int' から 'float' への変換です。データが失われる可能性があります。
+  Player.cpp
+c:\aimhightergoals\game\src\game\player\Player.h(41): warning C4305: '初期化中': 'double' から 'float' へ切り詰めます。
+src\Game\Player\Player.cpp(79): warning C4305: '=': 'double' から 'float' へ切り詰めます。
+src\Game\Player\Player.cpp(180): warning C4305: '-=': 'double' から 'float' へ切り詰めます。
+src\Game\Player\Player.cpp(255): warning C4305: '+=': 'double' から 'float' へ切り詰めます。
+  Camera.cpp
+  CharacterBase.cpp
+  Cipher.cpp
+  OpenSSLAES.cpp
+  Client.cpp
+src\Library\Client\Client.cpp(236): warning C4244: '=': 'int' から 'float' への変換です。データが失われる可能性があります。
+src\Library\Client\Client.cpp(237): warning C4244: '引数': 'float' から 'int' への変換です。データが失われる可能性があります。
+  Data.cpp
+  ExtensionMutex.cpp
+  Socket.cpp
+  D3D.cpp
+  ImageSprite.cpp
+src\Library\ImageSprite\ImageSprite.cpp(33): warning C4244: '引数': 'int' から 'FLOAT' への変換です。データが失われる可能性があります。
+  Mouse.cpp
+  ToonShader.cpp
+  CDirectXGraphics.cpp
+  CMatrix.cpp
+  CMesh.cpp
+  CQuat.cpp
+  コンパイル中...
+  CSurface.cpp
+  CTexture.cpp
+  CVector3.cpp
+  Helper.cpp
+  CBoneController.cpp
+  CSkinMesh.cpp
+  KeyframeAnimation.cpp
+  SkinMeshLoader.cpp
+  Vertex.cpp
+  CheckMesh.cpp
+  XFILE.cpp
+  main.cpp
+  SceneBase.cpp
+  SceneControl.cpp
+c:\aimhightergoals\game\src\scene\../Game/Player/Player.h(41): warning C4305: '初期化中': 'double' から 'float' へ切り詰めます。
+  TitleMain.cpp
+  コード生成しています。
+c:\aimhightergoals\game\src\game\player\player.cpp(323): warning C4172: ローカル変数またはテンポラリのアドレスを返します: returnmat
+c:\aimhightergoals\game\src\game\player\player.cpp(334): warning C4172: ローカル変数またはテンポラリのアドレスを返します: vec
+  All 2504 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  コード生成が終了しました。
+  LPB.vcxproj -> C:\AimHighterGoals\Game\Release\LPB.exe
+  LPB.vcxproj -> C:\AimHighterGoals\Game\Release\LPB.pdb (Full PDB)
