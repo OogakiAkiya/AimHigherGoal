@@ -22,7 +22,11 @@
 //#include<openssl/ssl.h>
 #include<openssl/evp.h>
 #include<openssl/aes.h>
-# include <openssl/opensslconf.h>
+#include<openssl/rsa.h>
+#include<openssl/pem.h>
+#include <openssl/engine.h>
+#include<openssl/bio.h>
+#include<openssl/opensslconf.h>
 #include<openssl/dh.h>
 #include<openssl/rand.h>
 #include<openssl/err.h>

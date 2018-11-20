@@ -1,9 +1,9 @@
 ﻿FXC : warning X4717: Effects deprecated for D3DCompiler_47
   
-  compilation object save succeeded; see C:\AimHighterGoals\Game\Shader\ToonShader.cso
+  compilation object save succeeded; see C:\AimHigherGoal\Game\Shader\ToonShader.cso
   TitleMain.cpp
   SceneControl.cpp
-c:\aimhightergoals\game\src\game\player\player.h(41): warning C4305: '初期化中': 'double' から 'float' へ切り詰めます。
+c:\aimhighergoal\game\src\game\player\player.h(41): warning C4305: '初期化中': 'double' から 'float' へ切り詰めます。
   SceneBase.cpp
   main.cpp
   XFILE.cpp
@@ -26,35 +26,35 @@ c:\aimhightergoals\game\src\game\player\player.h(41): warning C4305: '初期化�
   コンパイル中...
   Mouse.cpp
   ImageSprite.cpp
-c:\aimhightergoals\game\src\library\imagesprite\imagesprite.cpp(33): warning C4244: '引数': 'int' から 'FLOAT' への変換です。データが失われる可能性があります。
+c:\aimhighergoal\game\src\library\imagesprite\imagesprite.cpp(33): warning C4244: '引数': 'int' から 'FLOAT' への変換です。データが失われる可能性があります。
   D3D.cpp
   Socket.cpp
   ExtensionMutex.cpp
   Data.cpp
   Client.cpp
-c:\aimhightergoals\game\src\library\client\client.cpp(236): warning C4244: '=': 'int' から 'float' への変換です。データが失われる可能性があります。
-c:\aimhightergoals\game\src\library\client\client.cpp(237): warning C4244: '引数': 'float' から 'int' への変換です。データが失われる可能性があります。
+c:\aimhighergoal\game\src\library\client\client.cpp(236): warning C4244: '=': 'int' から 'float' への変換です。データが失われる可能性があります。
+c:\aimhighergoal\game\src\library\client\client.cpp(237): warning C4244: '引数': 'float' から 'int' への変換です。データが失われる可能性があります。
   OpenSSLAES.cpp
   Cipher.cpp
   CharacterBase.cpp
   Camera.cpp
   Player.cpp
-c:\aimhightergoals\game\src\game\player\player.h(41): warning C4305: '初期化中': 'double' から 'float' へ切り詰めます。
-c:\aimhightergoals\game\src\game\player\player.cpp(79): warning C4305: '=': 'double' から 'float' へ切り詰めます。
-c:\aimhightergoals\game\src\game\player\player.cpp(180): warning C4305: '-=': 'double' から 'float' へ切り詰めます。
-c:\aimhightergoals\game\src\game\player\player.cpp(255): warning C4305: '+=': 'double' から 'float' へ切り詰めます。
+c:\aimhighergoal\game\src\game\player\player.h(41): warning C4305: '初期化中': 'double' から 'float' へ切り詰めます。
+c:\aimhighergoal\game\src\game\player\player.cpp(79): warning C4305: '=': 'double' から 'float' へ切り詰めます。
+c:\aimhighergoal\game\src\game\player\player.cpp(180): warning C4305: '-=': 'double' から 'float' へ切り詰めます。
+c:\aimhighergoal\game\src\game\player\player.cpp(255): warning C4305: '+=': 'double' から 'float' へ切り詰めます。
   Ground.cpp
-c:\aimhightergoals\game\src\game\ground.cpp(10): warning C4244: '引数': 'const int' から 'float' への変換です。データが失われる可能性があります。
+c:\aimhighergoal\game\src\game\ground.cpp(10): warning C4244: '引数': 'const int' から 'float' への変換です。データが失われる可能性があります。
   GameMain.cpp
-c:\aimhightergoals\game\src\game\player\player.h(41): warning C4305: '初期化中': 'double' から 'float' へ切り詰めます。
+c:\aimhighergoal\game\src\game\player\player.h(41): warning C4305: '初期化中': 'double' から 'float' へ切り詰めます。
   Enemy.cpp
-c:\aimhightergoals\game\src\game\enemy\enemy.cpp(85): warning C4305: '=': 'double' から 'float' へ切り詰めます。
-c:\aimhightergoals\game\src\game\enemy\enemy.cpp(246): warning C4305: '-=': 'double' から 'float' へ切り詰めます。
-c:\aimhightergoals\game\src\game\enemy\enemy.cpp(301): warning C4305: '+=': 'double' から 'float' へ切り詰めます。
-c:\aimhightergoals\game\src\game\enemy\enemy.cpp(365): warning C4305: '-=': 'double' から 'float' へ切り詰めます。
+c:\aimhighergoal\game\src\game\enemy\enemy.cpp(85): warning C4305: '=': 'double' から 'float' へ切り詰めます。
+c:\aimhighergoal\game\src\game\enemy\enemy.cpp(246): warning C4305: '-=': 'double' から 'float' へ切り詰めます。
+c:\aimhighergoal\game\src\game\enemy\enemy.cpp(301): warning C4305: '+=': 'double' から 'float' へ切り詰めます。
+c:\aimhighergoal\game\src\game\enemy\enemy.cpp(365): warning C4305: '-=': 'double' から 'float' へ切り詰めます。
   コードを生成中...
-c:\aimhightergoals\game\src\game\enemy\enemy.cpp(388): warning C4172: ローカル変数またはテンポラリのアドレスを返します: returnmat
-c:\aimhightergoals\game\src\game\player\player.cpp(323): warning C4172: ローカル変数またはテンポラリのアドレスを返します: returnmat
-c:\aimhightergoals\game\src\game\player\player.cpp(334): warning C4172: ローカル変数またはテンポラリのアドレスを返します: vec
-  LPB.vcxproj -> C:\AimHighterGoals\Game\Debug\LPB.exe
-  LPB.vcxproj -> C:\AimHighterGoals\Game\Debug\LPB.pdb (Full PDB)
+c:\aimhighergoal\game\src\game\enemy\enemy.cpp(388): warning C4172: ローカル変数またはテンポラリのアドレスを返します: returnmat
+c:\aimhighergoal\game\src\game\player\player.cpp(323): warning C4172: ローカル変数またはテンポラリのアドレスを返します: returnmat
+c:\aimhighergoal\game\src\game\player\player.cpp(334): warning C4172: ローカル変数またはテンポラリのアドレスを返します: vec
+  LPB.vcxproj -> C:\AimHigherGoal\Game\Debug\LPB.exe
+  LPB.vcxproj -> C:\AimHigherGoal\Game\Debug\LPB.pdb (Full PDB)

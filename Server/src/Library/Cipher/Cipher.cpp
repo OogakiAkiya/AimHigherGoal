@@ -1,6 +1,7 @@
 #include"../../Include.h"
 #include"OpenSSLAES.h"
 #include"OpenSSLDH.h"
+#include"OpenSSLRSA.h"
 #include"Cipher.h"
 
 Cipher* Cipher::s_Instance = nullptr;
@@ -10,7 +11,8 @@ Cipher::Cipher()
 	/*インスタンスの生成*/
 	aes = new OpenSSLAES();
 	dh = new OpenSSLDH();
-	//dh->DH_Init();
+	rsa = new OpenSSLRSA();
+	rsa->CreateKey("private.pem","public.pem");
 }
 
 Cipher::~Cipher()
@@ -18,6 +20,7 @@ Cipher::~Cipher()
 	/*解放処理*/
 	delete aes;
 	delete dh;
+	delete rsa;
 }
 
 OpenSSLAES* Cipher::GetOpenSSLAES()

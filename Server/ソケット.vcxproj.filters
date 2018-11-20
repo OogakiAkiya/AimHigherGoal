@@ -31,6 +31,9 @@
     <Filter Include="ソース ファイル\Server\CurlWrapper">
       <UniqueIdentifier>{65d815b4-2b91-4b62-a275-cc479c355313}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Library\Cipher\OpenSSLRSA">
+      <UniqueIdentifier>{7fb7d8e9-a987-4c19-bbf6-e96d25802e13}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Library\Data.cpp">
@@ -65,6 +68,9 @@
     </ClCompile>
     <ClCompile Include="src\Server\CurlWrapper.cpp">
       <Filter>ソース ファイル\Server\CurlWrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\Cipher\OpenSSLRSA.cpp">
+      <Filter>ソース ファイル\Library\Cipher\OpenSSLRSA</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -103,6 +109,9 @@
     </ClInclude>
     <ClInclude Include="src\Server\CurlWrapper.h">
       <Filter>ソース ファイル\Server\CurlWrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\Cipher\OpenSSLRSA.h">
+      <Filter>ソース ファイル\Library\Cipher\OpenSSLRSA</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

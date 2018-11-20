@@ -38,6 +38,7 @@
     <ClCompile Include="src\Library\Cipher\Cipher.cpp" />
     <ClCompile Include="src\Library\Cipher\OpenSSLAES.cpp" />
     <ClCompile Include="src\Library\Cipher\OpenSSLDH.cpp" />
+    <ClCompile Include="src\Library\Cipher\OpenSSLRSA.cpp" />
     <ClCompile Include="src\Library\Data.cpp" />
     <ClCompile Include="src\Library\ExtensionMutex.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -53,6 +54,7 @@
     <ClInclude Include="src\Library\Cipher\Cipher.h" />
     <ClInclude Include="src\Library\Cipher\OpenSSLAES.h" />
     <ClInclude Include="src\Library\Cipher\OpenSSLDH.h" />
+    <ClInclude Include="src\Library\Cipher\OpenSSLRSA.h" />
     <ClInclude Include="src\Library\Data.h" />
     <ClInclude Include="src\Library\ExtensionMutex.h" />
     <ClInclude Include="src\Server\Client.h" />
