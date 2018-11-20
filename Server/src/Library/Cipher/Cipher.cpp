@@ -12,7 +12,18 @@ Cipher::Cipher()
 	aes = new OpenSSLAES();
 	dh = new OpenSSLDH();
 	rsa = new OpenSSLRSA();
-	rsa->CreateKey("private.pem","public.pem");
+
+	
+	std::string ori = "Hello";
+	char encode[256];
+	char decode[256];
+	rsa->ReadPrivateKey("key/private-key.pem");
+	rsa->ReadPublicKey("key/public-key.pem");
+	int ensize=rsa->Encode(&encode[0],ori.c_str(),ori.size());
+	rsa->Decode(decode,&encode[0],ensize);
+
+	printf("\ndecode=%s", decode);
+	
 }
 
 Cipher::~Cipher()
