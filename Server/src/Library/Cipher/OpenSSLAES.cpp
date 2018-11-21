@@ -8,7 +8,7 @@
 OpenSSLAES::OpenSSLAES()
 {
 	/*インスタンスの生成*/
-	//key = new unsigned char[EVP_MAX_KEY_LENGTH];
+	key = new unsigned char[EVP_MAX_KEY_LENGTH];
 	en = EVP_CIPHER_CTX_new();
 	EVP_CIPHER_CTX_init(en);								//EVP_CIPHER_CTXの初期化
 }
@@ -18,7 +18,7 @@ OpenSSLAES::~OpenSSLAES()
 	/*解放処理*/
 	EVP_CIPHER_CTX_cleanup(en);								//EVP_CIPHER_CTXの削除
 	EVP_CIPHER_CTX_free(en);
-	//delete key;
+	delete key;
 }
 
 void OpenSSLAES::CreateKey(const int _keylength)
@@ -71,7 +71,11 @@ int OpenSSLAES::Decode(char* _decodedata, const char* _originaldata, const size_
 	return outlen;																						//複合処理後のデータ量を返す
  }
 
-
+void OpenSSLAES::SetKey(unsigned char * _key,int _keyLength)
+{
+	memcpy(key, _key, _keyLength);
+	printf("key=%s\n", key);
+}
 
 int OpenSSLAES::Multiple16(int _data)
 {

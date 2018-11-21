@@ -99,23 +99,17 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 		char senddata[BYTESIZE];																		//送信データ
 
 
-		//printf("\n受け取ったデータ\nid=0x15\n");
 		/*データの整形をし値をセット*/
 		float recvdata = *(float*)&_data->at(sizeof(char));
 		_socket->GetData()->SetX(recvdata);
-		//printf("x=%f\n", recvdata);
 		recvdata = *(float*)&_data->at(sizeof(char) + sizeof(float) * 1);
 		_socket->GetData()->SetY(recvdata);
-		//printf("y=%f\n", recvdata);
 		recvdata = *(float*)&_data->at(sizeof(char) + sizeof(float) * 2);
 		_socket->GetData()->SetZ(recvdata);
-		//printf("z=%f\n", recvdata);
 		recvdata = *(float*)&_data->at(sizeof(char) + sizeof(float) * 3);
 		_socket->GetData()->SetAngle(recvdata);
-		//printf("angle=%f\n", recvdata);
 		int recvdata_int = *(int*)&_data->at(sizeof(char) + sizeof(float) * 4);
 		_socket->GetData()->SetAnimation(recvdata_int);
-		//printf("animation=%d\n", recvdata_int);
 
 		/*送信データの作成*/
 		PosData data;
@@ -129,7 +123,8 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 
 		/*暗号化処理*/
 		char* origin = (char*)&data;
-		int encode_size = CIPHER.GetOpenSSLAES()->Encode(encode, origin, sizeof(PosData));		//暗号化
+		int encode_size = _socket->GetAES()->Encode(encode, origin, sizeof(PosData));		//暗号化
+
 		memcpy(senddata, &encode_size, sizeof(int));
 		memcpy(&senddata[sizeof(int)], encode, encode_size);
 
@@ -153,7 +148,7 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 		sendbuf.id = 0x18;
 
 		/*暗号化処理*/
-		int encode_size = CIPHER.GetOpenSSLAES()->Encode(encode, (char*)&sendbuf, sizeof(BaseData));	//暗号化処理
+		int encode_size = _socket->GetAES()->Encode(encode, (char*)&sendbuf, sizeof(BaseData));	//暗号化処理
 		memcpy(senddata, &encode_size, sizeof(int));
 		memcpy(&senddata[sizeof(int)], encode, encode_size);
 		

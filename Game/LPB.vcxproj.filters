@@ -88,6 +88,9 @@
     <Filter Include="ソース ファイル\Library\Client\Socket">
       <UniqueIdentifier>{af4ac866-463d-41ee-9923-50c3752c0a49}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Library\Client\Cipher\OpenSSLRSA">
+      <UniqueIdentifier>{90b9ecc8-bc82-48d9-bc8e-e044ac085c93}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -194,6 +197,9 @@
     </ClCompile>
     <ClCompile Include="src\Library\Client\Cipher\Cipher.cpp">
       <Filter>ソース ファイル\Library\Client\Cipher</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\Client\Cipher\OpenSSLRSA.cpp">
+      <Filter>ソース ファイル\Library\Client\Cipher\OpenSSLRSA</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -316,6 +322,9 @@
     </ClInclude>
     <ClInclude Include="src\Library\Client\Cipher\Cipher.h">
       <Filter>ソース ファイル\Library\Client\Cipher</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\Client\Cipher\OpenSSLRSA.h">
+      <Filter>ソース ファイル\Library\Client\Cipher\OpenSSLRSA</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

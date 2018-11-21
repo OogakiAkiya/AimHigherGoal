@@ -39,6 +39,11 @@ OpenSSLAES* Cipher::GetOpenSSLAES()
 	return aes;
 }
 
+OpenSSLRSA * Cipher::GetOpenSSLRSA()
+{
+	return rsa;
+}
+
 Cipher & Cipher::GetInstance()
 {
 	if (s_Instance == nullptr) { s_Instance = new Cipher(); }

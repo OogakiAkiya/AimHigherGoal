@@ -7,7 +7,7 @@
 
 OpenSSLAES::OpenSSLAES()
 {
-	//key = new unsigned char[EVP_MAX_KEY_LENGTH];
+	key = new unsigned char[EVP_MAX_KEY_LENGTH];
 	en = EVP_CIPHER_CTX_new();
 	EVP_CIPHER_CTX_init(en);
 
@@ -17,7 +17,7 @@ OpenSSLAES::~OpenSSLAES()
 {
 	EVP_CIPHER_CTX_cleanup(en);
 	EVP_CIPHER_CTX_free(en);
-	//delete key;
+	delete key;
 }
 
 void OpenSSLAES::CreateKey(const int _keylength)
@@ -72,6 +72,11 @@ int OpenSSLAES::Decode(char* _decodedata, const char* _originaldata, const size_
 
 	return outlen;
  }
+
+void OpenSSLAES::GetKey(char * _key)
+{
+	memcpy(_key, key, EVP_MAX_KEY_LENGTH);
+}
 
 
 int OpenSSLAES::Multiple16(int _data)

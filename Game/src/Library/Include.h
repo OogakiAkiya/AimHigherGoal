@@ -27,8 +27,8 @@
 #include"D3D.h"
 #include"XFILE.h"
 #include"CheckMesh.h"
-#include"Socket/Data.h"
-#include"Socket/Client.h"
+#include"Client/Data.h"
+#include"Client/Client.h"
 //-----------------------------------------------------
 //スキンメッシ関係
 //-----------------------------------------------------

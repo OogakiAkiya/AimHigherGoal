@@ -1,3 +1,9 @@
-﻿  Cipher.cpp
+﻿  ClientController.cpp
+  Client.cpp
+c:\aimhighergoal\server\src\server\client.cpp(53): warning C4018: '<=': signed と unsigned の数値を比較しようとしました。
+  コードを生成中...
+  スキップ中... (関連する変更は検出されませんでした)
+  main.cpp
+  Server.cpp
   ソケット.vcxproj -> C:\AimHigherGoal\Server\Debug\ソケット.exe
   ソケット.vcxproj -> C:\AimHigherGoal\Server\Debug\ソケット.pdb (Partial PDB)

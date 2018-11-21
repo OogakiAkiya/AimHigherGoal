@@ -15,9 +15,10 @@ public:
 	int GetRoomNumber();
 	Data* GetData();
 	int GetState();
+	OpenSSLAES* GetAES();
 	void SetSocket(SOCKET _socket);
 	void SetNumber(int _number);
-
+	
 	//---------------------------------------------------------
 	//完全データを扱う関数
 	//---------------------------------------------------------
@@ -38,7 +39,7 @@ private:
 	//---------------------------------------------------------
 	//定数
 	//---------------------------------------------------------
-	static const int BYTESIZE = 128;
+	static const int BYTESIZE = 256;
 
 	//---------------------------------------------------------
 	//変数
@@ -49,7 +50,7 @@ private:
 	std::queue<std::vector<char>> completedata_qlist;		//完全データ配列
 	std::vector<char> temp_datalist;						//一時データ配列
 	Data* data;												//ユーザーの各データが格納されている
-
+	OpenSSLAES* aes;
 	CurlWrapper* curl;
 };
 

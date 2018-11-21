@@ -13,6 +13,7 @@ Client::Client()
 {
 	data = new Data();
 	curl = new CurlWrapper();
+	aes = new OpenSSLAES();
 }
 
 Client::~Client()
@@ -22,12 +23,67 @@ Client::~Client()
 	delete data;
 	delete curl;
 	delete thread;
+	delete aes;
 }
 
 
 
 void Client::Recv()
 {
+	//鍵交換
+	while (1) {
+		int iResult;										//送られてきたデータ量が格納される
+		char rec[BYTESIZE];									//受信データ
+		bool exitflg = false;
+
+		/*受信*/
+		iResult = recv(data->GetSocket(), rec/*データ*/, sizeof(rec), 0);
+		if (iResult > 0) {
+
+			/*受信データを一時データ配列に追加*/
+			int now_size = temp_datalist.size();															//一時データ配列に何byteデータが入っているかを見る
+			temp_datalist.resize(now_size + iResult);														//送られてきたデータが格納できるように一時データ配列のサイズ変更
+			memcpy((char*)&temp_datalist[now_size], rec, iResult);											//最後尾に送られてきたデータの追加
+
+			/*一時データから完全データの作成*/
+			while (temp_datalist.size() >= sizeof(int)) {																//何byteのデータが送られてきていいるかすら読み込めなければ抜ける
+
+				
+				int decodesize = *(int*)&temp_datalist[0];
+				if (decodesize <= (int)temp_datalist.size() - sizeof(int)) {
+					char data[BYTESIZE];							//復号前データ
+					char decode_data[BYTESIZE];
+					memcpy(data, &temp_datalist[sizeof(int)], decodesize);
+					int outlen=CIPHER.GetOpenSSLRSA()->Decode(decode_data, data, decodesize);
+					aes->SetKey((unsigned char*)decode_data, outlen);
+					temp_datalist.erase(temp_datalist.begin(), temp_datalist.begin() + (decodesize + sizeof(int)));	//完全データ作成に使用した分を削除
+					exitflg = true;
+					break;
+				}
+				else {
+					break;
+				}
+			}
+			if (exitflg)break;
+		}
+		else if (iResult == 0) {
+			/*接続を終了するとき*/
+			printf("切断されました\n");
+			state = -1;
+			return;
+
+		}
+		else {
+			/*接続エラーが起こった時*/
+			printf("recv failed:%d\n%d", WSAGetLastError(), iResult);
+			state = -1;
+			return;
+
+		}
+
+	}
+
+	//ゲーム処理
 	while (1) {
 		int iResult;										//送られてきたデータ量が格納される
 		char rec[BYTESIZE];									//受信データ
@@ -50,7 +106,7 @@ void Client::Recv()
 					char data[BYTESIZE];							//復号前データ
 					char decode_data[BYTESIZE];
 					memcpy(data, &temp_datalist[sizeof(int)], decodesize);
-					CIPHER.GetOpenSSLAES()->Decode(decode_data,data,decodesize);
+					aes->Decode(decode_data,data,decodesize);
 
 					/*完全データの生成*/
 					int byteSize = *(int*)decode_data;														//4byte分だけ取得しintの値にキャスト
@@ -59,7 +115,7 @@ void Client::Recv()
 					MUTEX.Lock();
 					completedata_qlist.push(compData);														//完全データ配列に格納
 					MUTEX.Unlock();
-					temp_datalist.erase(temp_datalist.begin(), temp_datalist.begin() + (decodesize + 4));	//完全データ作成に使用した分を削除
+					temp_datalist.erase(temp_datalist.begin(), temp_datalist.begin() + (decodesize + sizeof(int)));	//完全データ作成に使用した分を削除
 
 				}else {
 					break;
@@ -113,6 +169,12 @@ int Client::GetState()
 {
 	return state;
 }
+
+OpenSSLAES * Client::GetAES()
+{
+	return aes;
+}
+
 
 void Client::SetSocket(SOCKET _socket)
 {

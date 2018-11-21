@@ -3,6 +3,7 @@
 #include"ExtensionMutex.h"
 #include"Data.h"
 #include"Cipher/OpenSSLAES.h"
+#include"Cipher/OpenSSLRSA.h"
 #include"Cipher/Cipher.h"
 #include"Client.h"
 
@@ -21,9 +22,15 @@ Client::Client()
 		SetIpAddress("localhost").
 		SetPortNumber("49155").
 		ClientCreate();
-	//socket->AddressSet(false);
-	//socket->Create();
-	//socket->Connect();
+	
+	char keyBuf[EVP_MAX_KEY_LENGTH];
+	char endata[BYTESIZE];
+	char sendbuf[BYTESIZE];
+	cipher->GetOpenSSLAES()->GetKey(keyBuf);
+	int outlen=cipher->GetOpenSSLRSA()->Encode(endata, keyBuf, EVP_MAX_KEY_LENGTH);
+	memcpy(sendbuf, &outlen, sizeof(int));
+	memcpy(&sendbuf[sizeof(int)], &endata, outlen);
+	send(socket->GetSocket(), sendbuf,sizeof(int)+outlen,0);
 }
 
 Client::~Client()

@@ -183,6 +183,7 @@
     <ClCompile Include="src\Library\CharacterBase\CharacterBase.cpp" />
     <ClCompile Include="src\Library\Client\Cipher\Cipher.cpp" />
     <ClCompile Include="src\Library\Client\Cipher\OpenSSLAES.cpp" />
+    <ClCompile Include="src\Library\Client\Cipher\OpenSSLRSA.cpp" />
     <ClCompile Include="src\Library\Client\Client.cpp" />
     <ClCompile Include="src\Library\Client\Data.cpp" />
     <ClCompile Include="src\Library\Client\ExtensionMutex.cpp" />
@@ -221,6 +222,7 @@
     <ClInclude Include="src\Library\CharacterBase\CharacterBase.h" />
     <ClInclude Include="src\Library\Client\Cipher\Cipher.h" />
     <ClInclude Include="src\Library\Client\Cipher\OpenSSLAES.h" />
+    <ClInclude Include="src\Library\Client\Cipher\OpenSSLRSA.h" />
     <ClInclude Include="src\Library\Client\Client.h" />
     <ClInclude Include="src\Library\Client\Data.h" />
     <ClInclude Include="src\Library\Client\ExtensionMutex.h" />

@@ -6,7 +6,8 @@ public:
 	void CreateKey(const int _keylength= EVP_MAX_KEY_LENGTH);										//ランダムなバイナリデータでのキーの生成
 	int Encode(char* _encodedata, const char* _originaldata, const size_t _datalen);				//暗号化
 	int Decode(char* _decodedata, const char* _originaldata, const size_t _datalen);				//復号
-
+	
+	void SetKey(unsigned char* _key,int _keyLength= EVP_MAX_KEY_LENGTH);
 private:
 	//---------------------------------------------------------
 	//この関数でしか使用しない関数
@@ -16,7 +17,7 @@ private:
 	//---------------------------------------------------------
 	//定数
 	//---------------------------------------------------------
-	unsigned char* key=(unsigned char*)"abcdefghijklmnop";				//暗号化キー
+	unsigned char* key;				//暗号化キー
 	unsigned char* iv = (unsigned char*)"abcdefghijklmnop";				//初期ベクトル
 	EVP_CIPHER_CTX* en;
 

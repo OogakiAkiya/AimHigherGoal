@@ -58,7 +58,7 @@ private:
 	//---------------------------------------------------------
 	static const int ATTACK = 11;										//攻撃
 	static const int DAMAGE = 13;										//ダメージを受けた
-	static const int BYTESIZE = 128;									//送受信に使用するchar配列のデータ量
+	static const int BYTESIZE = 256;									//送受信に使用するchar配列のデータ量
 
 	//---------------------------------------------------------
 	//変数

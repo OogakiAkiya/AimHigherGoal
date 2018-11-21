@@ -11,6 +11,7 @@
 #include"XFile/CheckMesh.h"
 #include"Client/Data.h"
 #include"Client/Cipher/OpenSSLAES.h"
+#include"Client/Cipher/OpenSSLRSA.h"
 #include"Client/Cipher/Cipher.h"
 #include"Client/ExtensionMutex.h"
 #include"Client/Socket.h"
