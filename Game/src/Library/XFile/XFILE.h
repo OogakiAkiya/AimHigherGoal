@@ -11,10 +11,13 @@ public:
 	void Draw(LPDIRECT3DDEVICE9 _lpD3DDevice,D3DXMATRIX *_World);
 	void Release();
 private:
+	//---------------------------------------------------------
+	// 変数
+	//---------------------------------------------------------
 	LPD3DXMESH lpMesh = NULL;			//メッシュの形状
-	DWORD NumMaterial = 0;			//マテリアルの数
-	D3DMATERIAL9 *Mat = NULL;			//マテリアルの内容
-	LPDIRECT3DTEXTURE9 *Tex = NULL;	//テクスチャの内容
+	DWORD numMaterial = 0;				//マテリアルの数
+	D3DMATERIAL9* mat = NULL;			//マテリアルの内容
+	LPDIRECT3DTEXTURE9* texture = NULL;		//テクスチャ
 
 };
 #endif

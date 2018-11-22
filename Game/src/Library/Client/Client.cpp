@@ -13,7 +13,7 @@ Client* Client::s_Instance = nullptr;
 
 Client::Client()
 {
-	/*インスタンスの生成*/
+	//インスタンスの生成
 	cipher = new Cipher();										//暗号処理用クラス
 	mutex = new ExtensionMutex();								//排他制御用クラス
 	socket = Socket::Instantiate()->
@@ -23,19 +23,13 @@ Client::Client()
 		SetPortNumber("49155").
 		ClientCreate();
 	
-	char keyBuf[EVP_MAX_KEY_LENGTH];
-	char endata[BYTESIZE];
-	char sendbuf[BYTESIZE];
-	cipher->GetOpenSSLAES()->GetKey(keyBuf);
-	int outlen=cipher->GetOpenSSLRSA()->Encode(endata, keyBuf, EVP_MAX_KEY_LENGTH);
-	memcpy(sendbuf, &outlen, sizeof(int));
-	memcpy(&sendbuf[sizeof(int)], &endata, outlen);
-	send(socket->GetSocket(), sendbuf,sizeof(int)+outlen,0);
+	//鍵交換処理
+	ExchangeKey();
 }
 
 Client::~Client()
 {
-	/*解放処理*/
+	//解放処理
 	socket->Close();
 	thread->detach();
 	delete mutex;
@@ -51,51 +45,51 @@ void Client::StartThread()
 
 void Client::Recv()
 {
-	/*変数作成*/
+	//ローカル変数作成
 	int iResult;																							//recv結果が入る(受信したバイト数が入る)
 	char rec[BYTESIZE];																							//受け取ったデータを格納
 	
-	/*受信*/
+	//受信
 	while (1) {
 		iResult = socket->Recv(rec,BYTESIZE);
 		if (iResult > 0) {
 
-			/*受信データを一時データ配列に追加*/
-			int now_size = temp_datalist.size();															//一時データ配列に何byteデータが入っているかを見る
-			temp_datalist.resize(now_size + iResult);														//送られてきたデータが格納できるように一時データ配列のサイズ変更
-			memcpy((char*)&temp_datalist[now_size], rec, iResult);											//最後尾に送られてきたデータの追加
+			//受信データを一時データ配列に追加
+			int nowSize = tempDataList.size();															//一時データ配列に何byteデータが入っているかを見る
+			tempDataList.resize(nowSize + iResult);														//送られてきたデータが格納できるように一時データ配列のサイズ変更
+			memcpy((char*)&tempDataList[nowSize], rec, iResult);											//最後尾に送られてきたデータの追加
 
-			/*一時データから完全データの作成*/
-			while (temp_datalist.size() >= 4) {																//何byteのデータが送られてきていいるかすら読み込めなければ抜ける
+			//一時データから完全データの作成
+			while (tempDataList.size() >= 4) {																//何byteのデータが送られてきていいるかすら読み込めなければ抜ける
 				
-				/*復号処理*/
-				int decodesize = *(int*)&temp_datalist[0];
-				if (decodesize <= (int)temp_datalist.size() - 4) {
+				//復号処理
+				int decodeSize = *(int*)&tempDataList[0];
+				if (decodeSize <= (int)tempDataList.size() - 4) {
 					char data[BYTESIZE];																	//復号前データ
-					char decode_data[BYTESIZE];																//復号データ
-					memcpy(data, &temp_datalist[sizeof(int)], decodesize);
-					cipher->GetOpenSSLAES()->Decode(decode_data, data, decodesize);
-					int byteSize = *(int*)decode_data;														//4byte分だけ取得しintの値にキャスト
+					char decodeData[BYTESIZE];																//復号データ
+					memcpy(data, &tempDataList[sizeof(int)], decodeSize);
+					cipher->GetOpenSSLAES()->Decode(decodeData, data, decodeSize);
+					int byteSize = *(int*)decodeData;														//4byte分だけ取得しintの値にキャスト
 					std::vector<char> compData(byteSize);													//完全データ
-					memcpy(&compData[0], &decode_data[sizeof(int)], byteSize);								//サイズ以外のデータを使用し完全データを作成
-					temp_datalist.erase(temp_datalist.begin(), temp_datalist.begin() + (decodesize + 4));	//完全データ作成に使用した分を削除
+					memcpy(&compData[0], &decodeData[sizeof(int)], byteSize);								//サイズ以外のデータを使用し完全データを作成
+					tempDataList.erase(tempDataList.begin(), tempDataList.begin() + (decodeSize + 4));	//完全データ作成に使用した分を削除
 
-					/*完全データの処理*/
+					//完全データの処理
 					DataManipulate(&compData);
 				}
 				else {
-					/*完全データ作成不能になった場合*/
+					//完全データ作成不能になった場合
 					break;
 				}
 			}
 
 		}
 		else if (iResult == 0) {
-			/*データが送られてこなかった場合切断処理*/
+			//データが送られてこなかった場合切断処理
 			break;
 		}
 		else {
-			/*エラー処理*/
+			//エラー処理
 			int error = WSAGetLastError();
 			if (error != 10035) {									//非同期の場合このエラーが呼び出されることがよくあるが致命的でないためスルーさせて良い
 				break;
@@ -106,7 +100,7 @@ void Client::Recv()
 
 void Client::SendPos(Data* _data)
 {
-	/*送信データの生成*/
+	//送信データの生成
 	PosData data;
 	data.size = sizeof(PosData) - sizeof(int);
 	data.id = 0x15;
@@ -116,46 +110,49 @@ void Client::SendPos(Data* _data)
 	data.angle = _data->GetAngle();
 	data.animation = _data->GetAnimation();
 
-	/*暗号処理*/
+	//変数生成
 	char* origin = (char*)&data;
-	char encode[BYTESIZE];										//暗号化データを入れる
-	char senddata[BYTESIZE];									//送信データ
-	int encode_size = cipher->GetOpenSSLAES()->Encode(encode, origin, sizeof(PosData));
-	memcpy(senddata, &encode_size, sizeof(int));
-	memcpy(&senddata[sizeof(int)], encode, encode_size);
+	char encodeData[BYTESIZE];										//暗号化データを入れる
+	char sendData[BYTESIZE];									//送信データ
 
-	/*データ送信*/
-	send(CLIENT.GetSocket(), senddata, sizeof(int) + encode_size, 0);
+	//暗号処理
+	int encode_size = cipher->GetOpenSSLAES()->Encode(encodeData, origin, sizeof(PosData));
+	memcpy(sendData, &encode_size, sizeof(int));
+	memcpy(&sendData[sizeof(int)], encodeData, encode_size);
+
+	//データ送信
+	send(CLIENT.GetSocket(), sendData, sizeof(int) + encode_size, 0);
 }
 
 void Client::SendAttack(Data* _data)
 {
-	/*当たったかどうかを判定*/
-	float Lenght;
-	D3DXVECTOR3 VLenght;
-	D3DXVECTOR3 player_vector(_data->GetX(), _data->GetY(), _data->GetZ());													//プレイヤーのベクトル
+	//当たったかどうかを判定
+	float length;
+	D3DXVECTOR3 vectorLength;
+	D3DXVECTOR3 playerVector(_data->GetX(), _data->GetY(), _data->GetZ());													//プレイヤーのベクトル
 	for (int element = 0; element < 3; element++) {																			//idは敵の区別
-		D3DXVECTOR3 enemy_vector(enemydata[element].GetX(), enemydata[element].GetY(), enemydata[element].GetZ());			//敵のベクトル
-		VLenght = enemy_vector - player_vector;																				//二つのベクトルの差
-		Lenght = D3DXVec3Length(&VLenght);
+		D3DXVECTOR3 enemyVector(enemyData[element].GetX(), enemyData[element].GetY(), enemyData[element].GetZ());			//敵のベクトル
+		vectorLength = enemyVector - playerVector;																				//二つのベクトルの差
+		length = D3DXVec3Length(&vectorLength);
 
-		/*データ送信(当たった場合)*/
-		if (Lenght <= 2.0f) {
-			char encode[BYTESIZE];									//暗号データ
-			char senddata[BYTESIZE];								//送信データ
+		//データ送信(当たった場合)
+		if (length <= 2.0f) {
+			char encodeData[BYTESIZE];									//暗号データ
+			char sendData[BYTESIZE];								//送信データ
 
-			/*データの生成*/
+			//データの生成
 			AttckData data;
 			data.base.size = sizeof(AttckData) - sizeof(int);
 			data.base.id = 0x17;
 			data.socket = element;
 			
-			/*暗号処理*/
-			int encode_size = cipher->GetOpenSSLAES()->Encode(encode, (char*)&data, sizeof(AttckData));
-			memcpy(senddata, &encode_size, sizeof(int));
-			memcpy(&senddata[sizeof(int)], encode, encode_size);
-			/*送信処理*/
-			send(CLIENT.GetSocket(), (char*)&senddata, sizeof(int) + encode_size, 0);
+			//暗号処理
+			int encodeSize = cipher->GetOpenSSLAES()->Encode(encodeData, (char*)&data, sizeof(AttckData));
+			memcpy(sendData, &encodeSize, sizeof(int));
+			memcpy(&sendData[sizeof(int)], encodeData, encodeSize);
+
+			//送信処理
+			send(CLIENT.GetSocket(), (char*)&sendData, sizeof(int) + encodeSize, 0);
 		}
 	}
 }
@@ -172,12 +169,12 @@ SOCKET Client::GetSocket()
 
 Data Client::GetData()
 {
-	return data_qlist.front();
+	return dataQueueList.front();
 }
 
 void Client::DeleteData()
 {
-	data_qlist.pop();
+	dataQueueList.pop();
 }
 
 void Client::ClearData()
@@ -190,13 +187,13 @@ void Client::ClearData()
 
 bool Client::DataEmpty()
 {
-	if (data_qlist.empty() == true)return true;
+	if (dataQueueList.empty() == true)return true;
 	return false;
 }
 
 void Client::SetEnemyData(int _enemyid, Data * data)
 {
-	enemydata[_enemyid] = *data;
+	enemyData[_enemyid] = *data;
 }
 
 void Client::Lock()
@@ -230,25 +227,25 @@ void Client::DataManipulate(const std::vector<char>* _data)
 	char id = *(char*)&_data->at(0);					//なんのデータかidで判断する
 
 	switch (id) {
-	/*座標更新処理*/
+	//座標更新処理
 	case 0x16: {
-		float recvdata = *(float*)&_data->at(sizeof(char) + sizeof(float) * 0);
-		data.SetX(recvdata);
-		recvdata = *(float*)&_data->at(sizeof(char) + sizeof(float) * 1);
-		data.SetY(recvdata);
-		recvdata = *(float*)&_data->at(sizeof(char) + sizeof(float) * 2);
-		data.SetZ(recvdata);
-		recvdata = *(float*)&_data->at(sizeof(char) + sizeof(float) * 3);
-		data.SetAngle(recvdata);
-		recvdata = *(int*)&_data->at(sizeof(char) + sizeof(float) * 3 + sizeof(int));
-		data.SetAnimation(recvdata);
+		float recvData = *(float*)&_data->at(sizeof(char) + sizeof(float) * 0);
+		data.SetX(recvData);
+		recvData = *(float*)&_data->at(sizeof(char) + sizeof(float) * 1);
+		data.SetY(recvData);
+		recvData = *(float*)&_data->at(sizeof(char) + sizeof(float) * 2);
+		data.SetZ(recvData);
+		recvData = *(float*)&_data->at(sizeof(char) + sizeof(float) * 3);
+		data.SetAngle(recvData);
+		recvData = *(int*)&_data->at(sizeof(char) + sizeof(float) * 3 + sizeof(int));
+		data.SetAnimation(recvData);
 		Lock();
-		data_qlist.push(data);
+		dataQueueList.push(data);
 		Unlock();
 		break;
 	}
 
-	/*攻撃処理*/
+	//攻撃処理
 	case 0x18:
 		data.SetX(0.0f);					//敵の現在の座標
 		data.SetY(0.0f);
@@ -256,10 +253,28 @@ void Client::DataManipulate(const std::vector<char>* _data)
 		data.SetAngle(0);
 		data.SetAnimation(DAMAGE);
 		Lock();
-		data_qlist.push(data);
+		dataQueueList.push(data);
 		Unlock();
 		break;
 	}
+
+}
+
+void Client::ExchangeKey()
+{
+	//変数生成
+	char keyBuf[EVP_MAX_KEY_LENGTH];							//鍵サイズ
+	char endata[BYTESIZE];
+	char sendbuf[BYTESIZE];
+
+	//暗号処理
+	cipher->GetOpenSSLAES()->GetKey(keyBuf);												//共通鍵取得
+	int outlen = cipher->GetOpenSSLRSA()->Encode(endata, keyBuf, EVP_MAX_KEY_LENGTH);		//暗号化処理
+	memcpy(sendbuf, &outlen, sizeof(int));
+	memcpy(&sendbuf[sizeof(int)], &endata, outlen);
+	
+	//送信
+	send(socket->GetSocket(), sendbuf, sizeof(int) + outlen, 0);
 
 }
 

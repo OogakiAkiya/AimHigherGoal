@@ -3,6 +3,7 @@
 
 Ground::Ground()
 {
+	//‰Šúİ’è
 	for (int x = 0; x < 10; x++) {
 		for (int z = 0; z < 10; z++) {
 			surface[x][z] = new Vertex();
@@ -15,6 +16,7 @@ Ground::Ground()
 
 Ground::~Ground()
 {
+	//‰ğ•úˆ—
 	for (int x = 0; x < 10; x++) {
 		for (int z = 0; z < 10; z++) {
 			delete surface[x][z];							//ƒfƒŠ[ƒg
@@ -24,9 +26,10 @@ Ground::~Ground()
 
 void Ground::Draw()
 {
+	//•`‰æ
 	for (int x = 0; x < 10; x++) {
 		for (int z = 0; z < 10; z++) {
-			surface[x][z]->Draw();							//•`‰æ
+			surface[x][z]->Draw();
 		}
 	}
 }

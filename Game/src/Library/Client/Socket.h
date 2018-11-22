@@ -54,19 +54,3 @@ private:
 	struct addrinfo *result = NULL, hints;
 
 };
-
-/*
-class test
-{
-public:
-	test & SetPos(D3DXVECTOR3 _vp) { return *this; }
-	test & SetRot() { return *this; }
-	test & AddHP() { return *this; }
-	test * Create() { return *this; }
-};
-
-void Test()
-{
-	test * t = new test()->SetPos().AddHP().Create();
-}
-*/

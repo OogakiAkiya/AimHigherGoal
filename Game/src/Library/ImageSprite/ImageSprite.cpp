@@ -5,6 +5,7 @@
 
 ImageSprite::ImageSprite()
 {
+	//初期値設定
 	D3DXMatrixIdentity(&mat);
 }
 
@@ -14,23 +15,25 @@ ImageSprite::~ImageSprite()
 
 void ImageSprite::Load(std::string _pass,int _width,int _height)
 {
-	width = _width;
-	height = _height;
+	width = _width;																	//画像の幅
+	height = _height;																//画像の高さ
 
-	LoadText(&texture,(char*)_pass.c_str(),width,height, NULL);
+	LoadText(&texture,(char*)_pass.c_str(),width,height, NULL);						//ロード処理
 }
 
 void ImageSprite::Draw(int _startpointx, int _startpointy, int _endpointx, int _endpointy,int _alpha,bool _rotationflg)
 {
-	RECT rc = { _startpointx,_startpointy,_endpointx,_endpointy };
+	//変数生成
+	RECT rc = { _startpointx,_startpointy,_endpointx,_endpointy };					//取り込み範囲
 	D3DXMATRIX temp;
 	D3DXMatrixIdentity(&temp);
+
 	DXSP->SetTransform(&temp);
 	if (_rotationflg == false) {
-		DXSP->Draw(texture/*テクスチャ*/, &rc/*取り込み範囲*/, &D3DXVECTOR3(0.0f, 0.0f, 0.0f)/*中心ベクトル*/, NULL/*NULL以外書かない*/, D3DCOLOR_ARGB(_alpha, 255, 255, 255));
+		DXSP->Draw(texture, &rc, &D3DXVECTOR3(0.0f, 0.0f, 0.0f)/*中心ベクトル*/, NULL, D3DCOLOR_ARGB(_alpha, 255, 255, 255));
 	}
 	else {
-		DXSP->Draw(texture/*テクスチャ*/, &rc/*取り込み範囲*/, &D3DXVECTOR3(width/2, height/2, 0.0f)/*中心ベクトル*/, NULL/*NULL以外書かない*/, D3DCOLOR_ARGB(_alpha, 255, 255, 255));
+		DXSP->Draw(texture, &rc, &D3DXVECTOR3(width/2, height/2, 0.0f)/*中心ベクトル*/, NULL, D3DCOLOR_ARGB(_alpha, 255, 255, 255));
 	}
 }
 

@@ -10,31 +10,45 @@ public:
 	virtual void Render2D() override;
 	virtual void Render3D() override;
 
-private:	
+private:
+	//---------------------------------------------------------
+	//ローカル関数
+	//---------------------------------------------------------
 	void State();														//キャラの立っているフラグごとに移動やジャンプの処理を呼び出す
 	void Attack();														//攻撃処理
 	void Jump();														//ジャンプ処理
 	void Wait();														//入力がないとき
 	void Move();														//移動
-	void Damage();
-	void WakeUp();
+	void Damage();														//ダメージ	
+	void WakeUp();														//起き上がり
 	void Rotation(D3DXVECTOR3 _vec);									//回転
-	void ChangeAnimation(int _animation, bool _roop,float _speed=1.0);
-	void TransDataPos(D3DXMATRIX _trans);
-	void TransDataPos(D3DXVECTOR3* _vec);
-
-	D3DXMATRIX* CreateMat();
+	void ChangeAnimation(int _animation, bool _roop,float _speed=1.0);	//アニメーションの変更
+	void TransDataPos(D3DXMATRIX _trans);								//座標セット
+	void TransDataPos(D3DXVECTOR3* _vec);								//座標セット
+	D3DXMATRIX* CreateMat();											//座標出力
 	D3DXVECTOR3* GetVector(float _x, float _y, float _z);				//プレイヤーの向いている方向から引数方向に移動したときのベクトルを求める
 
+	//---------------------------------------------------------
+	//定数
+	//---------------------------------------------------------
+	//将来的になくなる
+	static const int JUMPRESET = 0;
+	static const int JUMPUPER = 1;
+	static const int JUMPDOWNER = 2;
+	static const int JUMPSTANDING = 3;
+	//---------------------------------------------------------
+	//変数
+	//---------------------------------------------------------
 	//スキンメッシュ
-	CBoneController	m_bcChara;
-	CMatrix			m_mChara;
-	CAnimator		m_anim;
+	CBoneController	skinBone;
+	CMatrix			skinChara;
+	CAnimator		skinAnimation;
 
 	//シェーダ
-	ToonShader m_toonshader;
+	ToonShader toonShader;
+
 	Data data;
-	char jumpflg = 0;
+	char jumpFlg = 0;
 	D3DXVECTOR3 acceleration = { 0.001f,0.0f,0.0f };					//加速度
 };
 

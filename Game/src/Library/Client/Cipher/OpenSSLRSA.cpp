@@ -61,18 +61,20 @@ void OpenSSLRSA::ReadPublicKey(std::string _pass)
 
 int OpenSSLRSA::Encode(char * _encodedata, const char * _originaldata, const int _byte)
 {
-	char encode[256];
+	char encode[256];						//暗号化データ
 
-	int outlen = RSA_public_encrypt(_byte, (unsigned char*)_originaldata, (unsigned char*)encode, publicKey, RSA_PKCS1_PADDING);		//暗号化
+	//暗号化
+	int outlen = RSA_public_encrypt(_byte, (unsigned char*)_originaldata, (unsigned char*)encode, publicKey, RSA_PKCS1_PADDING);
 	memcpy(_encodedata, encode, outlen);																								//暗号データのコピー
 	return outlen;
 }
 
 int OpenSSLRSA::Decode(char * _decodedata, const char * _encodedata, const int _byte)
 {
-	char decode[256];
+	char decode[256];						//復号データ
 
-	int outlen = RSA_private_decrypt(_byte, (unsigned char*)_encodedata, (unsigned char*)decode, privateKey, RSA_PKCS1_PADDING);		//復号
+	//復号
+	int outlen = RSA_private_decrypt(_byte, (unsigned char*)_encodedata, (unsigned char*)decode, privateKey, RSA_PKCS1_PADDING);
 	memcpy(_decodedata, decode, outlen);																								//複合データのコピー
 	return outlen;
 }

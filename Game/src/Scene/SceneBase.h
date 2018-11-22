@@ -8,11 +8,19 @@ public:
 	virtual void Update();
 	virtual void Render3D();
 	virtual void Render2D();
+
+	//---------------------------------------------------------
+	//情報取得
+	//---------------------------------------------------------
 	Camera* GetCamera();
 	bool GetEndFlg();
+
 protected:
-	Camera* camera;
-	bool endflg=false;
+	//---------------------------------------------------------
+	//変数
+	//---------------------------------------------------------
+	Camera* camera;										//シーンのメインカメラをセット
+	bool endflg=false;									//シーンチェンジ
 };
 
 #endif

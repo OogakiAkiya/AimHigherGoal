@@ -5,10 +5,13 @@
 
 Cipher::Cipher()
 {
+	//共通鍵暗号
 	aes = new OpenSSLAES();
-	aes->CreateKey();
+	aes->CreateKey();									//キーの生成
+
+	//公開鍵暗号
 	rsa = new OpenSSLRSA();
-	rsa->ReadPublicKey("key/public-key.pem");
+	rsa->ReadPublicKey("key/public-key.pem");			//キーの読み込み
 }
 
 Cipher::~Cipher()

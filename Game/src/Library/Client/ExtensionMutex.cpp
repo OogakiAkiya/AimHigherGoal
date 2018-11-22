@@ -14,7 +14,6 @@ ExtensionMutex::~ExtensionMutex()
 
 void ExtensionMutex::Lock()
 {
-	//std::lock_guard<std::mutex> lock(mtx);
 	mtx.lock();
 }
 
@@ -29,6 +28,7 @@ bool ExtensionMutex::TryUnlock()
 		//¸”s
 		return false;
 	}
+	//¬Œ÷
 	return true;
 }
 

@@ -4,12 +4,25 @@ public:
 	OpenSSLAES();
 	~OpenSSLAES();
 
+	//---------------------------------------------------------
+	//Œ®¶¬
+	//---------------------------------------------------------
 	void CreateKey(const int _keylength= EVP_MAX_KEY_LENGTH);
+
+	//---------------------------------------------------------
+	//ˆÃ†‰»E•œ†
+	//---------------------------------------------------------
 	int Encode(char* _encodedata, const char* _originaldata, const size_t _datalen);
 	int Decode(char* _decodedata, const char* _originaldata, const size_t _datalen);
+
+	//---------------------------------------------------------
+	//î•ñæ“¾
+	//---------------------------------------------------------
 	void GetKey(char* _key);
 private:
-
+	//---------------------------------------------------------
+	//•Ï”
+	//---------------------------------------------------------
 	int Multiple16(int _data);											//ˆø”‚Ì’l‚ğ16‚Ì”{”‚É‚È‚é‚æ‚¤‚ÉŒvZ‚·‚é
 	unsigned char* key;
 	unsigned char* iv = (unsigned char*)"abcdefghijklmnop";

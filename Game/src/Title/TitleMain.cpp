@@ -4,10 +4,12 @@
 
 TitleMain::TitleMain()
 {
+	//インスタンスの生成
 	camera = new Camera();
 	//CAMERA.SetTarget(player);
-
 	title = new ImageSprite();
+
+	//画像ロード処理
 	title->Load("images/Title.png", 1280, 720);
 
 }
@@ -18,16 +20,12 @@ TitleMain::~TitleMain()
 
 void TitleMain::Update()
 {
+	//マウス座標更新処理
 	MOUSE.FreeUpdate();
-	if (GetAsyncKeyState('W') & 0x8000) {
+
+	//タイトルエンド処理
+	if (GetAsyncKeyState(VK_SPACE) & 0x8000) {
 		endflg = true;
-	}
-	if (GetAsyncKeyState('A') & 0x8000) {
-		char buf;
-		float value = CLIENT.GetCount();
-		buf = 0x12;
-		send(CLIENT.GetSocket(), (char*)&buf, sizeof(buf), 0);			//文字の送信
-		send(CLIENT.GetSocket(), (char*)&value, sizeof(value), 0);			//文字の送信
 	}
 }
 

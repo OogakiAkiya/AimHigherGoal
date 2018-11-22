@@ -3,11 +3,21 @@ public:
 	OpenSSLRSA();
 	~OpenSSLRSA();
 
+	//---------------------------------------------------------
+	//Œ®“Ç‚İæ‚è
+	//---------------------------------------------------------
 	void ReadPrivateKey(std::string _pass);
 	void ReadPublicKey(std::string _pass);
-	int Encode(char* _encodedata,const char* _originaldata,const int _byte);
-	int Decode(char* _decodedata, const char* _encodedata, const int _byte);
+
+	//---------------------------------------------------------
+	//ˆÃ†‰»E•œ†
+	//---------------------------------------------------------
+	int Encode(char* _encodedata,const char* _originaldata,const int _byte);				//ˆÃ†‰»
+	int Decode(char* _decodedata, const char* _encodedata, const int _byte);				//•œ†
 private:
+	//---------------------------------------------------------
+	//•Ï”
+	//---------------------------------------------------------
 	RSA* privateKey;
 	RSA* publicKey;
 };

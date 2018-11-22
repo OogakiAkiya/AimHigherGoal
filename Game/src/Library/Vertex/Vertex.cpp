@@ -34,6 +34,7 @@ void Vertex::InitVertex(float _size,float _x,float _y,float _z)
 
 void Vertex::LoadText(char _fname[], int _width, int _height, D3DCOLOR _color)
 {
+	//画像読み込み
 	if (_width == 0)_width = D3DX_DEFAULT;
 	if (_height == 0)_height = D3DX_DEFAULT;
 	D3DXCreateTextureFromFileEx(DEV, _fname, _width, _height, 1, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED, D3DX_FILTER_NONE, D3DX_DEFAULT, _color, NULL, NULL, &texture);
@@ -41,6 +42,7 @@ void Vertex::LoadText(char _fname[], int _width, int _height, D3DCOLOR _color)
 
 void Vertex::Draw()
 {
+	//描画
 	DEV->SetFVF(D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_TEX1);								//板ポリ用のフォーマットに戻す(板ポリを描画するときは使用する)
 	DEV->SetTexture(0, texture);													//テクスチャのセット
 	DEV->SetTransform(D3DTS_WORLD, &mat);											//座標の指定

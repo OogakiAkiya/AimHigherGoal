@@ -8,16 +8,21 @@
 
 GameMain::GameMain()
 {
-	feald = new Ground();						//地面作成
+	//マップ生成
+	feald = new Ground();
+
+	//キャラ生成
 	CharacterBase* temp = new Player();
-	characterlist.push_back(temp);
+	characterList.push_back(temp);
 	for (int i = 0;i<3; i++) {
 		temp = new Enemy(i);
-		characterlist.push_back(temp);
+		characterList.push_back(temp);
 	}
 
-	//camera = player->GetCamera();				//Playerのカメラを取得する
-	camera = characterlist.at(0)->GetCamera();
+	//カメラ設定
+	camera = characterList.at(0)->GetCamera();
+
+	//マウスポインタ非表示
 	ShowCursor(FALSE);
 
 	//空(一時的に作成)
@@ -27,36 +32,45 @@ GameMain::GameMain()
 
 GameMain::~GameMain()
 {
+	//解放処理
 	delete feald;								//地面削除
-	CharacterBase* deletechara;					//キャラ削除
-	for (auto element : characterlist) {
-		deletechara = element;
-		delete deletechara;
+	CharacterBase* deleteChara;					//キャラ削除
+	for (auto element : characterList) {
+		deleteChara = element;
+		delete deleteChara;
 	}
-	characterlist.erase(characterlist.begin(), characterlist.end());
+	characterList.erase(characterList.begin(), characterList.end());
 }
 
 void GameMain::Update()
 {
-	MOUSE.ThirdPersonPointUpdata();							//マウスの座標更新
-	for (auto element : characterlist) {
+	//マウスポインタ座標更新処理
+	MOUSE.ThirdPersonPointUpdata();
+
+	//キャラの更新処理
+	for (auto element : characterList) {
 		element->Update();
 	}
+
 	//クライアントに送られてきているデータ削除(ここにあるのはエネミー全体に動作を反映させるため)
 	if (CLIENT.DataEmpty() == false) {
 		CLIENT.Lock();
 		CLIENT.DeleteData();											//取得データ削除
 		CLIENT.Unlock();
 	}
-	camera = characterlist.at(0)->GetCamera();
+
+	//カメラセット
+	camera = characterList.at(0)->GetCamera();
 }
 
 void GameMain::Render3D()
 {
-	for (auto element : characterlist) {
+	//キャラ描画
+	for (auto element : characterList) {
 		element->Render3D();
 	}
 
+	//環境描画
 	DEV->SetRenderState(D3DRS_LIGHTING, FALSE);			//ライトOFF
 	feald->Draw();										//地面描画
 	s_mesh->Draw(DEV, &s_mat);							//空描画(一時的)
@@ -68,7 +82,7 @@ void GameMain::Render3D()
 void GameMain::Render2D()
 {
 	//2D描画
-	for (auto element : characterlist) {
+	for (auto element : characterList) {
 		element->Render2D();
 	}
 

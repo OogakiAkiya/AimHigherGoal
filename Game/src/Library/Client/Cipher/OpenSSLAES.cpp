@@ -7,14 +7,15 @@
 
 OpenSSLAES::OpenSSLAES()
 {
+	//初期設定
 	key = new unsigned char[EVP_MAX_KEY_LENGTH];
 	en = EVP_CIPHER_CTX_new();
 	EVP_CIPHER_CTX_init(en);
-
 }
 
 OpenSSLAES::~OpenSSLAES()
 {
+	//解放処理
 	EVP_CIPHER_CTX_cleanup(en);
 	EVP_CIPHER_CTX_free(en);
 	delete key;
@@ -23,6 +24,8 @@ OpenSSLAES::~OpenSSLAES()
 void OpenSSLAES::CreateKey(const int _keylength)
 {
 	int checkkey;												//鍵の情報量が十分か判断する
+	
+	//鍵生成
 	checkkey=RAND_bytes(key,_keylength);						//鍵のランダム作成
 	if (checkkey == 0) {
 		checkkey = RAND_bytes(key, EVP_MAX_KEY_LENGTH);			//十分な長さをもつ鍵のランダム作成
@@ -38,6 +41,7 @@ int OpenSSLAES::Encode(char* _encodedata,const char* _originaldata, const size_t
 	int outsize=0;											//最終的に出力したデータ量
 	int datalen = Multiple16(_datalen);						//引数のデータ量を16の倍数にそろえる
 
+	//暗号処理
 	memcpy(oridata, _originaldata, _datalen);				//元データのコピー
 
 	EVP_EncryptInit_ex(en, EVP_aes_128_cbc(), NULL, key, iv);															//暗号化の初期化(初期ベクトルは毎回違うものを渡す)
@@ -55,16 +59,16 @@ int OpenSSLAES::Decode(char* _decodedata, const char* _originaldata, const size_
 {
 	char oridata[128];												//元データ
 	char dedata[128];												//復号するデータ
-	int desize=0;
-	int outlen=0;
-	int paddingsize = 0;
-	int outsize = 0;
-	int erro;
+	int desize=0;													//復号データサイズ
+	int outlen=0;													//最終的に出力するデータサイズ
+	int paddingsize = 0;											//パディングしたサイズ
+
+	//復号処理
 	memcpy(oridata, _originaldata, _datalen);						//元データのコピー
 
-	erro=EVP_DecryptInit_ex(en, EVP_aes_128_cbc(), NULL, key, iv);														//復号の初期化
-	erro=EVP_DecryptUpdate(en, (unsigned char*)&dedata, &desize, (unsigned char*)&oridata,_datalen);						//復号
-	erro=EVP_DecryptFinal_ex(en, (unsigned char*)&dedata+desize, &paddingsize);											//終了
+	EVP_DecryptInit_ex(en, EVP_aes_128_cbc(), NULL, key, iv);														//復号の初期化
+	EVP_DecryptUpdate(en, (unsigned char*)&dedata, &desize, (unsigned char*)&oridata,_datalen);						//復号
+	EVP_DecryptFinal_ex(en, (unsigned char*)&dedata+desize, &paddingsize);											//終了
 
 	outlen = desize + paddingsize;
 	memcpy(_decodedata, dedata, outlen);

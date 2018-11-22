@@ -11,8 +11,11 @@ public:
 	void Render2D()override;
 
 private:
+	//---------------------------------------------------------
+	//変数
+	//---------------------------------------------------------
 	Ground* feald;						//地面
-	std::vector<CharacterBase*> characterlist;
+	std::vector<CharacterBase*> characterList;
 	//お試し
 	XFILE* s_mesh;						//メッシュ
 	D3DXMATRIX s_mat;					//座標用行列

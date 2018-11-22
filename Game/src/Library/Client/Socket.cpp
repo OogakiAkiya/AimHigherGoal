@@ -70,7 +70,7 @@ Socket * Socket::ClientCreate(bool _asynchronousflg)
 	AddressSet();
 	Create();
 	Connect();
-	/*非同期通信ON/OFF*/
+	//非同期通信ON/OFF
 	if (_asynchronousflg) {
 		unsigned long value = 1;
 		ioctlsocket(m_socket, FIONBIO, &value);					//非同期通信化
@@ -83,14 +83,14 @@ Socket * Socket::ClientCreate(bool _asynchronousflg)
 void Socket::AddressSet()
 {
 	WSADATA wsaData;
-	/*socket使用可能かのチェック*/
+	//socket使用可能かのチェック
 	int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
 	if (iResult != 0) {
 		is_available = true;
 		return;
 	}
 
-	/*通信設定*/
+	//通信設定
 	hints.ai_socktype = SOCK_STREAM;		//固定
 	hints.ai_flags = AI_PASSIVE;
 	iResult = getaddrinfo(ip.c_str(), port.c_str(), &hints, &result);
@@ -105,7 +105,7 @@ void Socket::AddressSet()
 
 void Socket::Create()
 {
-	/*ソケットの作成*/
+	//ソケットの作成
 	m_socket = INVALID_SOCKET;
 	m_socket = ::socket(result->ai_family, result->ai_socktype, result->ai_protocol);
 	if (m_socket == INVALID_SOCKET) {
@@ -121,7 +121,7 @@ void Socket::Create()
 
 void Socket::Connect()
 {
-	/*接続*/
+	//接続
 	int iResult = connect(m_socket, result->ai_addr, (int)result->ai_addrlen);
 	if (iResult == SOCKET_ERROR) {
 		closesocket(m_socket);
@@ -157,7 +157,7 @@ void Socket::Close()
 
 void Socket::Bind()
 {
-	/*bind*/
+	//bind
 	int iResult = ::bind(m_socket, result->ai_addr, (int)result->ai_addrlen);				//IPアドレス(ローカルアドレスが入る)とポートの指定
 	if (iResult == SOCKET_ERROR) {
 		printf("bind failed with error: %d\n", WSAGetLastError());
@@ -170,7 +170,7 @@ void Socket::Bind()
 
 void Socket::Listen()
 {
-	/*listen*/
+	//listen
 	if (listen(m_socket, SOMAXCONN) == SOCKET_ERROR) {										//バックログのサイズを設定
 		printf("Listen failed with error:%ld\n", WSAGetLastError());
 		closesocket(m_socket);
@@ -183,6 +183,8 @@ void Socket::Listen()
 SOCKET Socket::Accept()
 {
 	SOCKET recvsocket;
+
+	//accept処理
 	recvsocket = accept(m_socket, NULL, NULL);										//ここでクライアントがなければ待機
 	if (recvsocket == INVALID_SOCKET) {
 		printf("accept failed:%d\n", WSAGetLastError());

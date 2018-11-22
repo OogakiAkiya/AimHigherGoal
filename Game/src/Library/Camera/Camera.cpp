@@ -5,6 +5,7 @@
 
 Camera::Camera()
 {
+	//初期値設定
 	angle = 0;
 	D3DXMatrixTranslation(&mat, 0.0f, 0.0f, 0.0f);
 	D3DXMatrixTranslation(&targetmat, 0.0f, 0.0f, 0.0f);
@@ -21,23 +22,20 @@ Camera::~Camera()
 
 void Camera::ComplianceUpdate()
 {
-	
-	/*カメラの回転*/
+	//カメラの回転
 	angle = MOUSE.GetMoveY();							//マウスの回転率を取得
 	D3DXMatrixRotationY(&mat, D3DXToRadian(angle));		//カメラの行列を左右に回転させる
 
-	//
+	//座標更新
 	D3DXVec3TransformCoord(&pos, &D3DXVECTOR3(0.0f, 3.0f, -5.0f), &mat);
 	D3DXVec3TransformCoord(&look, &D3DXVECTOR3(0.0f, 1.0f, 0.0f), &targetmat);
-	D3DXVec3TransformNormal(&head, &D3DXVECTOR3(0.0f, 1.0f, 0.0f), &targetmat);			//Normalは移動行列を含まない
+	D3DXVec3TransformNormal(&head, &D3DXVECTOR3(0.0f, 1.0f, 0.0f), &targetmat);		//Normalは移動行列を含まない
 	D3DXVec3Normalize(&head, &head);												//ベクトルを渡すときは正規化をしてから渡す
 
-	pos.x += targetmat._41;	//原点からのカメラの
+	pos.x += targetmat._41;															//原点からのカメラの位置
 	pos.y += targetmat._42;
 	pos.z += targetmat._43;
 
-
-	
 }
 
 
@@ -59,6 +57,8 @@ D3DXVECTOR3 Camera::GetHead()
 D3DXMATRIX Camera::GetView()
 {
 	D3DXMATRIX mview;
+
+	//ビューの作成
 	D3DXMatrixLookAtLH(&mview, &pos, &look, &head);
 	return mview;
 }
@@ -66,6 +66,7 @@ D3DXMATRIX Camera::GetView()
 D3DXMATRIX Camera::GetProj()
 {
 	D3DXMATRIX mProj;
+
 	// 投影行列の設定
 	D3DXMatrixPerspectiveFovLH(&mProj, D3DXToRadian(60), (float)DX.SCRW / (float)DX.SCRH, 1.0f, 1000.0f);
 

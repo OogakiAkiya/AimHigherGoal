@@ -15,13 +15,15 @@ CheckMesh::~CheckMesh(){
 
 XFILE* CheckMesh::Get(std::string _pass) {
 
-	if (MeshList.find(_pass) != MeshList.end()) {
-		return MeshList[_pass];
+	//ƒŠƒXƒg“à‚É‚ ‚é‚©’Tõ
+	if (meshList.find(_pass) != meshList.end()) {
+		return meshList[_pass];
 	}
 
+	//‚È‚©‚Á‚½ê‡V‚µ‚­¶¬‚µ’Ç‰Á
 	XFILE* lpx = new XFILE();
 	lpx->Load(DEV, _pass);
-	MeshList.insert(std::pair<std::string, XFILE*>(_pass, lpx));
+	meshList.insert(std::pair<std::string, XFILE*>(_pass, lpx));
 	return lpx;
 }
 
