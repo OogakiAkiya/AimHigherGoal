@@ -3,9 +3,9 @@ class OpenSSLAES {
 public:
 	OpenSSLAES();
 	~OpenSSLAES();
-	void CreateKey(const int _keylength= EVP_MAX_KEY_LENGTH);										//ランダムなバイナリデータでのキーの生成
-	int Encode(char* _encodedata, const char* _originaldata, const size_t _datalen);				//暗号化
-	int Decode(char* _decodedata, const char* _originaldata, const size_t _datalen);				//復号
+	void CreateKey(const int _keyLength= EVP_MAX_KEY_LENGTH);										//ランダムなバイナリデータでのキーの生成
+	int Encode(char* _encodeData, const char* _originalData, const size_t _dataLen);				//暗号化
+	int Decode(char* _decodeData, const char* _originalData, const size_t _dataLen);				//復号
 	
 	void SetKey(unsigned char* _key,int _keyLength= EVP_MAX_KEY_LENGTH);
 private:
@@ -17,7 +17,7 @@ private:
 	//---------------------------------------------------------
 	//定数
 	//---------------------------------------------------------
-	unsigned char* key;				//暗号化キー
+	unsigned char* key;													//暗号化キー
 	unsigned char* iv = (unsigned char*)"abcdefghijklmnop";				//初期ベクトル
 	EVP_CIPHER_CTX* en;
 

@@ -18,127 +18,22 @@ Client::Client()
 
 Client::~Client()
 {
-	/*解放処理*/
-	thread->join();										//スレッド終了
+	//解放処理
+	thread->join();											//スレッド終了
 	delete data;
 	delete curl;
 	delete thread;
 	delete aes;
 }
 
-
-
 void Client::Recv()
 {
 	//鍵交換
-	while (1) {
-		int iResult;										//送られてきたデータ量が格納される
-		char rec[BYTESIZE];									//受信データ
-		bool exitflg = false;
-
-		/*受信*/
-		iResult = recv(data->GetSocket(), rec/*データ*/, sizeof(rec), 0);
-		if (iResult > 0) {
-
-			/*受信データを一時データ配列に追加*/
-			int now_size = temp_datalist.size();															//一時データ配列に何byteデータが入っているかを見る
-			temp_datalist.resize(now_size + iResult);														//送られてきたデータが格納できるように一時データ配列のサイズ変更
-			memcpy((char*)&temp_datalist[now_size], rec, iResult);											//最後尾に送られてきたデータの追加
-
-			/*一時データから完全データの作成*/
-			while (temp_datalist.size() >= sizeof(int)) {																//何byteのデータが送られてきていいるかすら読み込めなければ抜ける
-
-				
-				int decodesize = *(int*)&temp_datalist[0];
-				if (decodesize <= (int)temp_datalist.size() - sizeof(int)) {
-					char data[BYTESIZE];							//復号前データ
-					char decode_data[BYTESIZE];
-					memcpy(data, &temp_datalist[sizeof(int)], decodesize);
-					int outlen=CIPHER.GetOpenSSLRSA()->Decode(decode_data, data, decodesize);
-					aes->SetKey((unsigned char*)decode_data, outlen);
-					temp_datalist.erase(temp_datalist.begin(), temp_datalist.begin() + (decodesize + sizeof(int)));	//完全データ作成に使用した分を削除
-					exitflg = true;
-					break;
-				}
-				else {
-					break;
-				}
-			}
-			if (exitflg)break;
-		}
-		else if (iResult == 0) {
-			/*接続を終了するとき*/
-			printf("切断されました\n");
-			state = -1;
-			return;
-
-		}
-		else {
-			/*接続エラーが起こった時*/
-			printf("recv failed:%d\n%d", WSAGetLastError(), iResult);
-			state = -1;
-			return;
-
-		}
-
-	}
-
-	//ゲーム処理
-	while (1) {
-		int iResult;										//送られてきたデータ量が格納される
-		char rec[BYTESIZE];									//受信データ
-
-		/*受信*/
-		iResult = recv(data->GetSocket()/*送信元のソケット*/, rec/*データ*/, sizeof(rec), 0);
-		if (iResult > 0) {
-
-			/*受信データを一時データ配列に追加*/
-			int now_size = temp_datalist.size();															//一時データ配列に何byteデータが入っているかを見る
-			temp_datalist.resize(now_size + iResult);														//送られてきたデータが格納できるように一時データ配列のサイズ変更
-			memcpy((char*)&temp_datalist[now_size], rec, iResult);											//最後尾に送られてきたデータの追加
-
-			/*一時データから完全データの作成*/
-			while (temp_datalist.size() >= 4) {																//何byteのデータが送られてきていいるかすら読み込めなければ抜ける
-				
-				/*暗号化されたデータの復号処理*/
-				int decodesize = *(int*)&temp_datalist[0];
-				if (decodesize <= (int)temp_datalist.size() - 4) {
-					char data[BYTESIZE];							//復号前データ
-					char decode_data[BYTESIZE];
-					memcpy(data, &temp_datalist[sizeof(int)], decodesize);
-					aes->Decode(decode_data,data,decodesize);
-
-					/*完全データの生成*/
-					int byteSize = *(int*)decode_data;														//4byte分だけ取得しintの値にキャスト
-					std::vector<char> compData(byteSize);													//完全データ
-					memcpy(&compData[0], &decode_data[sizeof(int)], byteSize);								//サイズ以外のデータを使用し完全データを作成
-					MUTEX.Lock();
-					completedata_qlist.push(compData);														//完全データ配列に格納
-					MUTEX.Unlock();
-					temp_datalist.erase(temp_datalist.begin(), temp_datalist.begin() + (decodesize + sizeof(int)));	//完全データ作成に使用した分を削除
-
-				}else {
-					break;
-				}
-			}
-
-		}else if (iResult == 0) {
-			/*接続を終了するとき*/
-			printf("切断されました\n");
-			state = -1;
-			break;
-
-		}else {
-			/*接続エラーが起こった時*/
-			printf("recv failed:%d\n%d", WSAGetLastError(), iResult);
-			state = -1;
-			break;
-
-		}
-	}
+	RecvLoop(EXCHANGEKEY);
+	
+	//完全データ作成処理
+	RecvLoop(CREATECOMPLETEDATA);
 }
-
-
 
 void Client::StartRecvThread(Client* _client)
 {
@@ -157,7 +52,7 @@ SOCKET Client::GetSocket()
 
 int Client::GetRoomNumber()
 {
-	return room_number;
+	return roomNumber;
 }
 
 Data* Client::GetData()
@@ -183,25 +78,114 @@ void Client::SetSocket(SOCKET _socket)
 
 void Client::SetNumber(int _number)
 {
-	room_number = _number;
+	roomNumber = _number;
 }
-
 
 std::vector<char>* Client::GetCompleteData()
 {
-	return &completedata_qlist.front();
+	return &completeDataQueList.front();
 }
 
 void Client::DeleteCompleteData()
 {
-	completedata_qlist.pop();
+	completeDataQueList.pop();
 }
 
 bool Client::EmptyCompleteData()
 {
-	if (completedata_qlist.empty() == true) {
+	if (completeDataQueList.empty() == true) {
 		return true;									//空
 	}
 	return false;										//値が入っている
 }
 
+void Client::RecvLoop(int _loopType)
+{
+	while (1) {
+		int iResult;										//送られてきたデータ量が格納される
+		char rec[BYTESIZE];									//受信データ
+
+		//受信
+		iResult = recv(data->GetSocket(), rec, sizeof(rec), 0);
+		if (iResult > 0) {
+			//受信データを一時データ配列に追加
+			int nowSize = tempDataList.size();										//一時データ配列に何byteデータが入っているかを見る
+			tempDataList.resize(nowSize + iResult);									//送られてきたデータが格納できるように一時データ配列のサイズ変更
+			memcpy((char*)&tempDataList[nowSize], rec, iResult);					//最後尾に送られてきたデータの追加
+
+			//鍵交換
+			if (_loopType == EXCHANGEKEY) {
+				if (ExchangeKey() == true)return;
+			}
+			//完全データ作成処理
+			if (_loopType == CREATECOMPLETEDATA)CreateCompleteData();
+
+		}
+		else if (iResult == 0) {
+			//接続を終了するとき
+			printf("切断されました\n");
+			state = -1;
+			return;
+		}
+		else {
+			//接続エラーが起こった時
+			printf("recv failed:%d\n%d", WSAGetLastError(), iResult);
+			state = -1;
+			return;
+		}
+	}
+}
+
+bool Client::ExchangeKey()
+{
+	while (tempDataList.size() >= sizeof(int)) {
+		//復号に十分なデータがあるかチェック
+		int decodeSize = *(int*)&tempDataList[0];
+		if (decodeSize <= (int)tempDataList.size() - sizeof(int)) {
+
+			//変数宣言
+			char data[BYTESIZE];																			//復号前データ
+			char decodeData[BYTESIZE];
+
+			//復号処理
+			memcpy(data, &tempDataList[sizeof(int)], decodeSize);											//復号するデータのコピー
+			int outLen = CIPHER.GetOpenSSLRSA()->Decode(decodeData, data, decodeSize);						//公開鍵暗号の復号
+			aes->SetKey((unsigned char*)decodeData, outLen);												//共通鍵を設定
+			tempDataList.erase(tempDataList.begin(), tempDataList.begin() + (decodeSize + sizeof(int)));	//完全データ作成に使用した分を削除
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+}
+
+void Client::CreateCompleteData()
+{
+	while (tempDataList.size() >= sizeof(int)) {
+		//復号に十分なデータがあるかチェック
+		int decodeSize = *(int*)&tempDataList[0];
+		if (decodeSize <= (int)tempDataList.size() - 4) {
+
+			//変数宣言
+			char data[BYTESIZE];																			//復号前データ
+			char decodeData[BYTESIZE];
+
+			//復号処理
+			memcpy(data, &tempDataList[sizeof(int)], decodeSize);
+			aes->Decode(decodeData, data, decodeSize);
+
+			//完全データの生成
+			int byteSize = *(int*)decodeData;																//4byte分だけ取得しintの値にキャスト
+			std::vector<char> compData(byteSize);															//完全データ
+			memcpy(&compData[0], &decodeData[sizeof(int)], byteSize);										//サイズ以外のデータを使用し完全データを作成
+			MUTEX.Lock();																					//排他制御開始
+			completeDataQueList.push(compData);																//完全データ配列に格納
+			MUTEX.Unlock();																					//排他制御終了
+			tempDataList.erase(tempDataList.begin(), tempDataList.begin() + (decodeSize + sizeof(int)));	//完全データ作成に使用した分を削除
+		}
+		else {
+			break;
+		}
+	}
+}

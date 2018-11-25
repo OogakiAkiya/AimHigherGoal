@@ -1,3 +1,12 @@
-﻿  ClientController.cpp
+﻿  Client.cpp
+c:\aimhighergoal\server\src\server\client.cpp(150): warning C4018: '<=': signed と unsigned の数値を比較しようとしました。
+  コードを生成中...
+c:\aimhighergoal\server\src\server\client.cpp(167): warning C4715: 'Client::ExchangeKey': 値を返さないコントロール パスがあります。
+  コンパイル中...
+  main.cpp
+  Server.cpp
+c:\aimhighergoal\server\src\server\server.cpp(24): warning C4244: '引数': 'time_t' から 'unsigned int' への変換です。データが失われる可能性があります。
+  ClientController.cpp
+  コードを生成中...
   ソケット.vcxproj -> C:\AimHigherGoal\Server\Debug\ソケット.exe
   ソケット.vcxproj -> C:\AimHigherGoal\Server\Debug\ソケット.pdb (Partial PDB)

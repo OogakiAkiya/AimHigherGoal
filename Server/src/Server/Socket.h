@@ -12,10 +12,10 @@
 		Socket & SetProtocolVersion_Dual();							//IPv4とIPv6の両方と通信可能(クライアントでのみ使用可能)
 		Socket & SetProtocol_TCP();									//TCP
 		Socket & SetProtocol_UDP();									//UDP
-		Socket & SetIpAddress(std::string addrs);					//IPアドレスの設定
+		Socket & SetIpAddress(std::string _addrs);					//IPアドレスの設定
 		Socket & SetPortNumber(std::string _port);					//ポート番号の設定
 		Socket* ServerCreate();										//サーバーの生成
-		Socket* ClientCreate(bool _asynchronousflg = false);										//クライアントの生成
+		Socket* ClientCreate(bool _asynchronousFlag = false);										//クライアントの生成
 
 		//---------------------------------------------------------
 		//通信後各処理を行う
@@ -47,25 +47,10 @@
 		//---------------------------------------------------------
 		//変数
 		//---------------------------------------------------------
-		std::string ip = "localhost";									//IPアドレス
+		std::string ip = "localhost";								//IPアドレス
 		std::string port = "49155";									//ポート番号
-		SOCKET m_socket;											//ソケット
-		bool is_available = false;
+		SOCKET socket;												//ソケット
+		bool available = false;
 		struct addrinfo *result = NULL, hints;
 
 	};
-/*
-class test
-{
-public:
-	test & SetPos(D3DXVECTOR3 _vp) { return *this; }
-	test & SetRot() { return *this; }
-	test & AddHP() { return *this; }
-	test * Create() { return *this; }
-};
-
-void Test()
-{
-	test * t = new test()->SetPos().AddHP().Create();
-}
-*/

@@ -22,12 +22,10 @@ private:
 	//---------------------------------------------------------
 	//íËêî
 	//---------------------------------------------------------
-	//SOCKET m_socket;
-	Socket* m_socket;
-	bool is_available=false;
-	ClientController socket_controller;
+	Socket* socket;
+	bool available=false;
+	ClientController socketController;
 	struct addrinfo *result = NULL;
-	struct addrinfo *ptr = NULL;
 	struct addrinfo hints;
 
 };

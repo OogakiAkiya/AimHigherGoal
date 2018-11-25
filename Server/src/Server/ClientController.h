@@ -8,7 +8,7 @@ public:
 	~ClientController();
 	void SetSocket(Client* _socket);										//ソケットリストに追加
 	bool SerchNumber(int _number);											//引数と同じルームナンバーが存在するか調べる
-	void StartThread(ClientController* _socket_controller);					//スレッド開始
+	void StartThread(ClientController* _socketController);					//スレッド開始
 	void ControllerThread();												//スレッドが動作させる関数
 
 	//---------------------------------------------------------
@@ -32,8 +32,8 @@ private:
 	//---------------------------------------------------------
 	//変数
 	//---------------------------------------------------------
-	std::vector<Client*> socketlist;										//ソケット配列
-	std::vector<int> room_numberlist;										//生成されたルーム番号を保存
+	std::vector<Client*> socketList;										//ソケット配列
+	std::vector<int> roomNumberList;										//生成されたルーム番号を保存
 	std::thread* thread;													//スレッド
 };
 

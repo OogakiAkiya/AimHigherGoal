@@ -34,21 +34,27 @@ public:
 	}
 
 private:
-	//void RoomMatch();
+	//---------------------------------------------------------
+	//ローカル関数
+	//---------------------------------------------------------
+	void RecvLoop(int _loopType);
+	bool ExchangeKey();
+	void CreateCompleteData();
 
 	//---------------------------------------------------------
 	//定数
 	//---------------------------------------------------------
 	static const int BYTESIZE = 256;
-
+	static const int EXCHANGEKEY = 1;
+	static const int CREATECOMPLETEDATA = 2;
 	//---------------------------------------------------------
 	//変数
 	//---------------------------------------------------------
-	int room_number=0;
+	int roomNumber=0;
 	int state=0;											//ソケットの状態を表す(0:通常,-1:デリート待ち)
 	std::thread* thread;
-	std::queue<std::vector<char>> completedata_qlist;		//完全データ配列
-	std::vector<char> temp_datalist;						//一時データ配列
+	std::queue<std::vector<char>> completeDataQueList;		//完全データ配列
+	std::vector<char> tempDataList;						//一時データ配列
 	Data* data;												//ユーザーの各データが格納されている
 	OpenSSLAES* aes;
 	CurlWrapper* curl;
