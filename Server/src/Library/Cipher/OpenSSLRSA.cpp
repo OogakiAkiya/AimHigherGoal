@@ -73,6 +73,6 @@ int OpenSSLRSA::Decode(char * _decodedata, const char * _encodedata, const int _
 	char decode[256];
 
 	int outlen = RSA_private_decrypt(_byte, (unsigned char*)_encodedata, (unsigned char*)decode, privateKey, RSA_PKCS1_PADDING);		//復号
-	memcpy(_decodedata, decode, outlen);																								//複合データのコピー
+	memcpy(_decodedata, decode, outlen);																								//復号データのコピー
 	return outlen;
 }

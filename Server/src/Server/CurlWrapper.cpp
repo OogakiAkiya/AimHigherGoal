@@ -18,17 +18,17 @@ CurlWrapper::~CurlWrapper()
 
 void CurlWrapper::HttpConnect(Data* _data)
 {
-	/*ユーザー追加処理*/
+	//ユーザー追加処理
 	if (curl == NULL)return;
 	std::stringstream query;
 	std::string output;
 
-	/*接続設定*/
+	//接続設定
 	curl_easy_setopt(curl, CURLOPT_URL, "http://lifestyle-qa.com/update_user_data.php");
 	curl_easy_setopt(curl, CURLOPT_POST, 1);
 
 	while(curl){
-		/*メッセージの生成*/
+		//メッセージの生成
 		query << "player=" << _data->GetSocket();
 		query << "&x=" << _data->GetX();
 		query << "&y=" << _data->GetY();
@@ -36,22 +36,22 @@ void CurlWrapper::HttpConnect(Data* _data)
 		query >> output;
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, output.c_str());
 
-		/*送信*/
+		//送信
 		if (curl!=NULL) {
-			code = curl_easy_perform(curl);										//URLへの接続
+			code = curl_easy_perform(curl);								//URLへの接続
 		}
 		else {
 			break;
 		}
 
-		/*送信失敗したかの判断*/
+		//送信失敗したかの判断
 		if (code != CURLE_OK) {
 			printf("code=%d\n", code);
 			return;
 		}
 
 
-		/*文字列内をクリーン*/
+		//文字列内をクリーン
 		query.str("");
 		query.clear(std::stringstream::goodbit);
 		output.clear();

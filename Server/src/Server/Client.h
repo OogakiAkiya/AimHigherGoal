@@ -1,13 +1,15 @@
-#pragma once
+#ifndef Client_h
+#define Client_h
+
 class Client
 {
-
 public:
 	Client();
 	~Client();
 	void Recv();											//受信処理
-	void StartRecvThread(Client* _client);						//スレッドの開始
-	void StartHttpThread();
+	void StartRecvThread(Client* _client);					//Recvスレッドの開始
+	void StartHttpThread();									//Http通信スレッド開始
+
 	//---------------------------------------------------------
 	//情報取得
 	//---------------------------------------------------------
@@ -47,6 +49,7 @@ private:
 	static const int BYTESIZE = 256;
 	static const int EXCHANGEKEY = 1;
 	static const int CREATECOMPLETEDATA = 2;
+
 	//---------------------------------------------------------
 	//変数
 	//---------------------------------------------------------
@@ -54,9 +57,10 @@ private:
 	int state=0;											//ソケットの状態を表す(0:通常,-1:デリート待ち)
 	std::thread* thread;
 	std::queue<std::vector<char>> completeDataQueList;		//完全データ配列
-	std::vector<char> tempDataList;						//一時データ配列
+	std::vector<char> tempDataList;							//一時データ配列
 	Data* data;												//ユーザーの各データが格納されている
-	OpenSSLAES* aes;
-	CurlWrapper* curl;
+	OpenSSLAES* aes;										//共通鍵暗号クラス
+	CurlWrapper* curl;										//Http通信クラス
 };
 
+#endif

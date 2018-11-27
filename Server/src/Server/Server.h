@@ -1,4 +1,5 @@
-#pragma once
+#ifndef Server_h
+#define Server_h
 
 class Server
 {
@@ -30,3 +31,4 @@ private:
 
 };
 
+#endif

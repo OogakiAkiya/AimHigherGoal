@@ -1,5 +1,5 @@
-#pragma once
-class Client;
+#ifndef ClientController_h
+#define ClientController_h
 
 class ClientController
 {
@@ -20,7 +20,7 @@ public:
 
 private:
 	//---------------------------------------------------------
-	//このクラス内でしか使用しない関数
+	//ローカル関数
 	//---------------------------------------------------------
 	void DataManipulate(Client* _socket,std::vector<char>* _data);
 
@@ -60,3 +60,4 @@ struct PosData {
 };
 #pragma pack()
 
+#endif

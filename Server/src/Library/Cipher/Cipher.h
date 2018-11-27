@@ -1,9 +1,11 @@
+#ifndef Cipher_h
+#define Cipher_h
+
 class Cipher {
 public:
-	Cipher();
-	~Cipher();
-	OpenSSLAES* GetOpenSSLAES();
-	OpenSSLRSA* GetOpenSSLRSA();
+	OpenSSLAES* GetOpenSSLAES();					//共通鍵
+	OpenSSLRSA* GetOpenSSLRSA();					//公開鍵暗号
+
 	//---------------------------------------------------------
 	//シングルトン
 	//---------------------------------------------------------
@@ -11,6 +13,11 @@ public:
 	static void DeleteInstance();
 
 private:
+	//---------------------------------------------------------
+	//ローカル関数
+	//---------------------------------------------------------
+	Cipher();
+	~Cipher();
 
 	//---------------------------------------------------------
 	//変数
@@ -18,6 +25,7 @@ private:
 	OpenSSLAES* aes;								//共通鍵暗号
 	OpenSSLDH* dh;									//DH法
 	OpenSSLRSA* rsa;								//公開鍵暗号
+
 	//---------------------------------------------------------
 	//シングルトン
 	//---------------------------------------------------------
@@ -26,4 +34,6 @@ private:
 	Cipher(Cipher&);
 
 };
+
 #define CIPHER Cipher::GetInstance()
+#endif

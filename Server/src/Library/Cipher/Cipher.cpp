@@ -8,27 +8,18 @@ Cipher* Cipher::s_Instance = nullptr;
 
 Cipher::Cipher()
 {
-	/*インスタンスの生成*/
+	//インスタンスの生成
 	aes = new OpenSSLAES();
 	dh = new OpenSSLDH();
 	rsa = new OpenSSLRSA();
 
-	
-	std::string ori = "Hello";
-	char encode[256];
-	char decode[256];
+	//秘密鍵読み込み
 	rsa->ReadPrivateKey("key/private-key.pem");
-	rsa->ReadPublicKey("key/public-key.pem");
-	int ensize=rsa->Encode(&encode[0],ori.c_str(),ori.size());
-	rsa->Decode(decode,&encode[0],ensize);
-
-	printf("\ndecode=%s", decode);
-	
 }
 
 Cipher::~Cipher()
 {
-	/*解放処理*/
+	//解放処理
 	delete aes;
 	delete dh;
 	delete rsa;
