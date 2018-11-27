@@ -1,3 +1,6 @@
+#ifndef Socket_h
+#define Socket_h
+
 class Socket {
 public:
 	Socket();
@@ -54,3 +57,5 @@ private:
 	struct addrinfo *result = NULL, hints;
 
 };
+
+#endif

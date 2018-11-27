@@ -1,3 +1,6 @@
+#ifndef Cipher_h
+#define Cipher_h
+
 class Cipher {
 public:
 	Cipher();
@@ -15,3 +18,5 @@ private:
 	OpenSSLAES* aes;				//‹¤’ÊŒ®ˆÃ†
 	OpenSSLRSA* rsa;				//ŒöŠJŒ®ˆÃ†
 };
+
+#endif

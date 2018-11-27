@@ -1,4 +1,6 @@
-#pragma once
+#ifndef ExtensionMutex_h
+#define ExtensionMutex_h
+
 class ExtensionMutex
 {
 public:
@@ -13,7 +15,8 @@ private:
 	//---------------------------------------------------------
 	//•Ï”
 	//---------------------------------------------------------
-
 	std::mutex mtx;
 
 };
+
+#endif

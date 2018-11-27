@@ -1,5 +1,7 @@
-class OpenSSLAES {
+#ifndef OpenSSLAES_h
+#define OpenSSLAES_h
 
+class OpenSSLAES {
 public:
 	OpenSSLAES();
 	~OpenSSLAES();
@@ -19,6 +21,8 @@ public:
 	//î•ñæ“¾
 	//---------------------------------------------------------
 	void GetKey(char* _key);
+	void SetKey(unsigned char* _key, int _keyLength = EVP_MAX_KEY_LENGTH);							//‹¤’ÊŒ®‚ğƒZƒbƒg‚·‚é
+
 private:
 	//---------------------------------------------------------
 	//•Ï”
@@ -29,6 +33,6 @@ private:
 
 	EVP_CIPHER_CTX* en;
 
-
 };
 
+#endif

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef Client_h
+#define Client_h
+
 class Client
 {
 public:
@@ -88,14 +90,14 @@ private:
 //以下送信データ構造
 //=========================================================
 #pragma pack(1)
-/*データ送信に使う最低限の構造*/
+//データ送信に使う最低限の構造
 struct BaseData
 {
 	int size;
 	char id;
 };
 
-/*座標更新データ*/
+//座標更新データ
 struct PosData
 {
 	int size;
@@ -107,7 +109,7 @@ struct PosData
 	int animation;
 };
 
-/*攻撃データ*/
+//攻撃データ
 struct AttckData
 {
 	BaseData base;
@@ -115,3 +117,5 @@ struct AttckData
 };
 
 #pragma pack()
+
+#endif

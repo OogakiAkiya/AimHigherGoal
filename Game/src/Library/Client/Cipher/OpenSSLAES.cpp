@@ -82,6 +82,12 @@ void OpenSSLAES::GetKey(char * _key)
 	memcpy(_key, key, EVP_MAX_KEY_LENGTH);
 }
 
+void OpenSSLAES::SetKey(unsigned char * _key, int _keyLength)
+{
+	//ˆø”‚Ì’l‚ğŒ®‚Éİ’è‚·‚é
+	memcpy(key, _key, _keyLength);
+}
+
 
 int OpenSSLAES::Multiple16(int _data)
 {

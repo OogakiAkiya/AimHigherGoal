@@ -1,3 +1,6 @@
+#ifndef OpenSSLRSA_h
+#define OpenSSLRSA_h
+
 class OpenSSLRSA {
 public:
 	OpenSSLRSA();
@@ -21,3 +24,5 @@ private:
 	RSA* privateKey;
 	RSA* publicKey;
 };
+
+#endif

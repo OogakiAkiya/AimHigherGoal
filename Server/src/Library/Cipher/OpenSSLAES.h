@@ -13,6 +13,7 @@ public:
 	//î•ñæ“¾
 	//---------------------------------------------------------
 	void SetKey(unsigned char* _key,int _keyLength= EVP_MAX_KEY_LENGTH);							//‹¤’ÊŒ®‚ğƒZƒbƒg‚·‚é
+	void GetKey(char* _key);
 
 private:
 	//---------------------------------------------------------
