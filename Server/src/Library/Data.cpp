@@ -16,6 +16,11 @@ SOCKET Data::GetSocket()
 	return socket;
 }
 
+std::string * Data::GetId()
+{
+	return &id;
+}
+
 float Data::GetX()
 {
 	return x;
@@ -44,6 +49,11 @@ int Data::GetAnimation()
 void Data::SetSocket(SOCKET _socket)
 {
 	socket = _socket;
+}
+
+void Data::SetId(std::string _id)
+{
+	id = _id;
 }
 
 void Data::SetX(float _x)

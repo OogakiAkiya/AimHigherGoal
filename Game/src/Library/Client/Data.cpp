@@ -22,6 +22,11 @@ D3DXVECTOR3* Data::GetPos()
 	return &pos;
 }
 
+std::string * Data::GetId()
+{
+	return &id;
+}
+
 float Data::GetX()
 {
 	return pos.x;
@@ -51,6 +56,11 @@ int Data::GetAnimation()
 void Data::SetSocket(SOCKET _socket)
 {
 	socket = _socket;
+}
+
+void Data::SetId(std::string _id)
+{
+	id = _id;
 }
 
 void Data::SetPos(D3DXVECTOR3 _pos)

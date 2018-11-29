@@ -92,12 +92,54 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 {
 	char id = *(char*)&_data->at(0);
 	switch (id) {
+	case 0x01: {
+		//送信用データ
+		char recvData[BYTESIZE];
+		char encode[BYTESIZE];																		//暗号化データを入れる
+		char sendData[BYTESIZE];																	//送信データ
 
+		int idsize = *(int*)&_data->at(sizeof(char));
+		char* temp=(char*)malloc(idsize);
+		memcpy(temp, &_data->at(sizeof(char) + sizeof(int)), idsize);
+		std::string id(temp);
+		MUTEX.Lock();
+		_socket->GetData()->SetId(id);
+		MUTEX.Unlock();
+
+		//プレイヤーの座標取得
+		_socket->GetCurl()->DBGetPos(recvData,id);
+
+
+		float x = *(float*)recvData;
+		float y = *(float*)&recvData[sizeof(float)];
+		float z = *(float*)&recvData[sizeof(float)*2];
+
+		UserData userData;
+		userData.data.size = sizeof(UserData) - sizeof(int);
+		userData.data.id = 0x02;
+		userData.x = x;
+		userData.y = y;
+		userData.z = z;
+
+		//暗号化処理
+		char* origin = (char*)&userData;
+		int encodeSize = _socket->GetAES()->Encode(encode, origin, sizeof(UserData));		//暗号化
+
+		memcpy(sendData, &encodeSize, sizeof(int));
+		memcpy(&sendData[sizeof(int)], encode, encodeSize);
+
+		//送信処理
+		send(_socket->GetSocket(), sendData, sizeof(int) + encodeSize, 0);						//作成したデータの作成
+
+
+		free(temp);
+		break;
+	}
 	//座標更新
 	case 0x15: {
+		//送信用データ
 		char encode[BYTESIZE];																		//暗号化データを入れる
-		char sendData[BYTESIZE];																		//送信データ
-
+		char sendData[BYTESIZE];																	//送信データ
 
 		//データの整形をし値をセット
 		float recvData = *(float*)&_data->at(sizeof(char));

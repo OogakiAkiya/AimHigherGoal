@@ -11,6 +11,7 @@ public:
 	//î•ñæ“¾
 	//---------------------------------------------------------
 	SOCKET GetSocket();
+	std::string* GetId();
 	float GetX();
 	float GetY();
 	float GetZ();
@@ -21,6 +22,7 @@ public:
 	//î•ñİ’è
 	//---------------------------------------------------------
 	void SetSocket(SOCKET _socket);
+	void SetId(std::string _id);
 	void SetX(float _x);
 	void SetY(float _y);
 	void SetZ(float _z);
@@ -32,6 +34,7 @@ private:
 	//•Ï”
 	//---------------------------------------------------------
 	SOCKET socket;
+	std::string id;
 	float x = 0.0f;
 	float y = 0.0f;
 	float z = 0.0f;

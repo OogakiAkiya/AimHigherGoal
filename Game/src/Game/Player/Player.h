@@ -9,7 +9,7 @@ public:
 	virtual void Update() override;
 	virtual void Render2D() override;
 	virtual void Render3D() override;
-
+	
 private:
 	//---------------------------------------------------------
 	//ローカル関数
@@ -47,7 +47,7 @@ private:
 	//シェーダ
 	ToonShader toonShader;
 
-	Data data;
+	Data* data;
 	char jumpFlg = 0;
 	D3DXVECTOR3 acceleration = { 0.001f,0.0f,0.0f };					//加速度
 };

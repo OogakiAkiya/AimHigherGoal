@@ -13,6 +13,7 @@ GameMain::GameMain()
 
 	//ƒLƒƒƒ‰¶¬
 	CharacterBase* temp = new Player();
+
 	characterList.push_back(temp);
 	for (int i = 0;i<3; i++) {
 		temp = new Enemy(i);

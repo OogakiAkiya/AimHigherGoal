@@ -18,6 +18,7 @@ public:
 	Data* GetData();
 	int GetState();
 	OpenSSLAES* GetAES();
+	CurlWrapper* GetCurl();
 	void SetSocket(SOCKET _socket);
 	void SetNumber(int _number);
 	

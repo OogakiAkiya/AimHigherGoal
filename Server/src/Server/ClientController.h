@@ -48,6 +48,15 @@ struct BaseData
 	char id;
 };
 
+//ユーザー情報処理
+struct UserData {
+	BaseData data;
+	float x;
+	float y;
+	float z;
+};
+
+
 //座標データ
 struct PosData {
 	int size;

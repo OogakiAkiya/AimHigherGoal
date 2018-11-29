@@ -14,7 +14,7 @@ CurlWrapper::CurlWrapper()
 CurlWrapper::~CurlWrapper()
 {
 	curl_easy_cleanup(curl);
-	thread.detach();
+	thread.join();
 }
 
 
@@ -70,26 +70,30 @@ void CurlWrapper::StartThread(CurlWrapper* _curl,Data* _data)
 
 void CurlWrapper::DBGetPos(char* _data,std::string _userId)
 {
+	CURL* tempCurl;																//URLへのアクセスに必要な設定などが入る
+	tempCurl = curl_easy_init();
+
 	//ユーザー追加処理
-	if (curl == NULL)return;
+	if (tempCurl == NULL)return;
 	std::stringstream query;
 	std::string output = "";																//送信用データ
 	std::string buf;																		//受け取ったデータを格納する
 	std::string error;
+	char recvdata[256];
 
 	//送信データの生成
 	query << "player=" << _userId.c_str();
 	query >> output;
 
 	//接続設定
-	curl_easy_setopt(curl, CURLOPT_URL, "http://lifestyle-qa.com/get_pos.php");
-	curl_easy_setopt(curl, CURLOPT_POST, 1);											//POST設定
-	curl_easy_setopt(curl, CURLOPT_POSTFIELDS, output.c_str());							//送信データの設定
-	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, TestBufferWriter);					//書込み関数設定
-	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buf);									//書込み変数設定
+	curl_easy_setopt(tempCurl, CURLOPT_URL, "http://lifestyle-qa.com/get_pos.php");
+	curl_easy_setopt(tempCurl, CURLOPT_POST, 1);											//POST設定
+	curl_easy_setopt(tempCurl, CURLOPT_POSTFIELDS, output.c_str());							//送信データの設定
+	curl_easy_setopt(tempCurl, CURLOPT_WRITEFUNCTION, TestBufferWriter);					//書込み関数設定
+	curl_easy_setopt(tempCurl, CURLOPT_WRITEDATA, &buf);									//書込み変数設定
 
 	//送信
-	code = curl_easy_perform(curl);														//URLへの接続
+	code = curl_easy_perform(tempCurl);														//URLへの接続
 
 	//送信失敗したかの判断
 	if (code != CURLE_OK) {
@@ -99,10 +103,17 @@ void CurlWrapper::DBGetPos(char* _data,std::string _userId)
 
 	//jsonを扱う
 	auto json = json11::Json::parse(buf,error);
-	float test = std::stof(json["x"].string_value());
-	float test2 = std::stof(json["y"].string_value());
-	printf("%f,%f", test,test2);
-	
+	float x = std::stof(json["x"].string_value());
+	float y = std::stof(json["y"].string_value());
+	float z = std::stof(json["z"].string_value());
+
+	//データ代入
+	memcpy(recvdata, &x, sizeof(float));
+	memcpy(&recvdata[sizeof(float)], &y, sizeof(float));
+	memcpy(&recvdata[sizeof(float)*2], &z, sizeof(float));
+	memcpy(_data, recvdata, sizeof(float) * 3);
+
+	curl_easy_cleanup(tempCurl);
 
 }
 

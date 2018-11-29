@@ -10,6 +10,7 @@ public:
 	//---------------------------------------------------------
 	//送信関数
 	//---------------------------------------------------------
+	void SendUserInformation(Data* _data);
 	void SendPos(Data* _data);
 	void SendAttack(Data* _data);
 
@@ -95,6 +96,13 @@ struct BaseData
 {
 	int size;
 	char id;
+};
+
+//ユーザー情報確認処理
+struct UserData {
+	BaseData data;
+	int idsize;
+	char id[20];
 };
 
 //座標更新データ

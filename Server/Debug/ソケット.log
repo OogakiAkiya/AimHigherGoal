@@ -1,4 +1,4 @@
-﻿  main.cpp
+﻿  CurlWrapper.cpp
 c:\aimhighergoal\server\src\include.h(35): warning C4067: プリプロセッサ ディレクティブの後に余分な文字がありました - 改行が必要です
   ソケット.vcxproj -> C:\AimHigherGoal\Server\Debug\ソケット.exe
   ソケット.vcxproj -> C:\AimHigherGoal\Server\Debug\ソケット.pdb (Partial PDB)

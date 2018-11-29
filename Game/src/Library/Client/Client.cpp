@@ -98,6 +98,28 @@ void Client::Recv()
 	}
 }
 
+void Client::SendUserInformation(Data * _data)
+{
+	UserData sendData;
+	sendData.data.id = 0x01;
+	sendData.idsize = _data->GetId()->length();
+	memcpy(&sendData.id[0], _data->GetId()->c_str(), sendData.idsize);
+	sendData.data.size = sizeof(UserData) - sizeof(int);
+
+	char* origin = (char*)&sendData;
+	char encodeData[BYTESIZE];										//暗号化データを入れる
+	char senData[BYTESIZE];									//送信データ
+
+	//暗号処理
+	int encode_size = cipher->GetOpenSSLAES()->Encode(encodeData, origin,sendData.data.size+sizeof(UserData));
+	memcpy(senData, &encode_size, sizeof(int));
+	memcpy(&senData[sizeof(int)], encodeData, encode_size);
+
+	//データ送信
+	send(CLIENT.GetSocket(), senData, sizeof(int) + encode_size, 0);
+
+}
+
 void Client::SendPos(Data* _data)
 {
 	//送信データの生成
@@ -227,6 +249,15 @@ void Client::DataManipulate(const std::vector<char>* _data)
 	char id = *(char*)&_data->at(0);					//なんのデータかidで判断する
 
 	switch (id) {
+	case 0x02: {
+		Lock();
+		data.SetX(*(float*)&_data->at(sizeof(char)));
+		data.SetY(*(float*)&_data->at(sizeof(char) + sizeof(float) * 1));
+		data.SetZ(*(float*)&_data->at(sizeof(char) + sizeof(float) * 2));
+		Unlock();
+		break;
+	}
+
 	//座標更新処理
 	case 0x16: {
 		float recvData = *(float*)&_data->at(sizeof(char) + sizeof(float) * 0);

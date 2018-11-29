@@ -5,6 +5,7 @@ Player::Player()
 {
 	//インスタンスの生成
 	camera = new Camera();									//カメラ設定
+	data = new Data();
 
 	// スキンメッシュ読み込み
 	SPtr<CSkinMesh> sm = std::make_shared<CSkinMesh>();
@@ -14,11 +15,14 @@ Player::Player()
 	skinAnimation.ChangeAnime("立ち", true);				// アニメータにアニメーションを設定
 	skinChara.CreateMove(0, 0, 0);							//移動
 	skinChara.RotateY_Local(0);								//回転
-	data.SetAnimation(WAIT);								//アニメーション作成
+	data->SetAnimation(WAIT);								//アニメーション作成
 
 	//シェーダー読み込み
 	toonShader.Init();
 
+	//ユーザーデータ送信
+	data->SetId("test");
+	CLIENT.SendUserInformation(data);
 }
 
 Player::~Player()
@@ -26,6 +30,7 @@ Player::~Player()
 	//解放処理
 	toonShader.Release();
 	delete camera;
+	delete data;
 }
 
 void Player::Update()
@@ -35,8 +40,8 @@ void Player::Update()
 	D3DXMATRIX mat=*CreateMat();
 	camera->SetMat(mat);									//カメラにPlayerの行列を渡す
 	camera->ComplianceUpdate();								//追従カメラを起動
-	skinChara.CreateMove(data.GetPos());					//プレイヤーの座標設定
-	skinChara.RotateY_Local(data.GetAngle());				//angle分回転
+	skinChara.CreateMove(data->GetPos());					//プレイヤーの座標設定
+	skinChara.RotateY_Local(data->GetAngle());				//angle分回転
 	skinAnimation.Animation(1);								// アニメーションを進行
 	skinBone.CalcBoneMatrix();								// 全ボーン、TransMatを使用しLocalMatを更新する
 
@@ -75,37 +80,37 @@ void Player::Render3D()
 void Player::State()
 {
 	//ダメージを受ける処理(デバック用)
-	if (GetAsyncKeyState('Q') & 0x8000&&data.GetAnimation()!=DAMAGE) {
-		data.SetAnimation(DAMAGE);
+	if (GetAsyncKeyState('Q') & 0x8000&&data->GetAnimation()!=DAMAGE) {
+		data->SetAnimation(DAMAGE);
 		acceleration.z = -0.17;
 	}
 
 	//各判定処理
-	if (data.GetAnimation() != WAKEUP) {
-		if (data.GetAnimation() != DAMAGE) {															//ダメージを受けていたらその他の動作をしない
-			if (data.GetAnimation() != ATTACK) {														//プレイヤーが攻撃しているならその他の動作をしない
-				if (jumpFlg == 0) data.SetAnimation(WAIT);												//何も動作していないなら待機モーションに設定
+	if (data->GetAnimation() != WAKEUP) {
+		if (data->GetAnimation() != DAMAGE) {															//ダメージを受けていたらその他の動作をしない
+			if (data->GetAnimation() != ATTACK) {														//プレイヤーが攻撃しているならその他の動作をしない
+				if (jumpFlg == 0) data->SetAnimation(WAIT);												//何も動作していないなら待機モーションに設定
 
-				if (data.GetAnimation() != JUMPUP&&data.GetAnimation() != JUMPDOWN&&data.GetAnimation() != LANDING) {			//プレイヤーがジャンプしていなかったら移動モーションを使用する
-					if (!GetAsyncKeyState('S') &&GetAsyncKeyState('W') & 0x8000) data.SetAnimation(WALK);						//移動状態に設定
-					if (!GetAsyncKeyState('D') && GetAsyncKeyState('A') & 0x8000) data.SetAnimation(WALK);						//移動状態に設定
-					if (!GetAsyncKeyState('W') &&GetAsyncKeyState('S') & 0x8000) data.SetAnimation(WALK);						//移動状態に設定
-					if (!GetAsyncKeyState('A') && GetAsyncKeyState('D') & 0x8000) data.SetAnimation(WALK);						//移動状態に設定
+				if (data->GetAnimation() != JUMPUP&&data->GetAnimation() != JUMPDOWN&&data->GetAnimation() != LANDING) {			//プレイヤーがジャンプしていなかったら移動モーションを使用する
+					if (!GetAsyncKeyState('S') &&GetAsyncKeyState('W') & 0x8000) data->SetAnimation(WALK);						//移動状態に設定
+					if (!GetAsyncKeyState('D') && GetAsyncKeyState('A') & 0x8000) data->SetAnimation(WALK);						//移動状態に設定
+					if (!GetAsyncKeyState('W') &&GetAsyncKeyState('S') & 0x8000) data->SetAnimation(WALK);						//移動状態に設定
+					if (!GetAsyncKeyState('A') && GetAsyncKeyState('D') & 0x8000) data->SetAnimation(WALK);						//移動状態に設定
 				}
 
 				if (GetAsyncKeyState(VK_SPACE) & 0x8000
-					&& data.GetAnimation() != JUMPUP
-					&& data.GetAnimation() != JUMPDOWN
-					&& data.GetAnimation() != LANDING) {
-					data.SetAnimation(JUMPUP);															//ジャンプ状態に設定
+					&& data->GetAnimation() != JUMPUP
+					&& data->GetAnimation() != JUMPDOWN
+					&& data->GetAnimation() != LANDING) {
+					data->SetAnimation(JUMPUP);															//ジャンプ状態に設定
 				}
 			}
-			if (GetAsyncKeyState(VK_LBUTTON) & 0x8000 && jumpFlg == 0) data.SetAnimation(ATTACK);																//ジャンプしていない状態で左クリックで攻撃
+			if (GetAsyncKeyState(VK_LBUTTON) & 0x8000 && jumpFlg == 0) data->SetAnimation(ATTACK);																//ジャンプしていない状態で左クリックで攻撃
 		}
 	}
 
 	//アニメーションにより処理を決定する
-	switch (data.GetAnimation()) {
+	switch (data->GetAnimation()) {
 	case WAIT:							//待機モーション
 		Wait();
 		break;
@@ -130,16 +135,16 @@ void Player::State()
 	}
 
 	//特定の処理の時のみループアニメーションを設定
-	if (data.GetAnimation() == WAIT || data.GetAnimation() == WALK || data.GetAnimation() == RUN) {
-		ChangeAnimation(data.GetAnimation(), true);
+	if (data->GetAnimation() == WAIT || data->GetAnimation() == WALK || data->GetAnimation() == RUN) {
+		ChangeAnimation(data->GetAnimation(), true);
 	}
 	else {
-		ChangeAnimation(data.GetAnimation(), false);
+		ChangeAnimation(data->GetAnimation(), false);
 
 	}
 
 	//プレイヤーの座標を常に送信
-	CLIENT.SendPos(&data);											//サーバーに座標を送信
+	CLIENT.SendPos(data);											//サーバーに座標を送信
 
 }
 
@@ -147,10 +152,10 @@ void Player::Attack()
 {
 	//攻撃処理
 	if (skinAnimation.GetAnimeNo() == ATTACK&&skinAnimation.GetAnimePos()== 20) {
-		CLIENT.SendAttack(&data);													//攻撃が当たっているかどうかの判断と当たっていた場合データを敵に送る
+		CLIENT.SendAttack(data);													//攻撃が当たっているかどうかの判断と当たっていた場合データを敵に送る
 	}
 
-	if (skinAnimation.IsAnimationEnd() == true) data.SetAnimation(WAIT);			//攻撃が終わったら待機モーションに戻る
+	if (skinAnimation.IsAnimationEnd() == true) data->SetAnimation(WAIT);			//攻撃が終わったら待機モーションに戻る
 }
 
 void Player::Jump()
@@ -159,22 +164,22 @@ void Player::Jump()
 	if (jumpFlg == JUMPRESET) {
 		jumpFlg = JUMPUPER;											//ジャンプ上昇中
 		acceleration.y = 0.2f;										//ジャンプする初速設定
-		data.SetAnimation(JUMPUP);									//上昇ジャンプ
+		data->SetAnimation(JUMPUP);									//上昇ジャンプ
 	}
 
 	//下降中の処理
 	if (acceleration.y < 0&&jumpFlg==1) {
 		jumpFlg = JUMPDOWNER;										//ジャンプ下降中
-		data.SetAnimation(JUMPDOWN);								//下降
+		data->SetAnimation(JUMPDOWN);								//下降
 	}
 
 	//着地処理
-	if (data.GetY() <= 0) {											//キャラクターのy座標が0よりも小さくなった時
+	if (data->GetY() <= 0) {											//キャラクターのy座標が0よりも小さくなった時
 		if (jumpFlg == JUMPDOWNER) {								//ジャンプ下降中のみ通る
 			jumpFlg = JUMPSTANDING;									//3は着地状態
-			data.SetAnimation(LANDING);								//着地
+			data->SetAnimation(LANDING);								//着地
 		}
-		data.SetY(0);
+		data->SetY(0);
 	}
 
 	//ジャンプ処理終了
@@ -191,15 +196,15 @@ void Player::Jump()
 
 void Player::Wait()
 {
-	data.SetAnimation(WAIT);										//待機モーション
+	data->SetAnimation(WAIT);										//待機モーション
 	acceleration = { 0.001f,0.0f,0.0f };							//加速度初期化
 }
 
 void Player::Move()
 {
 	//歩くか走るかを判定
-	if (data.GetAnimation() == WALK&&skinAnimation.GetAnimeNo() != RUN)data.SetAnimation(WALK);
-	if (data.GetAnimation() == WALK&&acceleration.z > (MOVESPEEDLIMIT - 0.03))data.SetAnimation(RUN);			//一定の速度に達するとダッシュモーションをする
+	if (data->GetAnimation() == WALK&&skinAnimation.GetAnimeNo() != RUN)data->SetAnimation(WALK);
+	if (data->GetAnimation() == WALK&&acceleration.z > (MOVESPEEDLIMIT - 0.03))data->SetAnimation(RUN);			//一定の速度に達するとダッシュモーションをする
 
 	D3DXVECTOR3 toVec(0.0f, 0.0f, 0.0f), tempVec;
 
@@ -227,9 +232,9 @@ void Player::Move()
 void Player::Damage()
 {
 	//アニメーション設定
-	if (skinAnimation.GetAnimePos() >= 55 && data.GetAnimation() == DAMAGE) data.SetAnimation(WAKEUP);			//ダメージアニメーションが一定の位置まで来ると
+	if (skinAnimation.GetAnimePos() >= 55 && data->GetAnimation() == DAMAGE) data->SetAnimation(WAKEUP);			//ダメージアニメーションが一定の位置まで来ると
 																												//起き上がるモーションに変更する
-	ChangeAnimation(data.GetAnimation(), false);
+	ChangeAnimation(data->GetAnimation(), false);
 	
 	//後退処理
 	D3DXVECTOR3 vec=*GetVector(0,0,acceleration.z);
@@ -242,12 +247,12 @@ void Player::Damage()
 void Player::WakeUp()
 {
 	//アニメーション設定
-	if (skinAnimation.GetAnimePos() == 26 && data.GetAnimation() == WAKEUP) data.SetAnimation(WAIT);
+	if (skinAnimation.GetAnimePos() == 26 && data->GetAnimation() == WAKEUP) data->SetAnimation(WAIT);
 
 	//前進処理
 	D3DXVECTOR3 vec=*GetVector(0.0f, 0.0f, 0.025f);
 	TransDataPos(&vec);
-	ChangeAnimation(data.GetAnimation(), false);
+	ChangeAnimation(data->GetAnimation(), false);
 }
 
 
@@ -272,7 +277,7 @@ void Player::Rotation(D3DXVECTOR3 _vec)
 	if (acceleration.z > MOVESPEEDLIMIT) acceleration.z = MOVESPEEDLIMIT;			//上限値の設定
 	if (jumpFlg == 0) {
 		//回転
-		D3DXMatrixRotationY(&rotation, D3DXToRadian(data.GetAngle()));				//回転用行列に回転量を合成
+		D3DXMatrixRotationY(&rotation, D3DXToRadian(data->GetAngle()));				//回転用行列に回転量を合成
 
 		D3DXVECTOR3 nowVec;															//①今向いてる方向
 		D3DXVec3TransformNormal(&nowVec, &D3DXVECTOR3(0.0f, 0.0f, 1.0f), &rotation);
@@ -283,7 +288,7 @@ void Player::Rotation(D3DXVECTOR3 _vec)
 		rotationAngle = D3DXVec3Dot(&nowVec, &toVec);
 		rotationAngle = D3DXToDegree(acos(rotationAngle));
 		if (rotationAngle >= 0.1f) {												//①と②の外積を求めてそのベクトルが上を向いてたら+下を向いていたら-する
-			float nowAngle = data.GetAngle();
+			float nowAngle = data->GetAngle();
 			D3DXVECTOR3 vCross;														//①と②の外積
 			D3DXVec3Cross(&vCross, &nowVec, &toVec);								//外積
 			D3DXVec3Normalize(&vCross, &vCross);									//正規化
@@ -298,10 +303,10 @@ void Player::Rotation(D3DXVECTOR3 _vec)
 			else {
 				nowAngle += rotationAngle;											//真後ろつまり真逆ベクトルを見られたときは足しても引いてもよい
 			}
-			data.SetAngle(nowAngle);
+			data->SetAngle(nowAngle);
 		}
 		//回転
-		D3DXMatrixRotationY(&rotation, D3DXToRadian(data.GetAngle()));
+		D3DXMatrixRotationY(&rotation, D3DXToRadian(data->GetAngle()));
 	}
 	TransDataPos(trans);
 
@@ -318,24 +323,24 @@ void Player::ChangeAnimation(int _animation,bool _roop,float _speed)
 void Player::TransDataPos(D3DXMATRIX _trans)
 {
 	D3DXVECTOR3 transpos(_trans._41, _trans._42, _trans._43);
-	D3DXVECTOR3 pos(data.GetX(),data.GetY(),data.GetZ());
+	D3DXVECTOR3 pos(data->GetX(),data->GetY(),data->GetZ());
 	pos += transpos;
-	data.SetPos(pos);
+	data->SetPos(pos);
 }
 
 void Player::TransDataPos(D3DXVECTOR3* _vec)
 {
 	D3DXVECTOR3 transpos(_vec->x, _vec->y, _vec->z);
-	D3DXVECTOR3 pos(data.GetX(), data.GetY(), data.GetZ());
+	D3DXVECTOR3 pos(data->GetX(), data->GetY(), data->GetZ());
 	pos += transpos;
-	data.SetPos(pos);
+	data->SetPos(pos);
 }
 
 
 D3DXMATRIX* Player::CreateMat()
 {
 	D3DXMATRIX returnmat;
-	D3DXMatrixTranslation(&returnmat, data.GetX(), data.GetY(), data.GetZ());
+	D3DXMatrixTranslation(&returnmat, data->GetX(), data->GetY(), data->GetZ());
 	return &returnmat;
 }
 
@@ -344,7 +349,7 @@ D3DXVECTOR3 * Player::GetVector(float _x,float _y,float _z)
 	D3DXVECTOR3 vec;													//プレイヤーの見ている方向から引数分だけ移動した値を入れる
 	D3DXMATRIX rotmat;													//プレイヤーの回転
 	D3DXMatrixIdentity(&rotmat);
-	D3DXMatrixRotationY(&rotmat, D3DXToRadian(data.GetAngle()));		//左右に回転させる
+	D3DXMatrixRotationY(&rotmat, D3DXToRadian(data->GetAngle()));		//左右に回転させる
 	D3DXVec3TransformNormal(&vec, &D3DXVECTOR3(_x, _y, _z), &rotmat);
 
 	return &vec;

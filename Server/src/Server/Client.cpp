@@ -70,6 +70,11 @@ OpenSSLAES * Client::GetAES()
 	return aes;
 }
 
+CurlWrapper * Client::GetCurl()
+{
+	return curl;
+}
+
 
 void Client::SetSocket(SOCKET _socket)
 {
