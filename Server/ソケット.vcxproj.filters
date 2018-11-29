@@ -34,6 +34,9 @@
     <Filter Include="ソース ファイル\Library\Cipher\OpenSSLRSA">
       <UniqueIdentifier>{7fb7d8e9-a987-4c19-bbf6-e96d25802e13}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Library\json">
+      <UniqueIdentifier>{e15d25b9-4ea4-4f80-b45f-7d301da8be21}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Library\Data.cpp">
@@ -71,6 +74,9 @@
     </ClCompile>
     <ClCompile Include="src\Library\Cipher\OpenSSLRSA.cpp">
       <Filter>ソース ファイル\Library\Cipher\OpenSSLRSA</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\json\json11.cpp">
+      <Filter>ソース ファイル\Library\json</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -112,6 +118,9 @@
     </ClInclude>
     <ClInclude Include="src\Library\Cipher\OpenSSLRSA.h">
       <Filter>ソース ファイル\Library\Cipher\OpenSSLRSA</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\json\json11.hpp">
+      <Filter>ソース ファイル\Library\json</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -41,6 +41,7 @@
     <ClCompile Include="src\Library\Cipher\OpenSSLRSA.cpp" />
     <ClCompile Include="src\Library\Data.cpp" />
     <ClCompile Include="src\Library\ExtensionMutex.cpp" />
+    <ClCompile Include="src\Library\json\json11.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Server\Client.cpp" />
     <ClCompile Include="src\Server\ClientController.cpp" />
@@ -57,6 +58,7 @@
     <ClInclude Include="src\Library\Cipher\OpenSSLRSA.h" />
     <ClInclude Include="src\Library\Data.h" />
     <ClInclude Include="src\Library\ExtensionMutex.h" />
+    <ClInclude Include="src\Library\json\json11.hpp" />
     <ClInclude Include="src\Server\Client.h" />
     <ClInclude Include="src\Server\ClientController.h" />
     <ClInclude Include="src\Server\CurlWrapper.h" />
