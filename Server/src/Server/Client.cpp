@@ -155,7 +155,9 @@ bool Client::ExchangeKey()
 			//復号処理
 			memcpy(data, &tempDataList[sizeof(int)], decodeSize);											//復号するデータのコピー
 			int outLen = CIPHER.GetOpenSSLRSA()->Decode(decodeData, data, decodeSize);						//公開鍵暗号の復号
+			MUTEX.Lock();
 			aes->SetKey((unsigned char*)decodeData, outLen);												//共通鍵を設定
+			MUTEX.Unlock();
 			tempDataList.erase(tempDataList.begin(), tempDataList.begin() + (decodeSize + sizeof(int)));	//完全データ作成に使用した分を削除
 			return true;
 		}

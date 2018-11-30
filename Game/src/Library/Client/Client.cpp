@@ -106,6 +106,8 @@ void Client::SendUserInformation(Data * _data)
 	memcpy(&sendData.id[0], _data->GetId()->c_str(), sendData.idsize);
 	sendData.data.size = sizeof(UserData) - sizeof(int);
 
+	int a=sizeof(sendData);
+
 	char* origin = (char*)&sendData;
 	char encodeData[BYTESIZE];										//暗号化データを入れる
 	char senData[BYTESIZE];									//送信データ
@@ -160,7 +162,7 @@ void Client::SendAttack(Data* _data)
 		//データ送信(当たった場合)
 		if (length <= 2.0f) {
 			char encodeData[BYTESIZE];									//暗号データ
-			char sendData[BYTESIZE];								//送信データ
+			char sendData[BYTESIZE];									//送信データ
 
 			//データの生成
 			AttckData data;

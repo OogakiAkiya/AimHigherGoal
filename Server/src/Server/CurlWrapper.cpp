@@ -1,5 +1,6 @@
 #include"../Include.h"
 #include"../Library/Data.h"
+#include"../Library/ExtensionMutex.h"
 #include "CurlWrapper.h"
 #pragma comment(lib,"libcurl.dll.a")
 
@@ -13,7 +14,9 @@ CurlWrapper::CurlWrapper()
 
 CurlWrapper::~CurlWrapper()
 {
+	MUTEX.Lock();
 	curl_easy_cleanup(curl);
+	MUTEX.Unlock();
 	thread.join();
 }
 
@@ -37,10 +40,10 @@ void CurlWrapper::HttpConnect(Data* _data)
 		query << "&y=" << _data->GetY();
 		query << "&z=" << _data->GetZ();
 		query >> output;
-		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, output.c_str());
 
 		//ëóêM
 		if (curl!=NULL) {
+			curl_easy_setopt(curl, CURLOPT_POSTFIELDS, output.c_str());
 			code = curl_easy_perform(curl);								//URLÇ÷ÇÃê⁄ë±
 		}
 		else {

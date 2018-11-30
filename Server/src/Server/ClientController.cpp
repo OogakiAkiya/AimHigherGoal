@@ -142,6 +142,7 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 		char sendData[BYTESIZE];																	//送信データ
 
 		//データの整形をし値をセット
+		MUTEX.Lock();
 		float recvData = *(float*)&_data->at(sizeof(char));
 		_socket->GetData()->SetX(recvData);
 		recvData = *(float*)&_data->at(sizeof(char) + sizeof(float) * 1);
@@ -152,6 +153,7 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 		_socket->GetData()->SetAngle(recvData);
 		int recvdata_int = *(int*)&_data->at(sizeof(char) + sizeof(float) * 4);
 		_socket->GetData()->SetAnimation(recvdata_int);
+		MUTEX.Unlock();
 
 		//送信データの作成
 		PosData data;

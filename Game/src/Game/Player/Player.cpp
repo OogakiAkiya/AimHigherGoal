@@ -21,8 +21,8 @@ Player::Player()
 	toonShader.Init();
 
 	//ユーザーデータ送信
-	data->SetId("test");
-	CLIENT.SendUserInformation(data);
+	//data->SetId("test");
+	//CLIENT.SendUserInformation(data);
 }
 
 Player::~Player()
