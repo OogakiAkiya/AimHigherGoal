@@ -70,6 +70,6 @@ void Server::AcceptSocket()
 		MUTEX.Unlock();																	//排他制御Unlock
 
 		printf("来ました\n");
-		clientSocket->StartRecvThread(clientSocket);										//recv処理のスレッド開始
-		clientSocket->StartHttpThread();												//Http通信のスレッド開始
+		clientSocket->StartRecvThread(clientSocket);									//recv処理のスレッド開始
+		//clientSocket->StartHttpThread();												//Http通信のスレッド開始
 }

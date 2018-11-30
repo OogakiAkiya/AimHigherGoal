@@ -20,6 +20,8 @@ public:
 	float GetCount();
 	SOCKET GetSocket();
 	Data GetData();
+	Data* GetPlayerData();
+	bool GetInitFlg();
 	void DeleteData();
 	void ClearData();
 	bool DataEmpty();
@@ -75,7 +77,8 @@ private:
 	std::vector<char> tempDataList;									//一時的にデータを保存
 	Data enemyData[3];													//プレイヤー以外の敵情報を保持
 	std::thread* thread;
-
+	bool initFlag=false;
+	Data* playerData;
 	//---------------------------------------------------------
 	//シングルトン
 	//---------------------------------------------------------

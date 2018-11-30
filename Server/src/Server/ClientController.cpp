@@ -109,7 +109,6 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 		//プレイヤーの座標取得
 		_socket->GetCurl()->DBGetPos(recvData,id);
 
-
 		float x = *(float*)recvData;
 		float y = *(float*)&recvData[sizeof(float)];
 		float z = *(float*)&recvData[sizeof(float)*2];
@@ -131,7 +130,7 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 		//送信処理
 		send(_socket->GetSocket(), sendData, sizeof(int) + encodeSize, 0);						//作成したデータの作成
 
-
+		_socket->StartHttpThread();
 		free(temp);
 		break;
 	}

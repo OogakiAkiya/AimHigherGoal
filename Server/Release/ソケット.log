@@ -1,9 +1,12 @@
-﻿  CurlWrapper.cpp
+﻿  ClientController.cpp
 c:\aimhighergoal\server\src\server\../Include.h(35): warning C4067: プリプロセッサ ディレクティブの後に余分な文字がありました - 改行が必要です
+  Server.cpp
+c:\aimhighergoal\server\src\server\../Include.h(35): warning C4067: プリプロセッサ ディレクティブの後に余分な文字がありました - 改行が必要です
+src\Server\Server.cpp(24): warning C4244: '引数': 'time_t' から 'unsigned int' への変換です。データが失われる可能性があります。
   コード生成しています。
-  3 of 1626 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
+  5 of 1625 functions ( 0.3%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    9 functions had inline decision re-evaluated but remain unchanged
+    1 functions had inline decision re-evaluated but remain unchanged
   コード生成が終了しました。
   ソケット.vcxproj -> C:\AimHigherGoal\Server\Release\ソケット.exe
   ソケット.vcxproj -> C:\AimHigherGoal\Server\Release\ソケット.pdb (Full PDB)

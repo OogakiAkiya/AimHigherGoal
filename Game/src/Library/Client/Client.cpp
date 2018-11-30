@@ -16,6 +16,7 @@ Client::Client()
 	//インスタンスの生成
 	cipher = new Cipher();										//暗号処理用クラス
 	mutex = new ExtensionMutex();								//排他制御用クラス
+	playerData = new Data();
 	socket = Socket::Instantiate()->
 		SetProtocolVersion_Dual().
 		SetProtocol_TCP().
@@ -35,6 +36,7 @@ Client::~Client()
 	delete mutex;
 	delete cipher;
 	delete socket;
+	delete playerData;
 }
 
 
@@ -196,6 +198,16 @@ Data Client::GetData()
 	return dataQueueList.front();
 }
 
+Data* Client::GetPlayerData()
+{
+	return playerData;
+}
+
+bool Client::GetInitFlg()
+{
+	return initFlag;
+}
+
 void Client::DeleteData()
 {
 	dataQueueList.pop();
@@ -253,9 +265,10 @@ void Client::DataManipulate(const std::vector<char>* _data)
 	switch (id) {
 	case 0x02: {
 		Lock();
-		data.SetX(*(float*)&_data->at(sizeof(char)));
-		data.SetY(*(float*)&_data->at(sizeof(char) + sizeof(float) * 1));
-		data.SetZ(*(float*)&_data->at(sizeof(char) + sizeof(float) * 2));
+		playerData->SetX(*(float*)&_data->at(sizeof(char)));
+		playerData->SetY(*(float*)&_data->at(sizeof(char) + sizeof(float) * 1));
+		playerData->SetZ(*(float*)&_data->at(sizeof(char) + sizeof(float) * 2));
+		initFlag = true;
 		Unlock();
 		break;
 	}

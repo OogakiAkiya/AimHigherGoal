@@ -14,10 +14,12 @@ CurlWrapper::CurlWrapper()
 
 CurlWrapper::~CurlWrapper()
 {
+
 	MUTEX.Lock();
 	curl_easy_cleanup(curl);
 	MUTEX.Unlock();
-	thread.join();
+	thread.detach();
+
 }
 
 
@@ -35,15 +37,15 @@ void CurlWrapper::HttpConnect(Data* _data)
 
 	while(curl){
 		//メッセージの生成
-		query << "player=" << _data->GetSocket();
+		query << "player=" <<_data->GetId()->c_str();
 		query << "&x=" << _data->GetX();
 		query << "&y=" << _data->GetY();
 		query << "&z=" << _data->GetZ();
 		query >> output;
+		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, output.c_str());
 
 		//送信
 		if (curl!=NULL) {
-			curl_easy_setopt(curl, CURLOPT_POSTFIELDS, output.c_str());
 			code = curl_easy_perform(curl);								//URLへの接続
 		}
 		else {
