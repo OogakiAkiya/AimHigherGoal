@@ -1,4 +1,6 @@
 ﻿  CurlWrapper.cpp
-c:\aimhighergoal\server\src\include.h(35): warning C4067: プリプロセッサ ディレクティブの後に余分な文字がありました - 改行が必要です
+c:\aimhighergoal\server\src\include.h(36): warning C4067: プリプロセッサ ディレクティブの後に余分な文字がありました - 改行が必要です
+c:\aimhighergoal\server\src\server\curlwrapper.cpp(31): warning C4101: 'recvdata': ローカル変数は 1 度も使われていません。
+c:\aimhighergoal\server\src\server\curlwrapper.cpp(129): warning C4101: 'error': ローカル変数は 1 度も使われていません。
   ソケット.vcxproj -> C:\AimHigherGoal\Server\Debug\ソケット.exe
   ソケット.vcxproj -> C:\AimHigherGoal\Server\Debug\ソケット.pdb (Partial PDB)

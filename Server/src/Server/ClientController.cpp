@@ -108,7 +108,6 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 
 		//プレイヤーの座標取得
 		_socket->GetCurl()->DBGetPos(recvData,id);
-
 		float x = *(float*)recvData;
 		float y = *(float*)&recvData[sizeof(float)];
 		float z = *(float*)&recvData[sizeof(float)*2];
@@ -142,16 +141,11 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 
 		//データの整形をし値をセット
 		MUTEX.Lock();
-		float recvData = *(float*)&_data->at(sizeof(char));
-		_socket->GetData()->SetX(recvData);
-		recvData = *(float*)&_data->at(sizeof(char) + sizeof(float) * 1);
-		_socket->GetData()->SetY(recvData);
-		recvData = *(float*)&_data->at(sizeof(char) + sizeof(float) * 2);
-		_socket->GetData()->SetZ(recvData);
-		recvData = *(float*)&_data->at(sizeof(char) + sizeof(float) * 3);
-		_socket->GetData()->SetAngle(recvData);
-		int recvdata_int = *(int*)&_data->at(sizeof(char) + sizeof(float) * 4);
-		_socket->GetData()->SetAnimation(recvdata_int);
+		_socket->GetData()->SetX(*(float*)&_data->at(sizeof(char)));
+		_socket->GetData()->SetY(*(float*)&_data->at(sizeof(char) + sizeof(float) * 1));
+		_socket->GetData()->SetZ(*(float*)&_data->at(sizeof(char) + sizeof(float) * 2));
+		_socket->GetData()->SetAngle(*(float*)&_data->at(sizeof(char) + sizeof(float) * 3));
+		_socket->GetData()->SetAnimation(*(int*)&_data->at(sizeof(char) + sizeof(float) * 4));
 		MUTEX.Unlock();
 
 		//送信データの作成

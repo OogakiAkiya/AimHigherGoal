@@ -145,16 +145,15 @@ void Player::State()
 
 	//特定の処理の時のみループアニメーションを設定
 	if (data->GetAnimation() == WAIT || data->GetAnimation() == WALK || data->GetAnimation() == RUN) {
-		ChangeAnimation(data->GetAnimation(), true);
+		if (skinAnimation.GetAnimeNo() != WAIT&&data->GetAnimation() == WAIT)CLIENT.SendPos(data);			//アニメーションがWAITの場合一回目だけデータを送る
+		ChangeAnimation(data->GetAnimation(), true);														//ループアニメーション
 	}
 	else {
-		ChangeAnimation(data->GetAnimation(), false);
-
+		ChangeAnimation(data->GetAnimation(), false);														//ループしないアニメーション
 	}
 
-	//プレイヤーの座標を常に送信
-	CLIENT.SendPos(data);											//サーバーに座標を送信
-
+	//プレイヤーの座標を送信
+	if(data->GetAnimation()!=WAIT)CLIENT.SendPos(data);														//サーバーに座標を送信
 }
 
 void Player::Attack()
@@ -205,7 +204,7 @@ void Player::Jump()
 
 void Player::Wait()
 {
-	data->SetAnimation(WAIT);										//待機モーション
+	//data->SetAnimation(WAIT);										//待機モーション
 	acceleration = { 0.001f,0.0f,0.0f };							//加速度初期化
 }
 

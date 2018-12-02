@@ -62,7 +62,7 @@ void Server::AcceptSocket()
 	initSocket = INVALID_SOCKET;					//client_socket初期化
 	initSocket = socket->Accept();
 
-		/*クライアントのソケットをコントローラークラスに追加する*/
+		//クライアントのソケットをコントローラークラスに追加する
 		clientSocket = new Client();
 		clientSocket->SetSocket(initSocket);											//Socketクラスにクライアントの情報を代入する
 		MUTEX.Lock();																	//排他制御Lock
@@ -71,5 +71,4 @@ void Server::AcceptSocket()
 
 		printf("来ました\n");
 		clientSocket->StartRecvThread(clientSocket);									//recv処理のスレッド開始
-		//clientSocket->StartHttpThread();												//Http通信のスレッド開始
 }
