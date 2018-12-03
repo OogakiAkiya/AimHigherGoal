@@ -79,6 +79,7 @@ private:
 	std::thread* thread;
 	bool initFlag=false;
 	Data* playerData;
+
 	//---------------------------------------------------------
 	//シングルトン
 	//---------------------------------------------------------
@@ -103,7 +104,7 @@ struct BaseData
 
 //ユーザー情報確認処理
 struct UserData {
-	BaseData data;
+	BaseData base;
 	int idsize;
 	char id[20];
 };
@@ -111,8 +112,7 @@ struct UserData {
 //座標更新データ
 struct PosData
 {
-	int size;
-	char id;
+	BaseData base;
 	float x;
 	float y;
 	float z;

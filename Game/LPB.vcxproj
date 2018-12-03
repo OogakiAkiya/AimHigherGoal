@@ -190,6 +190,13 @@
     <ClCompile Include="src\Library\Client\Socket.cpp" />
     <ClCompile Include="src\Library\DirectX\D3D.cpp" />
     <ClCompile Include="src\Library\ImageSprite\ImageSprite.cpp" />
+    <ClCompile Include="src\Library\imgui\imgui.cpp" />
+    <ClCompile Include="src\Library\imgui\ImguiWrapper.cpp" />
+    <ClCompile Include="src\Library\imgui\imgui_demo.cpp" />
+    <ClCompile Include="src\Library\imgui\imgui_draw.cpp" />
+    <ClCompile Include="src\Library\imgui\imgui_impl_dx9.cpp" />
+    <ClCompile Include="src\Library\imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="src\Library\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\Library\Mouse\Mouse.cpp" />
     <ClCompile Include="src\Library\Shader\ToonShader\ToonShader.cpp" />
     <ClCompile Include="src\Library\SimpleLib\CDirectXGraphics.cpp" />
@@ -205,6 +212,7 @@
     <ClCompile Include="src\Library\SimpleLib\SkinMesh\KeyframeAnimation.cpp" />
     <ClCompile Include="src\Library\SimpleLib\SkinMesh\SkinMeshLoader.cpp" />
     <ClCompile Include="src\Library\Vertex\Vertex.cpp" />
+    <ClCompile Include="src\Library\VisualCWrapper\VisualCWrapper.cpp" />
     <ClCompile Include="src\Library\XFile\CheckMesh.cpp" />
     <ClCompile Include="src\Library\XFile\XFILE.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -229,6 +237,15 @@
     <ClInclude Include="src\Library\Client\Socket.h" />
     <ClInclude Include="src\Library\DirectX\D3D.h" />
     <ClInclude Include="src\Library\ImageSprite\ImageSprite.h" />
+    <ClInclude Include="src\Library\imgui\imconfig.h" />
+    <ClInclude Include="src\Library\imgui\imgui.h" />
+    <ClInclude Include="src\Library\imgui\ImguiWrapper.h" />
+    <ClInclude Include="src\Library\imgui\imgui_impl_dx9.h" />
+    <ClInclude Include="src\Library\imgui\imgui_impl_win32.h" />
+    <ClInclude Include="src\Library\imgui\imgui_internal.h" />
+    <ClInclude Include="src\Library\imgui\imstb_rectpack.h" />
+    <ClInclude Include="src\Library\imgui\imstb_textedit.h" />
+    <ClInclude Include="src\Library\imgui\imstb_truetype.h" />
     <ClInclude Include="src\Library\LibraryInclude.h" />
     <ClInclude Include="src\Library\Mouse\Mouse.h" />
     <ClInclude Include="src\Library\ShaderInclude.h" />
@@ -249,6 +266,7 @@
     <ClInclude Include="src\Library\SimpleLib\SkinMesh\SkinMeshLoader.h" />
     <ClInclude Include="src\Library\StandardLibraryInclude.h" />
     <ClInclude Include="src\Library\Vertex\Vertex.h" />
+    <ClInclude Include="src\Library\VisualCWrapper\VisualCWrapper.h" />
     <ClInclude Include="src\Library\XFile\CheckMesh.h" />
     <ClInclude Include="src\Library\XFile\XFILE.h" />
     <ClInclude Include="src\Scene\SceneBase.h" />

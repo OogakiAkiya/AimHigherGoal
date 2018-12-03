@@ -53,78 +53,28 @@ void GameFrame(void)
 	DX.SceneEnd();
 }
 
-LRESULT APIENTRY WndFunc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-	switch (msg) {
-	case WM_DESTROY:
-		PostQuitMessage(0);
-		return 0;
-	case WM_KEYDOWN:
-		switch (wParam) {
-		case VK_ESCAPE:
-			PostQuitMessage(0);
-			return 0;
-		}
-		return 0;
-
-	}
-	return DefWindowProc(hwnd, msg, wParam, lParam);
-
-}
-
 
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev,
 	LPSTR lpszCmdParam, int nCmdshow)
 {
-	MSG msg;
-
-	HWND hwnd;
-	WNDCLASS wc;
-	char szAppName[] = "Generic Game SDK Window";
+	VisualCWrapper::GetInstance();
 
 	//シングルトン作成
 	D3D::GetInstance();														//DirectX関係の処理が入っている
 
-	wc.style = CS_DBLCLKS;
-	wc.lpfnWndProc = WndFunc;
-	wc.cbClsExtra = 0;
-	wc.cbWndExtra = 0;
-	wc.hInstance = hInst;
-	wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
-	wc.lpszMenuName = NULL;
-	wc.lpszClassName = szAppName;
-
-	RegisterClass(&wc);
-
-	hwnd = CreateWindowEx(
-		0,
-		szAppName,
-		"Direct X",
-		WS_OVERLAPPEDWINDOW,
-		CW_USEDEFAULT,
-		CW_USEDEFAULT,
-		DX.SCRW, DX.SCRH,
-		NULL, NULL, hInst,
-		NULL);
-
-	if (!hwnd)return FALSE;
-
-	ShowWindow(hwnd, nCmdshow);
-	UpdateWindow(hwnd);
-	SetFocus(hwnd);
+	if(WIN.Init(hInst,hPrev,lpszCmdParam,nCmdshow)==false)return 0;
 
 	//DXRIVRATY系の初期化
-	DX.Init(hwnd);
+	DX.Init(*WIN.GetHwnd());
 
 	LPDIRECT3DDEVICE9 t;
 	t = DX.GetDevice();
 	timeBeginPeriod(1);
 
-	ClientToScreen(hwnd, &MOUSE.GetMousePt());								//クライアント座標に変換
+	
+	ClientToScreen(*WIN.GetInstance().GetHwnd(), &MOUSE.GetMousePt());								//クライアント座標に変換
 	SetCursorPos(MOUSE.GetMousePt().x, MOUSE.GetMousePt().y);
-
+	
 	//フォグ
 	DEV->SetRenderState(D3DRS_FOGENABLE, TRUE);								//フォグ有効化
 	DEV->SetRenderState(D3DRS_FOGCOLOR, D3DCOLOR_XRGB(255, 255, 255));		//色の指定																		
@@ -146,12 +96,12 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev,
 
 	//MainLoop---------------------------------------------
 	while (1) {
-		if (PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE))
+		if (PeekMessage(WIN.GetMsg(), NULL, 0, 0, PM_NOREMOVE))
 		{
-			if (!GetMessage(&msg, NULL, 0, 0))
+			if (!GetMessage(WIN.GetMsg(), NULL, 0, 0))
 				break;
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
+			TranslateMessage(WIN.GetMsg());
+			DispatchMessage(WIN.GetMsg());
 		}
 		else {
 			GameFrame();
@@ -162,9 +112,10 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev,
 	Client::DeleteInstance();
 	SceneControl::DeleteInstance();
 	D3D::DeleteInstance();
-
 	timeEndPeriod(1);
-	return (int)msg.wParam;
+	int returnValue=(int)WIN.GetMsg()->wParam;
+	VisualCWrapper::DeleteInstance();
+	return returnValue;
 
 }
 

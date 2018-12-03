@@ -172,7 +172,7 @@ void Client::CreateCompleteData()
 	while (tempDataList.size() >= sizeof(int)) {
 		//復号に十分なデータがあるかチェック
 		int decodeSize = *(int*)&tempDataList[0];
-		if (decodeSize <= (int)tempDataList.size() - 4) {
+		if (decodeSize <= (int)tempDataList.size() - sizeof(int)) {
 
 			//変数宣言
 			char data[BYTESIZE];																			//復号前データ

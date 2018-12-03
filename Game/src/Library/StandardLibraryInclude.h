@@ -15,6 +15,8 @@
 #include<conio.h>
 #include<mutex>
 #include<queue>
+
+//openssl
 #include<openssl/rand.h>
 #include<openssl/evp.h>
 #include<openssl/aes.h>
@@ -22,4 +24,9 @@
 #include<openssl/pem.h>
 #include <openssl/engine.h>
 #include<openssl/bio.h>
+
+//imgui
+#include"imgui/imgui.h"
+#include"imgui/imgui_impl_win32.h"
+#include"imgui/imgui_impl_dx9.h"
 #endif

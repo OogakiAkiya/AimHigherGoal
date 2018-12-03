@@ -108,16 +108,18 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 
 		//プレイヤーの座標取得
 		_socket->GetCurl()->DBGetPos(recvData,id);
-		float x = *(float*)recvData;
-		float y = *(float*)&recvData[sizeof(float)];
-		float z = *(float*)&recvData[sizeof(float)*2];
+		_socket->GetData()->SetX(*(float*)recvData);
+		_socket->GetData()->SetY(*(float*)&recvData[sizeof(float)]);
+		_socket->GetData()->SetZ(*(float*)&recvData[sizeof(float) * 2]);
 
+		//送信データ作成
 		UserData userData;
 		userData.data.size = sizeof(UserData) - sizeof(int);
 		userData.data.id = 0x02;
-		userData.x = x;
-		userData.y = y;
-		userData.z = z;
+		userData.x = _socket->GetData()->GetX();
+		userData.y = _socket->GetData()->GetY();
+		userData.z = _socket->GetData()->GetZ();
+
 
 		//暗号化処理
 		char* origin = (char*)&userData;

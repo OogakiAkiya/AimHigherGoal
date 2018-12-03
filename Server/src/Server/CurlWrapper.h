@@ -6,10 +6,15 @@ class CurlWrapper
 public:
 	CurlWrapper();
 	~CurlWrapper();
-	void HTTPConnect(std::string* _data, std::string _url,std::string _postData);
-	void PosUpdataLoop(Data* _data);											//Http通信を行う
-	void CurlWrapper::StartThread(CurlWrapper* _curl, Data* _data);			//スレッド開始処理
-	void DBGetPos(char* _data, std::string _userId);
+
+	//---------------------------------------------------------
+	//データの送受信
+	//---------------------------------------------------------
+	void HTTPConnect(std::string* _data, std::string _url,std::string _postData);	//HTTP通信を行う
+	void PosUpdataLoop(Data* _data);												//座標の更新処理
+	void CurlWrapper::StartThread(CurlWrapper* _curl, Data* _data);					//スレッド開始処理
+	void DBGetPos(char* _data, std::string _userId);								//DBから値を受け取り第一引数に格納する
+
 	//---------------------------------------------------------
 	//ランチャー
 	//---------------------------------------------------------
@@ -23,6 +28,7 @@ private:
 	//---------------------------------------------------------
 	CURL* curl;																//URLへのアクセスに必要な設定などが入る
 	CURLcode code;															//処理に成功したかエラーチェックに使う
+	bool endFlg=true;
 	std::thread thread;														//別スレッド処理
 };
 

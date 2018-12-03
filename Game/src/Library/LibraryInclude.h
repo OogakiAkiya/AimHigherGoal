@@ -1,6 +1,7 @@
 #ifndef LibraryInclude_h
 #define LibraryInclude_h
 
+#include"VisualCWrapper/VisualCWrapper.h"
 #include"DirectX/D3D.h"
 #include"XFile/XFILE.h"
 #include"Camera/Camera.h"
@@ -16,4 +17,5 @@
 #include"Client/ExtensionMutex.h"
 #include"Client/Socket.h"
 #include"Client/Client.h"
+#include"imgui/ImguiWrapper.h"
 #endif

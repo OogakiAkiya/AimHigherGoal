@@ -14,8 +14,13 @@ CurlWrapper::CurlWrapper()
 CurlWrapper::~CurlWrapper()
 {
 	//解放処理
-	curl_easy_cleanup(curl);
-	curl = nullptr;
+	while (1) {
+		if (endFlg == true) {
+			curl_easy_cleanup(curl);
+			curl = nullptr;
+			break;
+		}
+	}
 	thread.detach();
 }
 
@@ -74,9 +79,12 @@ void CurlWrapper::PosUpdataLoop(Data* _data)
 		query >> output;
 
 		//送信
-		if (curl == nullptr)return;
-		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, output.c_str());			//メッセージ設定
-		code = curl_easy_perform(curl);										//URLへの接続
+		if (curl != nullptr) {
+			endFlg = false;
+			curl_easy_setopt(curl, CURLOPT_POSTFIELDS, output.c_str());			//メッセージ設定
+			code = curl_easy_perform(curl);										//URLへの接続
+			endFlg = true;
+		}
 
 	//送信失敗したかの判断
 		if (code != CURLE_OK) {
@@ -115,20 +123,15 @@ void CurlWrapper::DBGetPos(char* _data, std::string _userId)
 	//接続設定
 	HTTPConnect(&buf, "http://lifestyle-qa.com/get_pos.php", output.c_str());
 
-	//jsonを扱う
+	//jsonから値の取得
 	auto json = json11::Json::parse(buf, error);
-	float x=0.0f;
+	float x = 0.0f;
 	float y = 0.0f;
 	float z = 0.0f;
 
-	try {
-		x = std::stof(json["x"].string_value());
-		y = std::stof(json["y"].string_value());
-		z = std::stof(json["z"].string_value());
-	}
-	catch (int error) {
-
-	}
+	x = std::stof(json["x"].string_value());
+	y = std::stof(json["y"].string_value());
+	z = std::stof(json["z"].string_value());
 
 	//データ代入
 	memcpy(recvdata, &x, sizeof(float));

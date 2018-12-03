@@ -21,7 +21,7 @@ Player::Player()
 	toonShader.Init();
 
 	//ユーザーデータ送信
-	data->SetId("test");
+	data->SetId(*CLIENT.GetPlayerData()->GetId());
 	CLIENT.SendUserInformation(data);
 
 	while (1) {
@@ -204,7 +204,6 @@ void Player::Jump()
 
 void Player::Wait()
 {
-	//data->SetAnimation(WAIT);										//待機モーション
 	acceleration = { 0.001f,0.0f,0.0f };							//加速度初期化
 }
 

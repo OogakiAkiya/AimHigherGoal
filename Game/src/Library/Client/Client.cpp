@@ -62,11 +62,11 @@ void Client::Recv()
 			memcpy((char*)&tempDataList[nowSize], rec, iResult);											//最後尾に送られてきたデータの追加
 
 			//一時データから完全データの作成
-			while (tempDataList.size() >= 4) {																//何byteのデータが送られてきていいるかすら読み込めなければ抜ける
+			while (tempDataList.size() >= sizeof(int)) {																//何byteのデータが送られてきていいるかすら読み込めなければ抜ける
 				
 				//復号処理
 				int decodeSize = *(int*)&tempDataList[0];
-				if (decodeSize <= (int)tempDataList.size() - 4) {
+				if (decodeSize <= (int)tempDataList.size() - sizeof(int)) {
 					char data[BYTESIZE];																	//復号前データ
 					char decodeData[BYTESIZE];																//復号データ
 					memcpy(data, &tempDataList[sizeof(int)], decodeSize);
@@ -102,20 +102,19 @@ void Client::Recv()
 
 void Client::SendUserInformation(Data * _data)
 {
+	//データ生成
 	UserData sendData;
-	sendData.data.id = 0x01;
+	sendData.base.id = 0x01;
 	sendData.idsize = _data->GetId()->length();
 	memcpy(&sendData.id[0], _data->GetId()->c_str(), sendData.idsize);
-	sendData.data.size = sizeof(UserData) - sizeof(int);
-
-	int a=sizeof(sendData);
+	sendData.base.size = sizeof(UserData) - sizeof(int);
 
 	char* origin = (char*)&sendData;
-	char encodeData[BYTESIZE];										//暗号化データを入れる
+	char encodeData[BYTESIZE];								//暗号化データを入れる
 	char senData[BYTESIZE];									//送信データ
 
 	//暗号処理
-	int encode_size = cipher->GetOpenSSLAES()->Encode(encodeData, origin,sendData.data.size+sizeof(UserData));
+	int encode_size = cipher->GetOpenSSLAES()->Encode(encodeData, origin,sendData.base.size+sizeof(UserData));
 	memcpy(senData, &encode_size, sizeof(int));
 	memcpy(&senData[sizeof(int)], encodeData, encode_size);
 
@@ -128,8 +127,8 @@ void Client::SendPos(Data* _data)
 {
 	//送信データの生成
 	PosData data;
-	data.size = sizeof(PosData) - sizeof(int);
-	data.id = 0x15;
+	data.base.size = sizeof(PosData) - sizeof(int);
+	data.base.id = 0x15;
 	data.x = _data->GetX();
 	data.y = _data->GetY();
 	data.z = _data->GetZ();
@@ -139,7 +138,7 @@ void Client::SendPos(Data* _data)
 	//変数生成
 	char* origin = (char*)&data;
 	char encodeData[BYTESIZE];										//暗号化データを入れる
-	char sendData[BYTESIZE];									//送信データ
+	char sendData[BYTESIZE];										//送信データ
 
 	//暗号処理
 	int encode_size = cipher->GetOpenSSLAES()->Encode(encodeData, origin, sizeof(PosData));
@@ -158,7 +157,7 @@ void Client::SendAttack(Data* _data)
 	D3DXVECTOR3 playerVector(_data->GetX(), _data->GetY(), _data->GetZ());													//プレイヤーのベクトル
 	for (int element = 0; element < 3; element++) {																			//idは敵の区別
 		D3DXVECTOR3 enemyVector(enemyData[element].GetX(), enemyData[element].GetY(), enemyData[element].GetZ());			//敵のベクトル
-		vectorLength = enemyVector - playerVector;																				//二つのベクトルの差
+		vectorLength = enemyVector - playerVector;																			//二つのベクトルの差
 		length = D3DXVec3Length(&vectorLength);
 
 		//データ送信(当たった場合)

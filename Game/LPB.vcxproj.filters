@@ -91,6 +91,12 @@
     <Filter Include="ソース ファイル\Library\Client\Cipher\OpenSSLRSA">
       <UniqueIdentifier>{90b9ecc8-bc82-48d9-bc8e-e044ac085c93}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Library\imgui">
+      <UniqueIdentifier>{f2379993-9545-4f84-88cd-f8fab4525cb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\VisualCWrapper">
+      <UniqueIdentifier>{6b7445cf-53fe-4bb3-b243-87465a15e153}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -200,6 +206,30 @@
     </ClCompile>
     <ClCompile Include="src\Library\Client\Cipher\OpenSSLRSA.cpp">
       <Filter>ソース ファイル\Library\Client\Cipher\OpenSSLRSA</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\imgui\imgui.cpp">
+      <Filter>ソース ファイル\Library\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\imgui\imgui_demo.cpp">
+      <Filter>ソース ファイル\Library\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\imgui\imgui_draw.cpp">
+      <Filter>ソース ファイル\Library\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\imgui\imgui_widgets.cpp">
+      <Filter>ソース ファイル\Library\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\imgui\ImguiWrapper.cpp">
+      <Filter>ソース ファイル\Library\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\VisualCWrapper\VisualCWrapper.cpp">
+      <Filter>ソース ファイル\Library\VisualCWrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\imgui\imgui_impl_dx9.cpp">
+      <Filter>ソース ファイル\Library\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\imgui\imgui_impl_win32.cpp">
+      <Filter>ソース ファイル\Library\imgui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -325,6 +355,36 @@
     </ClInclude>
     <ClInclude Include="src\Library\Client\Cipher\OpenSSLRSA.h">
       <Filter>ソース ファイル\Library\Client\Cipher\OpenSSLRSA</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\imgui\imconfig.h">
+      <Filter>ソース ファイル\Library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\imgui\imgui.h">
+      <Filter>ソース ファイル\Library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\imgui\imgui_internal.h">
+      <Filter>ソース ファイル\Library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\imgui\imstb_rectpack.h">
+      <Filter>ソース ファイル\Library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\imgui\imstb_textedit.h">
+      <Filter>ソース ファイル\Library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\imgui\imstb_truetype.h">
+      <Filter>ソース ファイル\Library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\imgui\ImguiWrapper.h">
+      <Filter>ソース ファイル\Library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\VisualCWrapper\VisualCWrapper.h">
+      <Filter>ソース ファイル\Library\VisualCWrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\imgui\imgui_impl_dx9.h">
+      <Filter>ソース ファイル\Library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\imgui\imgui_impl_win32.h">
+      <Filter>ソース ファイル\Library\imgui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
