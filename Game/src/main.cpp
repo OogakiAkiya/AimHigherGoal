@@ -89,7 +89,6 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev,
 	// ゲームに関する初期化処理 ---------------------------
 	//クライアント処理
 	Client::GetInstance();
-	CLIENT.StartThread();
 
 	SceneControl::GetInstance();											//シーンを一括で管理している
 

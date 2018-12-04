@@ -11,7 +11,8 @@ TitleMain::TitleMain()
 
 	//画像ロード処理
 	title->Load("images/Title.png", 1280, 720);
-	buf.resize(256);
+	ipBuf.resize(256);
+	idBuf.resize(256);
 
 }
 
@@ -29,10 +30,6 @@ void TitleMain::Update()
 
 	//入力フォーム更新処理
 	ImguiUpdate();
-
-	//タイトルエンド処理
-	if (GetAsyncKeyState(VK_SPACE) & 0x8000) {
-	}
 }
 
 void TitleMain::Render3D()
@@ -51,29 +48,69 @@ void TitleMain::Render2D()
 
 }
 
+
+void CleanString(std::string _str,int _strlen) {
+	_str.clear();
+	_str.resize(256);
+	_strlen = 0;
+}
 void TitleMain::ImguiUpdate()
 {
-	imgui->UpdataStart();
+	imgui->UpdataStart();												//imgui開始
 
-	ImGui::Begin("         ", imgui->GetApperFlg());						//ウインドウ作成
+	ImGui::Begin("Form    ", imgui->GetApperFlg());						//ウインドウ作成
+	//ウインドウに配置するオブジェクト
+	if (ImGui::InputText("IPAddress", (char*)ipBuf.c_str(), ipBuf.length()))ipBufLen++;		//テキストフォーム
+	if (ImGui::Button("IP all erase"))CleanString(ipBuf, ipBufLen);                         //ボタン生成
+	if (ImGui::InputText("ID", (char*)idBuf.c_str(), idBuf.length()))idBufLen++;			//テキストフォーム
+	if (ImGui::Button("ID all erase"))CleanString(idBuf, idBufLen);							//ボタン生成
+	ImGui::Text(msg.c_str());																//テキストフィールド
 
-																			//ウインドウに設定するオブジェクト
-	if (ImGui::InputText("ID", (char*)buf.c_str(), buf.length())){
-		bufLength++;
-	};
-
-	if (ImGui::Button("All delete section")) {                           //ボタン生成
-		buf.clear();
-		bufLength = 0;
-	}
+	//決定ボタン処理
 	if (ImGui::Button("Decision")) {
-		endflg = true;
-		buf.resize(bufLength);
-		CLIENT.GetPlayerData()->SetId(buf);
-	}
-	ImGui::Text("test");
+		bool successFlg = true;
+		//文字列の余分な空白を削除
+		ipBuf.resize(ipBufLen);
+		idBuf.resize(idBufLen);
 
-	imgui->UpdataEnd();
+		//ipアドレス処理
+		if (ipBufLen == 0&&successFlg==true) {
+			//ip未入力の場合(最終的にはなくなる予定)
+			if (CLIENT.CreateSocket() == false) {						//サーバーとの接続処理
+				//サーバーが見つからなかった
+				msg = "Server not found";
+				successFlg = false;
+			}
+		}
+		else {
+			if (CLIENT.CreateSocket(ipBuf) == false) {					//サーバーとの接続処理
+				//サーバーが見つからなかった
+				msg = "Server not found";
+				successFlg = false;
+			}
+		}
+
+		//プレイヤーID処理
+		if (idBufLen == 0&&successFlg==true) {
+			//ID未入力
+			msg = "ID not input";
+			successFlg = false;
+		}
+
+		//Game開始
+		if (successFlg) {
+			//入力に問題がなかった
+			CLIENT.GetPlayerData()->SetId(idBuf);
+			endflg = true;
+		}
+
+		//再入力可能な状態にする
+		ipBuf.resize(256);
+		idBuf.resize(256);
+
+	}
+
+	imgui->UpdataEnd();													//imgui終了
 
 }
 

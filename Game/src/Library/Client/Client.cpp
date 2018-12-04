@@ -17,22 +17,13 @@ Client::Client()
 	cipher = new Cipher();										//暗号処理用クラス
 	mutex = new ExtensionMutex();								//排他制御用クラス
 	playerData = new Data();
-	socket = Socket::Instantiate()->
-		SetProtocolVersion_Dual().
-		SetProtocol_TCP().
-		SetIpAddress("localhost").
-		SetPortNumber("49155").
-		ClientCreate();
-	
-	//鍵交換処理
-	ExchangeKey();
 }
 
 Client::~Client()
 {
 	//解放処理
-	socket->Close();
-	thread->detach();
+	if(socket!=nullptr)socket->Close();
+	if(thread!=nullptr)thread->detach();
 	delete mutex;
 	delete cipher;
 	delete socket;
@@ -43,6 +34,27 @@ Client::~Client()
 void Client::StartThread()
 {
 	thread = new std::thread(ClientThreadLauncher, (void*)s_Instance);
+}
+
+bool Client::CreateSocket(std::string _ip)
+{
+	if (socket != nullptr) {
+		socket->Close();
+		delete socket;
+		socket = nullptr;
+	}
+
+	socket = Socket::Instantiate()->
+		SetProtocolVersion_Dual().
+		SetProtocol_TCP().
+		SetIpAddress(_ip.c_str()).
+		SetPortNumber("49155").
+		ClientCreate();
+	if (socket == nullptr)return false;
+	StartThread();
+	//鍵交換処理
+	ExchangeKey();
+	return true;
 }
 
 void Client::Recv()

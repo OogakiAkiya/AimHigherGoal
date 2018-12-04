@@ -18,8 +18,12 @@ private:
 	//---------------------------------------------------------
 	//•Ï”
 	//---------------------------------------------------------
-	std::string buf;
-	int bufLength=0;
+	std::string ipBuf;
+	int ipBufLen=0;
+	std::string idBuf;
+	int idBufLen=0;
+	std::string msg="";
+
 	ImguiWrapper* imgui;
 	int states = 0;
 	ImageSprite* title;						//ƒ^ƒCƒgƒ‹‰æ‘œ

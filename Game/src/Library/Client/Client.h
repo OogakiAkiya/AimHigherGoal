@@ -5,8 +5,8 @@ class Client
 {
 public:
 	void StartThread();
-	void Recv();
-
+	bool CreateSocket(std::string _ip="localhost");
+	void Client::Recv();
 	//---------------------------------------------------------
 	//送信関数
 	//---------------------------------------------------------
@@ -69,14 +69,14 @@ private:
 	//---------------------------------------------------------
 	//変数
 	//---------------------------------------------------------
-	Cipher* cipher;														//暗号処理
-	ExtensionMutex* mutex;												//排他制御
-	Socket* socket;
+	Cipher* cipher=nullptr;														//暗号処理
+	ExtensionMutex* mutex = nullptr;												//排他制御
+	Socket* socket = nullptr;
 	std::queue<Data> dataQueueList;										//完成品データから作成された各情報を保持
 	float count = 0;
 	std::vector<char> tempDataList;									//一時的にデータを保存
 	Data enemyData[3];													//プレイヤー以外の敵情報を保持
-	std::thread* thread;
+	std::thread* thread=nullptr;
 	bool initFlag=false;
 	Data* playerData;
 

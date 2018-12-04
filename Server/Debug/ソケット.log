@@ -1,17 +1,4 @@
-﻿  CurlWrapper.cpp
+﻿  Socket.cpp
 c:\aimhighergoal\server\src\include.h(36): warning C4067: プリプロセッサ ディレクティブの後に余分な文字がありました - 改行が必要です
-c:\aimhighergoal\server\src\server\curlwrapper.cpp(36): warning C4101: 'recvdata': ローカル変数は 1 度も使われていません。
-  コードを生成中...
-  コンパイル中...
-  Client.cpp
-c:\aimhighergoal\server\src\include.h(36): warning C4067: プリプロセッサ ディレクティブの後に余分な文字がありました - 改行が必要です
-c:\aimhighergoal\server\src\server\client.cpp(149): warning C4018: '<=': signed と unsigned の数値を比較しようとしました。
-c:\aimhighergoal\server\src\server\client.cpp(175): warning C4018: '<=': signed と unsigned の数値を比較しようとしました。
-  コードを生成中...
-c:\aimhighergoal\server\src\server\client.cpp(168): warning C4715: 'Client::ExchangeKey': 値を返さないコントロール パスがあります。
-  スキップ中... (関連する変更は検出されませんでした)
-  main.cpp
-  Server.cpp
-  ClientController.cpp
   ソケット.vcxproj -> C:\AimHigherGoal\Server\Debug\ソケット.exe
   ソケット.vcxproj -> C:\AimHigherGoal\Server\Debug\ソケット.pdb (Partial PDB)

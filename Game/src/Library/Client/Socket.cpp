@@ -57,19 +57,20 @@ Socket & Socket::SetPortNumber(std::string _port)
 
 Socket * Socket::ServerCreate()
 {
-	AddressSet();
-	Create();
-	Bind();
-	Listen();
+	if (AddressSet() == false)return nullptr;
+	if (Create() == false)return nullptr;
+	if (Bind() == false)return nullptr;
+	if (Listen() == false)return nullptr;
 
 	return this;
 }
 
 Socket * Socket::ClientCreate(bool _asynchronousflg)
 {
-	AddressSet();
-	Create();
-	Connect();
+	if (AddressSet() == false)return nullptr;
+	if(Create()==false)return nullptr;
+	if(Connect()==false)return nullptr;
+
 	//非同期通信ON/OFF
 	if (_asynchronousflg) {
 		unsigned long value = 1;
@@ -80,14 +81,14 @@ Socket * Socket::ClientCreate(bool _asynchronousflg)
 }
 
 
-void Socket::AddressSet()
+bool Socket::AddressSet()
 {
 	WSADATA wsaData;
 	//socket使用可能かのチェック
 	int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
 	if (iResult != 0) {
 		is_available = true;
-		return;
+		return false;
 	}
 
 	//通信設定
@@ -98,12 +99,12 @@ void Socket::AddressSet()
 		printf("getaddrinfo failed:%d\n", iResult);
 		WSACleanup();
 		is_available = true;
-		return;
+		return false;
 	}
-
+	return true;
 }
 
-void Socket::Create()
+bool Socket::Create()
 {
 	//ソケットの作成
 	m_socket = INVALID_SOCKET;
@@ -113,13 +114,13 @@ void Socket::Create()
 		freeaddrinfo(result);					//メモリの解放
 		WSACleanup();							//ソケットの解放
 		is_available = true;
-		return;
+		return false;
 	}
-
+	return true;
 }
 
 
-void Socket::Connect()
+bool Socket::Connect()
 {
 	//接続
 	int iResult = connect(m_socket, result->ai_addr, (int)result->ai_addrlen);
@@ -131,13 +132,14 @@ void Socket::Connect()
 	if (m_socket == INVALID_SOCKET) {
 		printf("Unable to server!\n");
 		WSACleanup();
-		return;
+		return false;
 	}
-	
+	return true;
 }
 
 int Socket::Recv(char* _recvbuf,int recvbuf_size,int flg)
 {
+	if (this == nullptr)return 0;
 	int bytesize = 0;
 	bytesize=recv(m_socket, _recvbuf, recvbuf_size, 0);
 	return bytesize;
@@ -145,17 +147,19 @@ int Socket::Recv(char* _recvbuf,int recvbuf_size,int flg)
 
 void Socket::Close()
 {
-	int iResult = shutdown(m_socket, SD_SEND);						//今送っている情報を送りきって終わる
-	if (iResult == SOCKET_ERROR) {
+	if (this != nullptr) {
+		int iResult = shutdown(m_socket, SD_SEND);						//今送っている情報を送りきって終わる
+		if (iResult == SOCKET_ERROR) {
+			closesocket(m_socket);
+			WSACleanup();
+		}
 		closesocket(m_socket);
 		WSACleanup();
 	}
-	closesocket(m_socket);
-	WSACleanup();
 }
 
 
-void Socket::Bind()
+bool Socket::Bind()
 {
 	//bind
 	int iResult = ::bind(m_socket, result->ai_addr, (int)result->ai_addrlen);				//IPアドレス(ローカルアドレスが入る)とポートの指定
@@ -164,20 +168,21 @@ void Socket::Bind()
 		freeaddrinfo(result);																//メモリの解放
 		closesocket(m_socket);																//ソケットのクローズ
 		WSACleanup();																		//ソケットの解放
-		return;
+		return false;
 	}
+	return true;
 }
 
-void Socket::Listen()
+bool Socket::Listen()
 {
 	//listen
 	if (listen(m_socket, SOMAXCONN) == SOCKET_ERROR) {										//バックログのサイズを設定
 		printf("Listen failed with error:%ld\n", WSAGetLastError());
 		closesocket(m_socket);
 		WSACleanup();
-		return;
+		return false;
 	}
-
+	return true;
 }
 
 SOCKET Socket::Accept()
