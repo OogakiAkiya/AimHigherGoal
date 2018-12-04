@@ -5,7 +5,7 @@ class Client
 {
 public:
 	void StartThread();
-	bool CreateSocket(std::string _ip="localhost");
+	bool CreateSocket(std::string _ip="127.0.0.1");
 	void Client::Recv();
 	//---------------------------------------------------------
 	//‘—MŠÖ”

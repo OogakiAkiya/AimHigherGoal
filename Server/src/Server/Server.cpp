@@ -25,7 +25,7 @@ Server::Server()
 
 	//ソケット初期化
 	socket = Socket::Instantiate()->
-		SetProtocolVersion_IPv6().								//IPv6
+		SetProtocolVersion_IPv4().								//IPv6
 		SetProtocol_TCP().										//TCP
 		SetIpAddress("0.0.0.0").
 		SetPortNumber("49155").									//ポート番号

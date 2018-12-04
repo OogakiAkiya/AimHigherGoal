@@ -146,10 +146,10 @@ void Player::State()
 	//特定の処理の時のみループアニメーションを設定
 	if (data->GetAnimation() == WAIT || data->GetAnimation() == WALK || data->GetAnimation() == RUN) {
 		if (skinAnimation.GetAnimeNo() != WAIT&&data->GetAnimation() == WAIT)CLIENT.SendPos(data);			//アニメーションがWAITの場合一回目だけデータを送る
-		ChangeAnimation(data->GetAnimation(), true);														//ループアニメーション
+		ChangeAnimation(data->GetAnimation(), true, 0.8f);														//ループアニメーション
 	}
 	else {
-		ChangeAnimation(data->GetAnimation(), false);														//ループしないアニメーション
+		ChangeAnimation(data->GetAnimation(), false, 0.8f);														//ループしないアニメーション
 	}
 
 	//プレイヤーの座標を送信
@@ -159,11 +159,15 @@ void Player::State()
 void Player::Attack()
 {
 	//攻撃処理
-	if (skinAnimation.GetAnimeNo() == ATTACK&&skinAnimation.GetAnimePos()== 20) {
+	if (skinAnimation.GetAnimeNo() == ATTACK&&skinAnimation.GetAnimePos() > 20 && attackFlg == false) {
 		CLIENT.SendAttack(data);													//攻撃が当たっているかどうかの判断と当たっていた場合データを敵に送る
+		attackFlg = true;
 	}
 
-	if (skinAnimation.IsAnimationEnd() == true) data->SetAnimation(WAIT);			//攻撃が終わったら待機モーションに戻る
+	if (skinAnimation.GetAnimePos() > 35) {
+		data->SetAnimation(WAIT);			//攻撃が終わったら待機モーションに戻る
+		attackFlg = false;
+	}
 }
 
 void Player::Jump()
@@ -254,7 +258,7 @@ void Player::Damage()
 void Player::WakeUp()
 {
 	//アニメーション設定
-	if (skinAnimation.GetAnimePos() == 26 && data->GetAnimation() == WAKEUP) data->SetAnimation(WAIT);
+	if (skinAnimation.GetAnimePos() >= 26 && data->GetAnimation() == WAKEUP) data->SetAnimation(WAIT);
 
 	//前進処理
 	D3DXVECTOR3 vec=*GetVector(0.0f, 0.0f, 0.025f);

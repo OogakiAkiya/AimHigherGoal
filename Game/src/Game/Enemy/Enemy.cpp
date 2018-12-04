@@ -41,7 +41,7 @@ void Enemy::Update()
 {
 	//立ち上がる処理
 	if (standFlg == true) {
-		if (skinAnimation.GetAnimePos() == 26 && data.GetAnimation() == WAKEUP) {
+		if (skinAnimation.GetAnimePos() > 25 && skinAnimation.GetAnimeNo() == WAKEUP) {
 			standFlg = false;
 			data.SetAnimation(WAIT);
 			if (CLIENT.DataEmpty() == false) {
@@ -49,6 +49,7 @@ void Enemy::Update()
 				CLIENT.ClearData();										//取得データ全削除
 				CLIENT.Unlock();
 			}
+			ChangeAnimation(data.GetAnimation(), true);
 			return;
 		}
 		ChangeAnimation(data.GetAnimation(), false);					//アニメーションの変更
@@ -62,6 +63,7 @@ void Enemy::Update()
 	//ダメージを受けていた時
 	if (data.GetAnimation() == DAMAGE) {								//ダメージアニメーションの制御
 		Damage();
+		//ChangeAnimation(data.GetAnimation(), false, 0.8f);
 		return;
 	}
 
@@ -90,10 +92,10 @@ void Enemy::Update()
 
 		//特定のアニメーションの変更処理
 		if (data.GetAnimation() == WAIT || data.GetAnimation() == WALK || data.GetAnimation() == RUN) {
-			ChangeAnimation(data.GetAnimation(), true);
+			ChangeAnimation(data.GetAnimation(), true,0.8f);
 		}
 		else {
-			ChangeAnimation(data.GetAnimation(), false);
+			ChangeAnimation(data.GetAnimation(), false, 0.8f);
 		}
 	}
 
@@ -203,7 +205,7 @@ void Enemy::Attack()
 {
 	data.SetAnimation(ATTACK);												//攻撃モーションの設定
 
-	if (skinAnimation.GetAnimeNo() == ATTACK&&skinAnimation.GetAnimePos() == 20) {
+	if (skinAnimation.GetAnimeNo() == ATTACK&&skinAnimation.GetAnimePos() >= 20) {
 		CLIENT.SendAttack(&data);														//攻撃が当たっているかどうかの判断と当たっていた場合データを敵に送る
 	}
 
@@ -338,13 +340,13 @@ void Enemy::Rotation(D3DXVECTOR3 _vec)
 void Enemy::ChangeAnimation(int _animation, bool _roop, double _speed)
 {
 	if (skinAnimation.GetAnimeNo() == _animation) return;										//現在のアニメーションとしたいアニメーションが同じなら関数から抜ける
-	skinAnimation.ChangeAnimeSmooth(_animation, 0, 10, _roop);								//アニメーションを_animationに変更
+	skinAnimation.ChangeAnimeSmooth(_animation, 0, 10, _roop,_speed);								//アニメーションを_animationに変更
 
 }
 
 bool Enemy::Damage()
 {
-	if (skinAnimation.GetAnimePos()==40 && data.GetAnimation() == DAMAGE) {
+	if (skinAnimation.GetAnimePos()>40 && data.GetAnimation() == DAMAGE) {
 		data.SetAnimation(WAKEUP);
 		standFlg = true;
 		if (CLIENT.DataEmpty() == false) {

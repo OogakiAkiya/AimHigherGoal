@@ -1,15 +1,3 @@
-c:\aimhightergoals\server\release\vc140.pdb
-c:\aimhightergoals\server\release\socket.obj
-c:\aimhightergoals\server\release\server.obj
-c:\aimhightergoals\server\release\curlwrapper.obj
-c:\aimhightergoals\server\release\clientcontroller.obj
-c:\aimhightergoals\server\release\client.obj
-c:\aimhightergoals\server\release\main.obj
-c:\aimhightergoals\server\release\extensionmutex.obj
-c:\aimhightergoals\server\release\data.obj
-c:\aimhightergoals\server\release\openssldh.obj
-c:\aimhightergoals\server\release\opensslaes.obj
-c:\aimhightergoals\server\release\cipher.obj
 c:\aimhighergoal\server\release\vc140.pdb
 c:\aimhighergoal\server\release\socket.obj
 c:\aimhighergoal\server\release\server.obj
@@ -24,10 +12,6 @@ c:\aimhighergoal\server\release\opensslrsa.obj
 c:\aimhighergoal\server\release\openssldh.obj
 c:\aimhighergoal\server\release\opensslaes.obj
 c:\aimhighergoal\server\release\cipher.obj
-c:\aimhightergoals\server\release\ソケット.exe
-c:\aimhightergoals\server\release\ソケット.ipdb
-c:\aimhightergoals\server\release\ソケット.iobj
-c:\aimhightergoals\server\release\ソケット.pdb
 c:\aimhighergoal\server\release\ソケット.exe
 c:\aimhighergoal\server\release\ソケット.pdb
 c:\aimhighergoal\server\release\ソケット.ipdb

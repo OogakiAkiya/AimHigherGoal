@@ -1,3 +1,25 @@
-﻿  Vertex.cpp
+﻿  Player.cpp
+c:\aimhighergoal\game\src\game\player\player.h(56): warning C4305: '初期化中': 'double' から 'float' へ切り詰めます。
+c:\aimhighergoal\game\src\game\player\player.cpp(94): warning C4305: '=': 'double' から 'float' へ切り詰めます。
+c:\aimhighergoal\game\src\game\player\player.cpp(205): warning C4305: '-=': 'double' から 'float' へ切り詰めます。
+c:\aimhighergoal\game\src\game\player\player.cpp(287): warning C4305: '+=': 'double' から 'float' へ切り詰めます。
+  Enemy.cpp
+c:\aimhighergoal\game\src\game\enemy\enemy.cpp(79): warning C4305: '=': 'double' から 'float' へ切り詰めます。
+c:\aimhighergoal\game\src\game\enemy\enemy.cpp(243): warning C4305: '-=': 'double' から 'float' へ切り詰めます。
+c:\aimhighergoal\game\src\game\enemy\enemy.cpp(298): warning C4305: '+=': 'double' から 'float' へ切り詰めます。
+c:\aimhighergoal\game\src\game\enemy\enemy.cpp(362): warning C4305: '-=': 'double' から 'float' へ切り詰めます。
+  コードを生成中...
+c:\aimhighergoal\game\src\game\enemy\enemy.cpp(385): warning C4172: ローカル変数またはテンポラリのアドレスを返します: returnmat
+c:\aimhighergoal\game\src\game\player\player.cpp(355): warning C4172: ローカル変数またはテンポラリのアドレスを返します: returnmat
+c:\aimhighergoal\game\src\game\player\player.cpp(366): warning C4172: ローカル変数またはテンポラリのアドレスを返します: vec
+  スキップ中... (関連する変更は検出されませんでした)
+  main.cpp
+  TitleMain.cpp
+  SceneControl.cpp
+  SceneBase.cpp
+  ToonShader.cpp
+  Client.cpp
+  Ground.cpp
+  GameMain.cpp
   LPB.vcxproj -> C:\AimHigherGoal\Game\Debug\LPB.exe
   LPB.vcxproj -> C:\AimHigherGoal\Game\Debug\LPB.pdb (Full PDB)

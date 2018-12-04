@@ -34,18 +34,18 @@ int OpenSSLAES::Encode(char* _encodeData,const char* _originalData, const size_t
 {
 	char oriData[128];										//暗号化するデータ
 	char enData[128];										//暗号化データ
-	int encodeSize = 0;											//エンコードした分のバイトサイズ
+	int encodeSize = 0;										//エンコードした分のバイトサイズ
 	int paddingSize = 0;									//パディング用のデータが入る
 	int outSize=0;											//最終的に出力したデータ量
-	int dataLength = Multiple16(_dataLen);						//16の倍数にそろえる
+	int dataLength = Multiple16(_dataLen);					//16の倍数にそろえる
 
 	memcpy(oriData, _originalData, _dataLen);				//元データのコピー
 
 	//暗号化処理
 	EVP_EncryptInit_ex(en, EVP_aes_128_cbc(), NULL, key, iv);												//暗号化の初期化(初期ベクトルは毎回違うものを渡す)AESは=EVP_aes_128_cbc()これを暗号利用モードに設定
-	EVP_EncryptUpdate(en, (unsigned char*)&enData, &encodeSize, (unsigned char*)&oriData,dataLength);				//データの暗号化(outlenには16バイトを渡す)
-	EVP_EncryptFinal_ex(en, (unsigned char*)&enData + encodeSize, &paddingSize);								//16の倍数のバイト数になるようにパディングされる
-	outSize = encodeSize + paddingSize;																			//最終的なデータ量の計算
+	EVP_EncryptUpdate(en, (unsigned char*)&enData, &encodeSize, (unsigned char*)&oriData,dataLength);		//データの暗号化(outlenには16バイトを渡す)
+	EVP_EncryptFinal_ex(en, (unsigned char*)&enData + encodeSize, &paddingSize);							//16の倍数のバイト数になるようにパディングされる
+	outSize = encodeSize + paddingSize;																		//最終的なデータ量の計算
 	memcpy(_encodeData,enData, outSize);																	//暗号データのコピー
 
 	return outSize;																							//暗号化処理後のデータ量を返す
@@ -56,7 +56,7 @@ int OpenSSLAES::Decode(char* _decodeData, const char* _originalData, const size_
 	char oriData[128];									//復号するデータ
 	char deData[128];									//復号したデータ
 	int deSize=0;										//復号したデータ量
-	int outLength=0;										//最終的な出力されたデータ量
+	int outLength=0;									//最終的な出力されたデータ量
 	int paddingSize = 0;								//パディングされたデータ量
 
 	memcpy(oriData, _originalData, _dataLen);			//元データのコピー
@@ -65,10 +65,10 @@ int OpenSSLAES::Decode(char* _decodeData, const char* _originalData, const size_
 	EVP_DecryptInit_ex(en, EVP_aes_128_cbc(), NULL, key, iv);											//復号の初期化
 	EVP_DecryptUpdate(en, (unsigned char*)&deData, &deSize, (unsigned char*)&oriData,_dataLen);			//復号このままだと_datalenが48の時32でデコードされる
 	EVP_DecryptFinal_ex(en, (unsigned char*)&deData+deSize, &paddingSize);								//終了
-	outLength = deSize + paddingSize;																		//複合処理後のデータ量
+	outLength = deSize + paddingSize;																	//複合処理後のデータ量
 	memcpy(_decodeData, deData, outLength);																//復号データのコピー
 
-	return outLength;																						//複合処理後のデータ量を返す
+	return outLength;																					//複合処理後のデータ量を返す
  }
 
 void OpenSSLAES::SetKey(unsigned char * _key,int _keyLength)

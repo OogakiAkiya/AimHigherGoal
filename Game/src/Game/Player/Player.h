@@ -22,7 +22,7 @@ private:
 	void Damage();														//ダメージ	
 	void WakeUp();														//起き上がり
 	void Rotation(D3DXVECTOR3 _vec);									//回転
-	void ChangeAnimation(int _animation, bool _roop,float _speed=1.0);	//アニメーションの変更
+	void ChangeAnimation(int _animation, bool _roop,float _speed=1.0f);	//アニメーションの変更
 	void TransDataPos(D3DXMATRIX _trans);								//座標セット
 	void TransDataPos(D3DXVECTOR3* _vec);								//座標セット
 	D3DXMATRIX* CreateMat();											//座標出力
@@ -49,6 +49,7 @@ private:
 
 	Data* data;
 	char jumpFlg = 0;
+	bool attackFlg = false;
 	D3DXVECTOR3 acceleration = { 0.001f,0.0f,0.0f };					//加速度
 };
 

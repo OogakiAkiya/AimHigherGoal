@@ -25,7 +25,7 @@ private:
 	void Wait();														//入力がないとき
 	void Move();														//移動
 	void Rotation(D3DXVECTOR3 _vec);									//回転
-	void ChangeAnimation(int _animation, bool _roop,double _speed=1.0);	//アニメーションの変更
+	void ChangeAnimation(int _animation, bool _roop,double _speed=1.0f);	//アニメーションの変更
 	bool Damage();														//攻撃を受けた
 	void TransDataPos(D3DXMATRIX _trans);								//D3DXMATRIXで渡した値を変換し座標にセット
 	D3DXMATRIX* CreateMat();											//座標をD3DXMATRIXで渡す
