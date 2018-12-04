@@ -1,15 +1,3 @@
-﻿  TitleMain.cpp
-  Socket.cpp
-  コードを生成中...
-  スキップ中... (関連する変更は検出されませんでした)
-  main.cpp
-  SceneControl.cpp
-  SceneBase.cpp
-  ToonShader.cpp
-  Client.cpp
-  Player.cpp
-  Ground.cpp
-  GameMain.cpp
-  Enemy.cpp
+﻿  Vertex.cpp
   LPB.vcxproj -> C:\AimHigherGoal\Game\Debug\LPB.exe
   LPB.vcxproj -> C:\AimHigherGoal\Game\Debug\LPB.pdb (Full PDB)

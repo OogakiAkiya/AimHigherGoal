@@ -21,7 +21,7 @@ CurlWrapper::~CurlWrapper()
 			break;
 		}
 	}
-	thread.detach();
+	thread->detach();
 }
 
 void CurlWrapper::HTTPConnect(std::string* _data, std::string _url, std::string _postData)
@@ -104,7 +104,7 @@ void CurlWrapper::PosUpdataLoop(Data* _data)
 
 void CurlWrapper::StartThread(CurlWrapper* _curl,Data* _data)
 {
-	thread = std::thread(HttpLauncher,(void*)_curl,_data);
+	thread = new std::thread(HttpLauncher,(void*)_curl,_data);
 }
 
 void CurlWrapper::DBGetPos(char* _data, std::string _userId)
@@ -124,14 +124,17 @@ void CurlWrapper::DBGetPos(char* _data, std::string _userId)
 	HTTPConnect(&buf, "http://lifestyle-qa.com/get_pos.php", output.c_str());
 
 	//jsonから値の取得
-	auto json = json11::Json::parse(buf, error);
 	float x = 0.0f;
 	float y = 0.0f;
 	float z = 0.0f;
 
-	x = std::stof(json["x"].string_value());
-	y = std::stof(json["y"].string_value());
-	z = std::stof(json["z"].string_value());
+	if (buf.length() != 0) {
+		auto json = json11::Json::parse(buf, error);
+
+		x = std::stof(json["x"].string_value());
+		y = std::stof(json["y"].string_value());
+		z = std::stof(json["z"].string_value());
+	}
 
 	//データ代入
 	memcpy(recvdata, &x, sizeof(float));

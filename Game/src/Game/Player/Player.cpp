@@ -4,7 +4,7 @@
 Player::Player()
 {
 	//インスタンスの生成
-	camera = new Camera();									//カメラ設定
+	camera = new Camera(camera->THREE_PERSON_PERSPECTiVE);									//カメラ設定
 	data = new Data();
 
 	// スキンメッシュ読み込み

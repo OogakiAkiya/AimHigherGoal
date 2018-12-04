@@ -3,16 +3,23 @@
 #include"../Mouse/Mouse.h"
 #include"Camera.h"
 
-Camera::Camera()
+Camera::Camera(int _flg)
 {
 	//èâä˙ílê›íË
 	angle = 0;
 	D3DXMatrixTranslation(&mat, 0.0f, 0.0f, 0.0f);
 	D3DXMatrixTranslation(&targetmat, 0.0f, 0.0f, 0.0f);
-	pos = D3DXVECTOR3(0.0f, 3.0f, -7.0f);
-	look = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	head = D3DXVECTOR3(0.0f, 1.0f, .0f);
+	if (_flg == ORIGINAL) {
+		pos = D3DXVECTOR3(0.0f, 1.0f, 0.01f);
+		look = D3DXVECTOR3(0.0f, -1.0f, 0.0f);
+		head = D3DXVECTOR3(0.0f, -1.0f, 0.0f);
 
+	}
+	if (_flg == THREE_PERSON_PERSPECTiVE) {
+		pos = D3DXVECTOR3(0.0f, 3.0f, -7.0f);
+		look = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+		head = D3DXVECTOR3(0.0f, 1.0f, .0f);
+	}
 }
 
 Camera::~Camera()

@@ -5,7 +5,7 @@ class CharacterBase;
 
 class Camera {
 public:
-	Camera();
+	Camera(int _flg=ORIGINAL);
 	~Camera();
 	void ComplianceUpdate();					//í«è]ÉJÉÅÉâ
 												
@@ -20,6 +20,13 @@ public:
 	D3DXMATRIX GetRotMat();
 	D3DXMATRIX GetMat();
 	void SetMat(D3DXMATRIX _mat);
+
+	//---------------------------------------------------------
+	//íËêî
+	//---------------------------------------------------------
+	static const int ORIGINAL = 1;
+	static const int THREE_PERSON_PERSPECTiVE = 2;
+
 
 private:
 	//---------------------------------------------------------

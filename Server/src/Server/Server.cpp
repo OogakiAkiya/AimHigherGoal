@@ -31,9 +31,11 @@ Server::Server()
 		SetPortNumber("49155").									//ポート番号
 		ServerCreate();											//サーバーソケット
 
+	if (socket == nullptr) delete this;
+	clientController=new ClientController();
 	//ソケットの管理クラスのスレッド開始
-	socketController.StartThread(&socketController);
-
+	clientController->StartThread(clientController);
+	
 }
 
 
@@ -42,7 +44,8 @@ Server::~Server()
 	socket->Close();
 	ExtensionMutex::DeleteInstance();													//mutex管理classインスタンスの削除
 	Cipher::DeleteInstance();
-	delete socket;
+	if(socket!=nullptr)delete socket;
+	if (clientController != nullptr)delete clientController;
 }
 
 void Server::AcceptLoop()
@@ -66,7 +69,7 @@ void Server::AcceptSocket()
 		clientSocket = new Client();
 		clientSocket->SetSocket(initSocket);											//Socketクラスにクライアントの情報を代入する
 		MUTEX.Lock();																	//排他制御Lock
-		socketController.SetSocket(clientSocket);										//作ったクライアント情報はSocketControllerクラスで管理
+		clientController->SetSocket(clientSocket);										//作ったクライアント情報はSocketControllerクラスで管理
 		MUTEX.Unlock();																	//排他制御Unlock
 
 		printf("来ました\n");

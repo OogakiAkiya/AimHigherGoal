@@ -1,55 +1,8 @@
-﻿  Enemy.cpp
-src\Game\Enemy\Enemy.cpp(78): warning C4305: '=': 'double' から 'float' へ切り詰めます。
-src\Game\Enemy\Enemy.cpp(242): warning C4305: '-=': 'double' から 'float' へ切り詰めます。
-src\Game\Enemy\Enemy.cpp(297): warning C4305: '+=': 'double' から 'float' へ切り詰めます。
-src\Game\Enemy\Enemy.cpp(361): warning C4305: '-=': 'double' から 'float' へ切り詰めます。
-  GameMain.cpp
-c:\aimhighergoal\game\src\game\Player/Player.h(55): warning C4305: '初期化中': 'double' から 'float' へ切り詰めます。
-  Ground.cpp
-src\Game\Ground.cpp(11): warning C4244: '引数': 'const int' から 'float' への変換です。データが失われる可能性があります。
-  Player.cpp
-c:\aimhighergoal\game\src\game\player\Player.h(55): warning C4305: '初期化中': 'double' から 'float' へ切り詰めます。
-src\Game\Player\Player.cpp(94): warning C4305: '=': 'double' から 'float' へ切り詰めます。
-src\Game\Player\Player.cpp(201): warning C4305: '-=': 'double' から 'float' へ切り詰めます。
-src\Game\Player\Player.cpp(283): warning C4305: '+=': 'double' から 'float' へ切り詰めます。
-  Camera.cpp
-  CharacterBase.cpp
-  Cipher.cpp
-  OpenSSLAES.cpp
-  OpenSSLRSA.cpp
-  Client.cpp
-src\Library\Client\Client.cpp(69): warning C4018: '<=': signed と unsigned の数値を比較しようとしました。
-src\Library\Client\Client.cpp(285): warning C4244: '=': 'int' から 'float' への変換です。データが失われる可能性があります。
-src\Library\Client\Client.cpp(286): warning C4244: '引数': 'float' から 'int' への変換です。データが失われる可能性があります。
-  Data.cpp
-  ExtensionMutex.cpp
-  Socket.cpp
-  D3D.cpp
-  ImageSprite.cpp
-src\Library\ImageSprite\ImageSprite.cpp(36): warning C4244: '引数': 'int' から 'FLOAT' への変換です。データが失われる可能性があります。
-  imgui.cpp
-  ImguiWrapper.cpp
-  imgui_demo.cpp
-  imgui_draw.cpp
-  imgui_widgets.cpp
-  コンパイル中...
-  Mouse.cpp
-  ToonShader.cpp
-  CBoneController.cpp
-  CSkinMesh.cpp
-  SkinMeshLoader.cpp
-  Vertex.cpp
-  CheckMesh.cpp
-  XFILE.cpp
-  main.cpp
-  SceneBase.cpp
-  SceneControl.cpp
-c:\aimhighergoal\game\src\scene\../Game/Player/Player.h(55): warning C4305: '初期化中': 'double' から 'float' へ切り詰めます。
-  TitleMain.cpp
+﻿  TitleMain.cpp
   コード生成しています。
-  114 of 2628 functions ( 4.3%) were compiled, the rest were copied from previous compilation.
-    106 functions were new in current compilation
-    9 functions had inline decision re-evaluated but remain unchanged
+  3 of 3464 functions ( 0.1%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    1 functions had inline decision re-evaluated but remain unchanged
   コード生成が終了しました。
   LPB.vcxproj -> C:\AimHigherGoal\Game\Release\LPB.exe
   LPB.vcxproj -> C:\AimHigherGoal\Game\Release\LPB.pdb (Full PDB)

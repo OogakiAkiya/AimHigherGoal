@@ -17,7 +17,7 @@ void Vertex::InitVertex(float _size,float _x,float _y,float _z)
 	v[0].Pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	v[1].Pos = D3DXVECTOR3(0.0f, 0.0f, _size);
 	v[2].Pos = D3DXVECTOR3(_size, 0.0f, _size);
-	v[3].Pos = D3DXVECTOR3(_size, .0f, 0.0f);
+	v[3].Pos = D3DXVECTOR3(_size, 0.0f, 0.0f);
 	//êF
 	v[0].Color = D3DCOLOR_ARGB(255, 255, 255, 255);
 	v[1].Color = D3DCOLOR_ARGB(255, 255, 255, 255);
@@ -28,12 +28,29 @@ void Vertex::InitVertex(float _size,float _x,float _y,float _z)
 	v[1].Tex = D3DXVECTOR2(1.0f, 0.0f);
 	v[2].Tex = D3DXVECTOR2(1.0f, 1.0f);
 	v[3].Tex = D3DXVECTOR2(0.0f, 1.0f);
-
+	D3DXMatrixIdentity(&mat);
 	D3DXMatrixTranslation(&mat, _x, _y, _z);
+}
+
+void Vertex::RotationX(float _x)
+{
+	if (_x != NULL)D3DXMatrixRotationX(&mat, D3DXToRadian(_x));
+}
+
+void Vertex::RotationY(float _y)
+{
+	if (_y != NULL)D3DXMatrixRotationY(&mat, D3DXToRadian(_y));
+}
+
+void Vertex::RotationZ(float _z)
+{
+	if (_z != NULL)D3DXMatrixRotationZ(&mat, D3DXToRadian(_z));
 }
 
 void Vertex::LoadText(char _fname[], int _width, int _height, D3DCOLOR _color)
 {
+	width = (float)_width;
+	height = (float)_height;
 	//âÊëúì«Ç›çûÇ›
 	if (_width == 0)_width = D3DX_DEFAULT;
 	if (_height == 0)_height = D3DX_DEFAULT;

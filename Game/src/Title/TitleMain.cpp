@@ -8,11 +8,11 @@ TitleMain::TitleMain()
 	imgui = new ImguiWrapper(*WIN.GetHwnd());
 	camera = new Camera();
 	title = new ImageSprite();
-
 	//画像ロード処理
 	title->Load("images/Title.png", 1280, 720);
 	ipBuf.resize(256);
 	idBuf.resize(256);
+
 
 }
 
@@ -25,6 +25,7 @@ TitleMain::~TitleMain()
 
 void TitleMain::Update()
 {
+
 	//マウス座標更新処理
 	MOUSE.FreeUpdate();
 
@@ -36,7 +37,8 @@ void TitleMain::Render3D()
 {
 	//ライトOFF
 	DEV->SetRenderState(D3DRS_LIGHTING, FALSE);			//ライトの陰影無し(この処理がないとskyがぼやけて見える)
-	//ライトOFF
+
+	//ライトON
 	DEV->SetRenderState(D3DRS_LIGHTING, TRUE);			//ライトの陰影無し(この処理がないとskyがぼやけて見える)
 
 }
@@ -49,9 +51,9 @@ void TitleMain::Render2D()
 }
 
 
-void CleanString(std::string _str,int _strlen) {
-	_str.clear();
-	_str.resize(256);
+void CleanString(std::string* _str,int* _strlen) {
+	_str->clear();
+	_str->resize(256);
 	_strlen = 0;
 }
 void TitleMain::ImguiUpdate()
@@ -61,9 +63,9 @@ void TitleMain::ImguiUpdate()
 	ImGui::Begin("Form    ", imgui->GetApperFlg());						//ウインドウ作成
 	//ウインドウに配置するオブジェクト
 	if (ImGui::InputText("IPAddress", (char*)ipBuf.c_str(), ipBuf.length()))ipBufLen++;		//テキストフォーム
-	if (ImGui::Button("IP all erase"))CleanString(ipBuf, ipBufLen);                         //ボタン生成
+	if (ImGui::Button("IP all erase"))CleanString(&ipBuf, &ipBufLen);                         //ボタン生成
 	if (ImGui::InputText("ID", (char*)idBuf.c_str(), idBuf.length()))idBufLen++;			//テキストフォーム
-	if (ImGui::Button("ID all erase"))CleanString(idBuf, idBufLen);							//ボタン生成
+	if (ImGui::Button("ID all erase"))CleanString(&idBuf, &idBufLen);							//ボタン生成
 	ImGui::Text(msg.c_str());																//テキストフィールド
 
 	//決定ボタン処理

@@ -23,9 +23,9 @@ private:
 	//---------------------------------------------------------
 	//’è”
 	//---------------------------------------------------------
-	Socket* socket;
+	Socket* socket=nullptr;
 	bool available=false;
-	ClientController socketController;
+	ClientController* clientController=nullptr;
 	struct addrinfo *result = NULL;
 	struct addrinfo hints;
 
