@@ -12,6 +12,7 @@
 
 ClientController::ClientController()
 {
+	
 }
 
 
@@ -31,7 +32,7 @@ ClientController::~ClientController()
 
 void ClientController::SetSocket(std::shared_ptr<Client> _socket)
 {
-	socketList.push_back(_socket);
+	addSocketPool.push_back(_socket);
 }
 
 bool ClientController::SerchNumber(int _number)
@@ -82,6 +83,16 @@ void ClientController::ControllerThread()
 				MUTEX.Unlock();
 			}
 		}
+
+		//í«â¡èàóù
+		MUTEX.Lock();
+		if (!addSocketPool.empty()) {
+			for (auto& socket : addSocketPool) {
+				socketList.push_back(socket);
+				socket = nullptr;
+			}
+		}
+		MUTEX.Unlock();
 	}
 }
 
@@ -200,11 +211,3 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 		break;
 	}
 }
-
-
-
-
-class A : public std::enable_shared_from_this<A>
-{
-	std::shared_ptr<A> GetMe() { return shared_from_this(); }
-};

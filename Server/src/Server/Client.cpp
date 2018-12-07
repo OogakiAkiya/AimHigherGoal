@@ -10,6 +10,7 @@
 
 Client::Client()
 {
+	completeDataQueList = std::make_unique <std::queue<std::vector<char>>>();
 	data = std::make_shared<Data>();
 	curl = std::make_shared<CurlWrapper>();
 	aes = std::make_shared<OpenSSLAES>();
@@ -23,6 +24,7 @@ Client::~Client()
 	data = nullptr;
 	curl = nullptr;
 	aes=nullptr;
+	completeDataQueList = nullptr;
 }
 
 void Client::Recv()
@@ -87,17 +89,17 @@ void Client::SetNumber(int _number)
 
 std::vector<char>* Client::GetCompleteData()
 {
-	return &completeDataQueList.front();
+	return &completeDataQueList->front();
 }
 
 void Client::DeleteCompleteData()
 {
-	completeDataQueList.pop();
+	completeDataQueList->pop();
 }
 
 bool Client::EmptyCompleteData()
 {
-	if (completeDataQueList.empty() == true) {
+	if (completeDataQueList->empty() == true) {
 		return true;									//空
 	}
 	return false;										//値が入っている
@@ -191,7 +193,7 @@ void Client::CreateCompleteData()
 					std::vector<char> compData(byteSize);															//完全データ
 					memcpy(&compData[0], &decodeData[sizeof(int)], byteSize);										//サイズ以外のデータを使用し完全データを作成
 					MUTEX.Lock();																					//排他制御開始
-					completeDataQueList.push(compData);																//完全データ配列に格納
+					completeDataQueList->push(compData);																//完全データ配列に格納
 					MUTEX.Unlock();																					//排他制御終了
 				}
 				tempDataList.erase(tempDataList.begin(), tempDataList.begin() + (decodeSize + sizeof(int)));		//完全データ作成に使用した分を削除

@@ -33,7 +33,8 @@ private:
 	//変数
 	//---------------------------------------------------------
 	std::vector<std::shared_ptr<Client>> socketList;										//ソケット配列
-	std::vector<int> roomNumberList;										//生成されたルーム番号を保存
+	std::vector<std::shared_ptr<Client>> addSocketPool;										//ソケット配列
+	std::vector<int> roomNumberList;														//生成されたルーム番号を保存
 	std::shared_ptr<std::thread> thread;													//スレッド
 };
 

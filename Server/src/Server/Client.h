@@ -56,7 +56,7 @@ private:
 	//---------------------------------------------------------
 	int roomNumber=0;
 	int state=0;											//ソケットの状態を表す(0:通常,-1:デリート待ち)
-	std::queue<std::vector<char>> completeDataQueList;		//完全データ配列
+	std::unique_ptr<std::queue<std::vector<char>>> completeDataQueList;		//完全データ配列
 	std::vector<char> tempDataList;							//一時データ配列
 	std::shared_ptr<Data> data;								//ユーザーの各データが格納されている
 	std::shared_ptr<OpenSSLAES> aes;						//共通鍵暗号クラス
