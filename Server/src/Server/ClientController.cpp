@@ -32,7 +32,6 @@ ClientController::~ClientController()
 
 void ClientController::SetSocket(std::shared_ptr<Client> _socket)
 {
-	//socketList.push_back(_socket);						//ソケットの可変長配列に代入
 	socketList.push_back(_socket);
 }
 
@@ -46,10 +45,8 @@ bool ClientController::SerchNumber(int _number)
 	return false;
 }
 
-void temp() {};
 void ClientController::StartThread(ClientController* _socketController)
 {
-	//thread = new std::thread(ControllerThreadLauncher,(void*)_socketController);		//スレッド開始
 	thread = std::make_shared<std::thread>(ControllerThreadLauncher, (void*)_socketController);
 }
 
@@ -63,11 +60,10 @@ void ClientController::ControllerThread()
 		try {
 			for (auto& client : socketList) {
 				if (client->EmptyCompleteData() == true)break;				//完全データがなければ以下処理は行わない
-				std::vector<char>data = *client->GetCompleteData();			//各スレッドの持つ完成したデータを取得
+				DataManipulate(client.get(), client->GetCompleteData());
 				MUTEX.Lock();
-				client->DeleteCompleteData();								//元の配列から取得分のデータを削除
+				client->DeleteCompleteData();
 				MUTEX.Unlock();
-				DataManipulate(client.get(), &data);								//データの加工処理しそれぞれの処理を行う
 			}
 		}
 		catch (std::exception error) {
@@ -104,7 +100,7 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 		int idsize = *(int*)&_data->at(sizeof(char));
 		char* temp=(char*)malloc(idsize);
 		memcpy(temp, &_data->at(sizeof(char) + sizeof(int)), idsize);
-		std::string id(temp);
+		std::shared_ptr<std::string> id = std::make_shared<std::string>(temp);
 		MUTEX.Lock();
 		_socket->GetData()->SetId(id);
 		MUTEX.Unlock();
@@ -137,7 +133,10 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 		send(_socket->GetSocket(), sendData, sizeof(int) + encodeSize, 0);						//作成したデータの作成
 
 		_socket->StartHttpThread();
+
+		//解放処理
 		free(temp);
+		id = nullptr;
 		break;
 	}
 	//座標更新

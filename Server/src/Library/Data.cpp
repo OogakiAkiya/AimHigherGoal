@@ -9,6 +9,7 @@ Data::Data()
 
 Data::~Data()
 {
+	id = nullptr;
 }
 
 SOCKET Data::GetSocket()
@@ -16,9 +17,9 @@ SOCKET Data::GetSocket()
 	return socket;
 }
 
-std::string * Data::GetId()
+std::shared_ptr<std::string> Data::GetId()
 {
-	return &id;
+	return id;
 }
 
 float Data::GetX()
@@ -51,7 +52,7 @@ void Data::SetSocket(SOCKET _socket)
 	socket = _socket;
 }
 
-void Data::SetId(std::string _id)
+void Data::SetId(std::shared_ptr<std::string> _id)
 {
 	id = _id;
 }

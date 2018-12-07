@@ -14,15 +14,11 @@ CurlWrapper::CurlWrapper()
 CurlWrapper::~CurlWrapper()
 {
 	//解放処理
-	while (1) {
-		if (endFlg == true) {
-			curl_easy_cleanup(curl);
-			curl = nullptr;
-			break;
-		}
-	}
 	if(thread!=nullptr)thread->detach();
 	thread = nullptr;
+	curl_easy_cleanup(curl);
+	curl = nullptr;
+	userId = nullptr;
 }
 
 void CurlWrapper::HTTPConnect(std::string* _data, std::string _url, std::string _postData)
@@ -73,19 +69,16 @@ void CurlWrapper::PosUpdataLoop(std::shared_ptr<Data> _data)
 
 	while (curl) {
 		//メッセージの生成
-		query << "player=" << userId.c_str();
+		if(userId==nullptr){return;}
+		query << "player=" << userId->c_str();
 		query << "&x=" << _data->GetX();
 		query << "&y=" << _data->GetY();
 		query << "&z=" << _data->GetZ();
 		query >> output;
 
 		//送信
-		if (curl != nullptr) {
-			endFlg = false;
-			curl_easy_setopt(curl, CURLOPT_POSTFIELDS, output.c_str());			//メッセージ設定
-			code = curl_easy_perform(curl);										//URLへの接続
-			endFlg = true;
-		}
+		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, output.c_str());			//メッセージ設定
+		code = curl_easy_perform(curl);										//URLへの接続
 
 	//送信失敗したかの判断
 		if (code != CURLE_OK) {
@@ -103,13 +96,12 @@ void CurlWrapper::PosUpdataLoop(std::shared_ptr<Data> _data)
 
 }
 
-void CurlWrapper::StartThread(CurlWrapper* _curl,std::shared_ptr<Data> _data)
+void CurlWrapper::StartThread(std::shared_ptr<CurlWrapper> _curl,std::shared_ptr<Data> _data)
 {
-	//thread = new std::thread(HttpLauncher,(void*)_curl,_data);
-	thread = std::make_shared<std::thread>(HttpLauncher, (void*)_curl, _data);
+	thread = std::make_shared<std::thread>(HttpLauncher, (void*)_curl.get(), _data);
 }
 
-void CurlWrapper::DBGetPos(char* _data, std::string _userId)
+void CurlWrapper::DBGetPos(char* _data, std::shared_ptr<std::string> _userId)
 {
 	//ユーザー追加処理
 	std::stringstream query;
@@ -119,7 +111,7 @@ void CurlWrapper::DBGetPos(char* _data, std::string _userId)
 	char recvdata[256];
 
 	//送信データの生成
-	query << "player=" << _userId.c_str();
+	query << "player=" << _userId.get()->c_str();
 	query >> output;
 
 	userId = _userId;

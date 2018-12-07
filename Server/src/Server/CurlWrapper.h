@@ -10,10 +10,10 @@ public:
 	//---------------------------------------------------------
 	//データの送受信
 	//---------------------------------------------------------
-	void HTTPConnect(std::string* _data, std::string _url,std::string _postData);	//HTTP通信を行う
-	void PosUpdataLoop(std::shared_ptr<Data> _data);												//座標の更新処理
-	void StartThread(CurlWrapper* _curl, std::shared_ptr<Data> _data);				//スレッド開始処理
-	void DBGetPos(char* _data, std::string _userId);								//DBから値を受け取り第一引数に格納する
+	void HTTPConnect(std::string* _data, std::string _url,std::string _postData);		//HTTP通信を行う
+	void PosUpdataLoop(std::shared_ptr<Data> _data);									//座標の更新処理
+	void StartThread(std::shared_ptr<CurlWrapper> _curl, std::shared_ptr<Data> _data);	//スレッド開始処理
+	void CurlWrapper::DBGetPos(char* _data, std::shared_ptr<std::string> _userId);		//DBから値を受け取り第一引数に格納する
 
 	//---------------------------------------------------------
 	//ランチャー
@@ -30,7 +30,7 @@ private:
 	CURLcode code;															//処理に成功したかエラーチェックに使う
 	bool endFlg=true;
 	std::shared_ptr <std::thread> thread;														//別スレッド処理
-	std::string userId;
+	std::shared_ptr<std::string> userId;
 };
 
 struct RecvBuffer {

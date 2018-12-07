@@ -12,7 +12,7 @@
 Client::Client()
 {
 	data = std::make_shared<Data>();
-	curl = new CurlWrapper();
+	curl = std::make_shared<CurlWrapper>();
 	aes = std::make_shared<OpenSSLAES>();
 }
 
@@ -22,7 +22,7 @@ Client::~Client()
 	if(thread!=nullptr)thread->detach();											//スレッド終了
 	thread = nullptr;
 	data = nullptr;
-	if(curl!=nullptr)delete curl;
+	curl = nullptr;
 	aes=nullptr;
 }
 
@@ -37,7 +37,6 @@ void Client::Recv()
 
 void Client::StartRecvThread(Client* _client)
 {
-	//thread = new std::thread(RecvLauncher, (void*)_client);
 	thread = std::make_shared<std::thread>(RecvLauncher, (void*)_client);
 }
 
@@ -71,7 +70,7 @@ std::shared_ptr<OpenSSLAES> Client::GetAES()
 	return aes;
 }
 
-CurlWrapper * Client::GetCurl()
+std::shared_ptr<CurlWrapper> Client::GetCurl()
 {
 	return curl;
 }
@@ -109,7 +108,7 @@ void Client::RecvLoop(int _loopType)
 {
 	while (1) {
 		int iResult;										//送られてきたデータ量が格納される
-		char rec[BYTESIZE*2];									//受信データ
+		char rec[BYTESIZE*2];								//受信データ
 
 		//受信
 		iResult = recv(data->GetSocket(), rec, sizeof(rec), 0);
@@ -188,7 +187,7 @@ void Client::CreateCompleteData()
 				aes->Decode(decodeData, data, decodeSize);
 
 				//完全データの生成
-				int byteSize = *(int*)decodeData;																//4byte分だけ取得しintの値にキャスト
+				int byteSize = *(int*)decodeData;																	//4byte分だけ取得しintの値にキャスト
 				if (byteSize < BYTESIZE&&byteSize>0) {
 					std::vector<char> compData(byteSize);															//完全データ
 					memcpy(&compData[0], &decodeData[sizeof(int)], byteSize);										//サイズ以外のデータを使用し完全データを作成
@@ -196,7 +195,7 @@ void Client::CreateCompleteData()
 					completeDataQueList.push(compData);																//完全データ配列に格納
 					MUTEX.Unlock();																					//排他制御終了
 				}
-				tempDataList.erase(tempDataList.begin(), tempDataList.begin() + (decodeSize + sizeof(int)));	//完全データ作成に使用した分を削除
+				tempDataList.erase(tempDataList.begin(), tempDataList.begin() + (decodeSize + sizeof(int)));		//完全データ作成に使用した分を削除
 
 			}
 			else {
