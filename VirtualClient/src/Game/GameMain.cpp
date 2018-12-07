@@ -14,7 +14,7 @@ GameMain::GameMain()
 GameMain::~GameMain()
 {
 	for (auto& client:clientList) {
-		delete client;
+		client = nullptr;
 	}
 	clientList.clear();
 	delete camera;
@@ -41,18 +41,22 @@ void GameMain::Update()
 		if (item_current == 1)loop = 10;
 		if (item_current == 2)loop = 100;
 		if (item_current == 3)loop = 1000;
-		if (item_current == 4)loop = 10000;
+		if (item_current == 4)loop = 5000;
 
-		for (int i = 0; i < loop; i++) {
-			Client* temp = new Client();
+		int nowSize = clientList.size();
+		clientList.resize(nowSize + loop);
+		for (int i = nowSize; i < loop+nowSize; i++) {
+			std::shared_ptr<Client> temp = std::make_shared<Client>();
 			temp->CreateSocket();
-			query << clientList.size();
+			query << i;
 			temp->GetPlayerData()->SetId(query.str());
 			query.str("");
 			query.clear(std::stringstream::goodbit);
 
 			//追加処理
-			clientList.push_back(temp);
+			//clientList.push_back(temp);
+			clientList[i] = temp;
+			if (item_current == 4)Sleep(10);
 		}
 	}
 
@@ -62,7 +66,7 @@ void GameMain::Update()
 	//クライアント削除処理
 	if (ImGui::Button("DELETE")) {
 		for (auto& client : clientList) {
-			delete client;
+			client = nullptr;
 		}
 		clientList.clear();
 	}

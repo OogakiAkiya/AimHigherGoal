@@ -33,7 +33,6 @@ Client::~Client()
 
 void Client::StartThread()
 {
-	//thread = new std::thread(ClientThreadLauncher, (void*)this);
 	thread = std::make_shared<std::thread>(ClientThreadLauncher,this);
 }
 
@@ -55,6 +54,7 @@ bool Client::CreateSocket(std::string _ip)
 		ClientCreate();
 	if (socket == nullptr)return false;
 	playerData->SetSocket(socket->GetSocket());
+
 	//Recv処理を行うスレッドを開始させる
 	StartThread();
 

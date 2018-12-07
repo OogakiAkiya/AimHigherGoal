@@ -55,7 +55,7 @@ void ClientController::ControllerThread()
 {
 	while (1) {
 		//サーバーに接続しているクライアントがいるか判定
-		if (socketList.empty() == true)continue;
+		if (socketList.empty() == true&&addSocketPool.empty()==true)continue;
 		//完全データの処理
 		try {
 			for (auto& client : socketList) {
@@ -87,10 +87,15 @@ void ClientController::ControllerThread()
 		//追加処理
 		MUTEX.Lock();
 		if (!addSocketPool.empty()) {
+			int counter = 0;
+			int nowSize = socketList.size();
+			socketList.resize(nowSize + addSocketPool.size());
 			for (auto& socket : addSocketPool) {
-				socketList.push_back(socket);
+				socketList[nowSize + counter] = socket;
 				socket = nullptr;
+				counter++;
 			}
+			addSocketPool.clear();
 		}
 		MUTEX.Unlock();
 	}

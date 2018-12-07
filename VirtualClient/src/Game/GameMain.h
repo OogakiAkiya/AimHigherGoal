@@ -15,7 +15,7 @@ private:
 	//•Ï”
 	//---------------------------------------------------------
 	ImguiWrapper* imgui;
-	std::vector<Client*> clientList;
+	std::vector<std::shared_ptr<Client>> clientList;
 	Data* data;
 };
 
