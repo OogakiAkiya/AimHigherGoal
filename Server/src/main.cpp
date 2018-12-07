@@ -4,10 +4,11 @@ using namespace std;
 
 void main(int argc, char* argv)
 {
-	Server* server= new Server();								//インスタンスの生成
+	std::unique_ptr<Server> server=std::make_unique<Server>();
 	if (server != nullptr) {
 		server->AcceptLoop();										//サーバー処理
-		delete server;												//解放処理
+
 	}
+
 }
 

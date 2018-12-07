@@ -30,7 +30,6 @@ void CurlWrapper::HTTPConnect(std::string* _data, std::string _url, std::string 
 	if (tempCurl == NULL)return;
 	std::string buf;																		//ó‚¯æ‚Á‚½ƒf[ƒ^‚ğŠi”[‚·‚é
 	std::string error;
-	char recvdata[256];
 
 
 	//Ú‘±İ’è

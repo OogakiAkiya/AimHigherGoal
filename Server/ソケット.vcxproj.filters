@@ -25,9 +25,6 @@
     <Filter Include="ソース ファイル\Library\Cipher\OpenSSLAES">
       <UniqueIdentifier>{b3f56cb3-c71e-42e5-8582-e0c0ba29b303}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Library\Cipher\OpenSSLDH">
-      <UniqueIdentifier>{855a73a0-1e0c-440c-9273-c6498722380b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Server\CurlWrapper">
       <UniqueIdentifier>{65d815b4-2b91-4b62-a275-cc479c355313}</UniqueIdentifier>
     </Filter>
@@ -56,9 +53,6 @@
     </ClCompile>
     <ClCompile Include="src\Library\Cipher\OpenSSLAES.cpp">
       <Filter>ソース ファイル\Library\Cipher\OpenSSLAES</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Library\Cipher\OpenSSLDH.cpp">
-      <Filter>ソース ファイル\Library\Cipher\OpenSSLDH</Filter>
     </ClCompile>
     <ClCompile Include="src\Server\Client.cpp">
       <Filter>ソース ファイル\Server</Filter>
@@ -94,9 +88,6 @@
     </ClInclude>
     <ClInclude Include="src\Library\Cipher\OpenSSLAES.h">
       <Filter>ソース ファイル\Library\Cipher\OpenSSLAES</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Library\Cipher\OpenSSLDH.h">
-      <Filter>ソース ファイル\Library\Cipher\OpenSSLDH</Filter>
     </ClInclude>
     <ClInclude Include="src\LibraryInclude.h">
       <Filter>ヘッダー ファイル</Filter>

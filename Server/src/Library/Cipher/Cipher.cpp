@@ -1,6 +1,5 @@
 #include"../../Include.h"
 #include"OpenSSLAES.h"
-#include"OpenSSLDH.h"
 #include"OpenSSLRSA.h"
 #include"Cipher.h"
 
@@ -9,9 +8,8 @@ Cipher* Cipher::s_Instance = nullptr;
 Cipher::Cipher()
 {
 	//インスタンスの生成
-	aes = new OpenSSLAES();
-	dh = new OpenSSLDH();
-	rsa = new OpenSSLRSA();
+	aes =std::make_shared<OpenSSLAES>();
+	rsa = std::make_shared<OpenSSLRSA>();
 
 	//秘密鍵読み込み
 	rsa->ReadPrivateKey("key/private-key.pem");
@@ -20,17 +18,16 @@ Cipher::Cipher()
 Cipher::~Cipher()
 {
 	//解放処理
-	delete aes;
-	delete dh;
-	delete rsa;
+	aes = nullptr;
+	rsa = nullptr;
 }
 
-OpenSSLAES* Cipher::GetOpenSSLAES()
+std::shared_ptr<OpenSSLAES> Cipher::GetOpenSSLAES()
 {
 	return aes;
 }
 
-OpenSSLRSA * Cipher::GetOpenSSLRSA()
+std::shared_ptr<OpenSSLRSA> Cipher::GetOpenSSLRSA()
 {
 	return rsa;
 }

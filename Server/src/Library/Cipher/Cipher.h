@@ -3,8 +3,8 @@
 
 class Cipher {
 public:
-	OpenSSLAES* GetOpenSSLAES();					//共通鍵
-	OpenSSLRSA* GetOpenSSLRSA();					//公開鍵暗号
+	std::shared_ptr<OpenSSLAES> GetOpenSSLAES();					//共通鍵
+	std::shared_ptr<OpenSSLRSA> GetOpenSSLRSA();					//公開鍵暗号
 
 	//---------------------------------------------------------
 	//シングルトン
@@ -22,9 +22,8 @@ private:
 	//---------------------------------------------------------
 	//変数
 	//---------------------------------------------------------
-	OpenSSLAES* aes;								//共通鍵暗号
-	OpenSSLDH* dh;									//DH法
-	OpenSSLRSA* rsa;								//公開鍵暗号
+	std::shared_ptr<OpenSSLAES> aes;								//共通鍵暗号
+	std::shared_ptr<OpenSSLRSA> rsa;								//公開鍵暗号
 
 	//---------------------------------------------------------
 	//シングルトン
