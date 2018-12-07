@@ -50,8 +50,8 @@ private:
 	//---------------------------------------------------------
 	//変数
 	//---------------------------------------------------------
-	std::string ip = "localhost";								//IPアドレス
-	std::string port = "49155";									//ポート番号
+	std::unique_ptr<std::string> ip; //= "localhost";								//IPアドレス
+	std::unique_ptr<std::string> port;// = "49155";									//ポート番号
 	SOCKET socket;												//ソケット
 	bool available = false;
 	struct addrinfo *result = NULL, hints;

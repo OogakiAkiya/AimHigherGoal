@@ -4,13 +4,15 @@
 Socket::Socket()
 {
 	ZeroMemory(&hints, sizeof(hints));
-	ip.erase();
-	port.erase();
+	ip = std::make_unique<std::string>();
+	port = std::make_unique<std::string>();
 }
 
 Socket::~Socket()
 {
 	Close();
+	ip = nullptr;
+	port = nullptr;
 }
 
 Socket & Socket::SetProtocolVersion_IPv4()
@@ -45,13 +47,13 @@ Socket & Socket::SetProtocol_UDP()
 
 Socket & Socket::SetIpAddress(std::string _addrs)
 {
-	ip=_addrs;
+	ip->assign(_addrs);
 	return *this;
 }
 
 Socket & Socket::SetPortNumber(std::string _port)
 {
-	port = _port;
+	port->assign(_port);
 	return *this;
 }
 
@@ -94,7 +96,7 @@ bool Socket::AddressSet()
 	//’ÊMÝ’è
 	hints.ai_socktype = SOCK_STREAM;		//ŒÅ’è
 	hints.ai_flags = AI_PASSIVE;
-	iResult = getaddrinfo(NULL, port.c_str(), &hints, &result);
+	iResult = getaddrinfo(NULL, port->c_str(), &hints, &result);
 	if (iResult != 0) {
 		printf("getaddrinfo failed:%d\n", iResult);
 		WSACleanup();
