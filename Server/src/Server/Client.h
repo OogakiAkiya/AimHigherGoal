@@ -15,9 +15,9 @@ public:
 	//---------------------------------------------------------
 	SOCKET GetSocket();
 	int GetRoomNumber();
-	Data* GetData();
+	std::shared_ptr<Data> GetData();
 	int GetState();
-	std::shared_ptr<OpenSSLAES>GetAES();
+	std::shared_ptr<OpenSSLAES> GetAES();
 	CurlWrapper* GetCurl();
 	void SetSocket(SOCKET _socket);
 	void SetNumber(int _number);
@@ -59,7 +59,7 @@ private:
 	std::shared_ptr<std::thread> thread=nullptr;
 	std::queue<std::vector<char>> completeDataQueList;		//完全データ配列
 	std::vector<char> tempDataList;							//一時データ配列
-	Data* data;												//ユーザーの各データが格納されている
+	std::shared_ptr<Data> data;												//ユーザーの各データが格納されている
 	std::shared_ptr<OpenSSLAES> aes;										//共通鍵暗号クラス
 	CurlWrapper* curl=nullptr;										//Http通信クラス
 };

@@ -59,7 +59,7 @@ void CurlWrapper::HTTPConnect(std::string* _data, std::string _url, std::string 
 }
 
 
-void CurlWrapper::PosUpdataLoop(Data* _data)
+void CurlWrapper::PosUpdataLoop(std::shared_ptr<Data> _data)
 {
 	//ƒ†[ƒU[’Ç‰Áˆ—
 	if (curl == NULL)return;
@@ -103,7 +103,7 @@ void CurlWrapper::PosUpdataLoop(Data* _data)
 
 }
 
-void CurlWrapper::StartThread(CurlWrapper* _curl,Data* _data)
+void CurlWrapper::StartThread(CurlWrapper* _curl,std::shared_ptr<Data> _data)
 {
 	//thread = new std::thread(HttpLauncher,(void*)_curl,_data);
 	thread = std::make_shared<std::thread>(HttpLauncher, (void*)_curl, _data);

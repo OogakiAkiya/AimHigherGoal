@@ -11,9 +11,8 @@
 
 Client::Client()
 {
-	data = new Data();
+	data = std::make_shared<Data>();
 	curl = new CurlWrapper();
-	//aes = new OpenSSLAES();
 	aes = std::make_shared<OpenSSLAES>();
 }
 
@@ -22,7 +21,7 @@ Client::~Client()
 	//解放処理
 	if(thread!=nullptr)thread->detach();											//スレッド終了
 	thread = nullptr;
-	delete data;
+	data = nullptr;
 	if(curl!=nullptr)delete curl;
 	aes=nullptr;
 }
@@ -57,7 +56,7 @@ int Client::GetRoomNumber()
 	return roomNumber;
 }
 
-Data* Client::GetData()
+std::shared_ptr<Data> Client::GetData()
 {
 	return data;
 }
