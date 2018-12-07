@@ -72,7 +72,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev,
 	timeBeginPeriod(1);
 
 	
-	ClientToScreen(*WIN.GetInstance().GetHwnd(), &MOUSE.GetMousePt());								//クライアント座標に変換
+	ClientToScreen(*WIN.GetHwnd(), &MOUSE.GetMousePt());								//クライアント座標に変換
 	SetCursorPos(MOUSE.GetMousePt().x, MOUSE.GetMousePt().y);
 	
 	//フォグ
@@ -89,7 +89,6 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev,
 	// ゲームに関する初期化処理 ---------------------------
 	//クライアント処理
 	Client::GetInstance();
-
 	SceneControl::GetInstance();											//シーンを一括で管理している
 
 

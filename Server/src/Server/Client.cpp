@@ -13,17 +13,18 @@ Client::Client()
 {
 	data = new Data();
 	curl = new CurlWrapper();
-	aes = new OpenSSLAES();
+	//aes = new OpenSSLAES();
+	aes = std::make_shared<OpenSSLAES>();
 }
 
 Client::~Client()
 {
 	//解放処理
-	thread->join();											//スレッド終了
+	if(thread!=nullptr)thread->detach();											//スレッド終了
+	thread = nullptr;
 	delete data;
-	delete curl;
-	delete thread;
-	delete aes;
+	if(curl!=nullptr)delete curl;
+	aes=nullptr;
 }
 
 void Client::Recv()
@@ -37,7 +38,8 @@ void Client::Recv()
 
 void Client::StartRecvThread(Client* _client)
 {
-	thread = new std::thread(RecvLauncher, (void*)_client);
+	//thread = new std::thread(RecvLauncher, (void*)_client);
+	thread = std::make_shared<std::thread>(RecvLauncher, (void*)_client);
 }
 
 void Client::StartHttpThread()
@@ -65,7 +67,7 @@ int Client::GetState()
 	return state;
 }
 
-OpenSSLAES * Client::GetAES()
+std::shared_ptr<OpenSSLAES> Client::GetAES()
 {
 	return aes;
 }
@@ -108,7 +110,7 @@ void Client::RecvLoop(int _loopType)
 {
 	while (1) {
 		int iResult;										//送られてきたデータ量が格納される
-		char rec[BYTESIZE];									//受信データ
+		char rec[BYTESIZE*2];									//受信データ
 
 		//受信
 		iResult = recv(data->GetSocket(), rec, sizeof(rec), 0);
@@ -129,13 +131,17 @@ void Client::RecvLoop(int _loopType)
 		else if (iResult == 0) {
 			//接続を終了するとき
 			printf("切断されました\n");
+			MUTEX.Lock();
 			state = -1;
+			MUTEX.Unlock();
 			return;
 		}
 		else {
 			//接続エラーが起こった時
 			printf("recv failed:%d\n%d", WSAGetLastError(), iResult);
+			MUTEX.Lock();
 			state = -1;
+			MUTEX.Unlock();
 			return;
 		}
 	}
@@ -170,29 +176,41 @@ bool Client::ExchangeKey()
 void Client::CreateCompleteData()
 {
 	while (tempDataList.size() >= sizeof(int)) {
-		//復号に十分なデータがあるかチェック
-		int decodeSize = *(int*)&tempDataList[0];
-		if (decodeSize <= (int)tempDataList.size() - sizeof(int)) {
+		try {
+			//復号に十分なデータがあるかチェック
+			int decodeSize = *(int*)&tempDataList[0];
+			if (decodeSize <= (int)tempDataList.size() - sizeof(int)) {
 
-			//変数宣言
-			char data[BYTESIZE];																			//復号前データ
-			char decodeData[BYTESIZE];
+				//変数宣言
+				char data[BYTESIZE];																			//復号前データ
+				char decodeData[BYTESIZE];
+				//復号処理
+				memcpy(data, &tempDataList[sizeof(int)], decodeSize);
+				aes->Decode(decodeData, data, decodeSize);
 
-			//復号処理
-			memcpy(data, &tempDataList[sizeof(int)], decodeSize);
-			aes->Decode(decodeData, data, decodeSize);
+				//完全データの生成
+				int byteSize = *(int*)decodeData;																//4byte分だけ取得しintの値にキャスト
+				if (byteSize < BYTESIZE&&byteSize>0) {
+					std::vector<char> compData(byteSize);															//完全データ
+					memcpy(&compData[0], &decodeData[sizeof(int)], byteSize);										//サイズ以外のデータを使用し完全データを作成
+					MUTEX.Lock();																					//排他制御開始
+					completeDataQueList.push(compData);																//完全データ配列に格納
+					MUTEX.Unlock();																					//排他制御終了
+				}
+				tempDataList.erase(tempDataList.begin(), tempDataList.begin() + (decodeSize + sizeof(int)));	//完全データ作成に使用した分を削除
 
-			//完全データの生成
-			int byteSize = *(int*)decodeData;																//4byte分だけ取得しintの値にキャスト
-			std::vector<char> compData(byteSize);															//完全データ
-			memcpy(&compData[0], &decodeData[sizeof(int)], byteSize);										//サイズ以外のデータを使用し完全データを作成
-			MUTEX.Lock();																					//排他制御開始
-			completeDataQueList.push(compData);																//完全データ配列に格納
-			MUTEX.Unlock();																					//排他制御終了
-			tempDataList.erase(tempDataList.begin(), tempDataList.begin() + (decodeSize + sizeof(int)));	//完全データ作成に使用した分を削除
+			}
+			else {
+				break;
+			}
 		}
-		else {
-			break;
+		catch (std::exception error) {																			//
+			printf("Client=%s", error.what());																			//例外メッセージが入る
+
+		}
+		catch (...) {																							//最終的にここ
+			//assert(false&&"なんかエラーです")
+			printf("なんかのエラー");
 		}
 	}
 }

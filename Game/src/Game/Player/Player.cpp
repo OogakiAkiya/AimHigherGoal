@@ -29,6 +29,7 @@ Player::Player()
 			data->SetX(CLIENT.GetPlayerData()->GetX());
 			data->SetY(CLIENT.GetPlayerData()->GetY());
 			data->SetZ(CLIENT.GetPlayerData()->GetZ());
+			D3DXMatrixTranslation(&baseMat, data->GetX(), data->GetY(), data->GetZ());
 			break;
 		}
 	}

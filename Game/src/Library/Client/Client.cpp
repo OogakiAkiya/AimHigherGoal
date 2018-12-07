@@ -38,12 +38,14 @@ void Client::StartThread()
 
 bool Client::CreateSocket(std::string _ip)
 {
+	//既にソケットが存在する場合削除する
 	if (socket != nullptr) {
 		socket->Close();
 		delete socket;
 		socket = nullptr;
 	}
 
+	//ソケット生成
 	socket = Socket::Instantiate()->
 		SetProtocolVersion_Dual().
 		SetProtocol_TCP().
@@ -51,7 +53,10 @@ bool Client::CreateSocket(std::string _ip)
 		SetPortNumber("49155").
 		ClientCreate();
 	if (socket == nullptr)return false;
+
+	//Recv処理を行うスレッドを開始させる
 	StartThread();
+
 	//鍵交換処理
 	ExchangeKey();
 	return true;
@@ -61,7 +66,7 @@ void Client::Recv()
 {
 	//ローカル変数作成
 	int iResult;																							//recv結果が入る(受信したバイト数が入る)
-	char rec[BYTESIZE];																							//受け取ったデータを格納
+	char rec[BYTESIZE*2];																					//受け取ったデータを格納
 	
 	//受信
 	while (1) {
@@ -69,12 +74,12 @@ void Client::Recv()
 		if (iResult > 0) {
 
 			//受信データを一時データ配列に追加
-			int nowSize = tempDataList.size();															//一時データ配列に何byteデータが入っているかを見る
-			tempDataList.resize(nowSize + iResult);														//送られてきたデータが格納できるように一時データ配列のサイズ変更
+			int nowSize = tempDataList.size();																//一時データ配列に何byteデータが入っているかを見る
+			tempDataList.resize(nowSize + iResult);															//送られてきたデータが格納できるように一時データ配列のサイズ変更
 			memcpy((char*)&tempDataList[nowSize], rec, iResult);											//最後尾に送られてきたデータの追加
 
 			//一時データから完全データの作成
-			while (tempDataList.size() >= sizeof(int)) {																//何byteのデータが送られてきていいるかすら読み込めなければ抜ける
+			while (tempDataList.size() >= sizeof(int)) {													//何byteのデータが送られてきていいるかすら読み込めなければ抜ける
 				
 				//復号処理
 				int decodeSize = *(int*)&tempDataList[0];
@@ -86,7 +91,7 @@ void Client::Recv()
 					int byteSize = *(int*)decodeData;														//4byte分だけ取得しintの値にキャスト
 					std::vector<char> compData(byteSize);													//完全データ
 					memcpy(&compData[0], &decodeData[sizeof(int)], byteSize);								//サイズ以外のデータを使用し完全データを作成
-					tempDataList.erase(tempDataList.begin(), tempDataList.begin() + (decodeSize + 4));	//完全データ作成に使用した分を削除
+					tempDataList.erase(tempDataList.begin(), tempDataList.begin() + (decodeSize + 4));		//完全データ作成に使用した分を削除
 
 					//完全データの処理
 					DataManipulate(&compData);
@@ -166,16 +171,16 @@ void Client::SendAttack(Data* _data)
 	//当たったかどうかを判定
 	float length;
 	D3DXVECTOR3 vectorLength;
-	D3DXVECTOR3 playerVector(_data->GetX(), _data->GetY(), _data->GetZ());													//プレイヤーのベクトル
-	for (int element = 0; element < 3; element++) {																			//idは敵の区別
-		D3DXVECTOR3 enemyVector(enemyData[element].GetX(), enemyData[element].GetY(), enemyData[element].GetZ());			//敵のベクトル
-		vectorLength = enemyVector - playerVector;																			//二つのベクトルの差
+	D3DXVECTOR3 playerVector(_data->GetX(), _data->GetY(), _data->GetZ());											//プレイヤーのベクトル
+	for (int element = 0; element < 3; element++) {																	//idは敵の区別
+		D3DXVECTOR3 enemyVector(enemyData[element].GetX(), enemyData[element].GetY(), enemyData[element].GetZ());	//敵のベクトル
+		vectorLength = enemyVector - playerVector;																	//二つのベクトルの差
 		length = D3DXVec3Length(&vectorLength);
 
 		//データ送信(当たった場合)
 		if (length <= 2.0f) {
-			char encodeData[BYTESIZE];									//暗号データ
-			char sendData[BYTESIZE];									//送信データ
+			char encodeData[BYTESIZE];					//暗号データ
+			char sendData[BYTESIZE];					//送信データ
 
 			//データの生成
 			AttckData data;

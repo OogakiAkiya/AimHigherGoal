@@ -13,6 +13,10 @@ TitleMain::TitleMain()
 	ipBuf.resize(256);
 	idBuf.resize(256);
 
+	//フォーム設定
+	window_flags |= ImGuiWindowFlags_NoMove;
+	window_flags |= ImGuiWindowFlags_NoResize;
+	window_flags |= ImGuiWindowFlags_NoCollapse;
 
 }
 
@@ -56,11 +60,12 @@ void CleanString(std::string* _str,int* _strlen) {
 	_str->resize(256);
 	_strlen = 0;
 }
+
 void TitleMain::ImguiUpdate()
 {
 	imgui->UpdataStart();												//imgui開始
 
-	ImGui::Begin("Form    ", imgui->GetApperFlg());						//ウインドウ作成
+	ImGui::Begin("Form    ",NULL,window_flags);						//ウインドウ作成
 	//ウインドウに配置するオブジェクト
 	if (ImGui::InputText("IPAddress", (char*)ipBuf.c_str(), ipBuf.length()))ipBufLen++;		//テキストフォーム
 	if (ImGui::Button("IP all erase"))CleanString(&ipBuf, &ipBufLen);                         //ボタン生成
@@ -105,6 +110,7 @@ void TitleMain::ImguiUpdate()
 			CLIENT.GetPlayerData()->SetId(idBuf);
 			endflg = true;
 		}
+		if(endflg==true)ImGui::Text("Now Loading...");																//テキストフィールド
 
 		//再入力可能な状態にする
 		ipBuf.resize(256);

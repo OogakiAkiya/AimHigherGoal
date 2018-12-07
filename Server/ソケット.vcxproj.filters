@@ -86,9 +86,6 @@
     <ClInclude Include="src\Library\ExtensionMutex.h">
       <Filter>ソース ファイル\Library</Filter>
     </ClInclude>
-    <ClInclude Include="src\Server\Server.h">
-      <Filter>ソース ファイル\Server</Filter>
-    </ClInclude>
     <ClInclude Include="src\Include.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -121,6 +118,9 @@
     </ClInclude>
     <ClInclude Include="src\Library\json\json11.hpp">
       <Filter>ソース ファイル\Library\json</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Server\Server.h">
+      <Filter>ソース ファイル\Server</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

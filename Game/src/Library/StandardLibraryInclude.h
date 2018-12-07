@@ -15,6 +15,7 @@
 #include<conio.h>
 #include<mutex>
 #include<queue>
+#include<sstream>
 
 //openssl
 #include<openssl/rand.h>

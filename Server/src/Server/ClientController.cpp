@@ -19,23 +19,21 @@ ClientController::ClientController()
 ClientController::~ClientController()
 {
 	//スレッド終了処理
-	thread->detach();
+	if(thread!=nullptr)thread->detach();
+	thread = nullptr;
 
 	//解放処理
 	roomNumberList.clear();
-	while (1) {
-		Client* dele=socketList[0];
-		delete dele;
-		MUTEX.Lock();
-		socketList.erase(socketList.begin());
-		MUTEX.Unlock();
-		if (socketList.empty())break;
+	for (int i = 0; i < socketList.size(); i++) {
+		socketList[i]=nullptr;
 	}
+	socketList.clear();
 }
 
-void ClientController::SetSocket(Client* _socket)
+void ClientController::SetSocket(std::shared_ptr<Client> _socket)
 {
-	socketList.push_back(_socket);						//ソケットの可変長配列に代入
+	//socketList.push_back(_socket);						//ソケットの可変長配列に代入
+	socketList.push_back(_socket);
 }
 
 bool ClientController::SerchNumber(int _number)
@@ -48,9 +46,11 @@ bool ClientController::SerchNumber(int _number)
 	return false;
 }
 
+void temp() {};
 void ClientController::StartThread(ClientController* _socketController)
 {
-	thread = new std::thread(ControllerThreadLauncher,(void*)_socketController);		//スレッド開始
+	//thread = new std::thread(ControllerThreadLauncher,(void*)_socketController);		//スレッド開始
+	thread = std::make_shared<std::thread>(ControllerThreadLauncher, (void*)_socketController);
 }
 
 
@@ -59,30 +59,33 @@ void ClientController::ControllerThread()
 	while (1) {
 		//サーバーに接続しているクライアントがいるか判定
 		if (socketList.empty() == true)continue;
-
 		//完全データの処理
-		for (auto client : socketList) {
-			if (client->EmptyCompleteData() == true)break;				//完全データがなければ以下処理は行わない
-			MUTEX.Lock();
-			std::vector<char>data = *client->GetCompleteData();			//各スレッドの持つ完成したデータを取得
-			client->DeleteCompleteData();								//元の配列から取得分のデータを削除
-			MUTEX.Unlock();
-			DataManipulate(client, &data);								//データの加工処理しそれぞれの処理を行う
+		try {
+			for (auto& client : socketList) {
+				if (client->EmptyCompleteData() == true)break;				//完全データがなければ以下処理は行わない
+				std::vector<char>data = *client->GetCompleteData();			//各スレッドの持つ完成したデータを取得
+				MUTEX.Lock();
+				client->DeleteCompleteData();								//元の配列から取得分のデータを削除
+				MUTEX.Unlock();
+				DataManipulate(client.get(), &data);								//データの加工処理しそれぞれの処理を行う
+			}
+		}
+		catch (std::exception error) {
+			printf("ClientController=%s\n", error.what());
+		}
+		catch (...) {
+
 		}
 
 		//切断処理が行われたソケットを削除
 		int count = 0;
-		for (auto client : socketList) {
-			if (client->GetState() == -1) {
-				Client* deletesock;
-				deletesock = socketList[count];
+		for (int i = 0;i<socketList.size(); i++) {
+			if (socketList[i]->GetState() == -1) {
 				MUTEX.Lock();
-				socketList.erase(socketList.begin() + count);
+				socketList[i]==nullptr;
+				socketList.erase(socketList.begin() + i);
 				MUTEX.Unlock();
-				delete deletesock;
-				break;
 			}
-			count++;
 		}
 	}
 }
@@ -108,9 +111,11 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 
 		//プレイヤーの座標取得
 		_socket->GetCurl()->DBGetPos(recvData,id);
+		MUTEX.Lock();
 		_socket->GetData()->SetX(*(float*)recvData);
 		_socket->GetData()->SetY(*(float*)&recvData[sizeof(float)]);
 		_socket->GetData()->SetZ(*(float*)&recvData[sizeof(float) * 2]);
+		MUTEX.Unlock();
 
 		//送信データ作成
 		UserData userData;
@@ -162,8 +167,9 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 
 		//暗号化処理
 		char* origin = (char*)&data;
+		MUTEX.Lock();
 		int encodeSize = _socket->GetAES()->Encode(encode, origin, sizeof(PosData));		//暗号化
-
+		MUTEX.Unlock();
 		memcpy(sendData, &encodeSize, sizeof(int));
 		memcpy(&sendData[sizeof(int)], encode, encodeSize);
 
@@ -198,3 +204,9 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 }
 
 
+
+
+class A : public std::enable_shared_from_this<A>
+{
+	std::shared_ptr<A> GetMe() { return shared_from_this(); }
+};

@@ -32,9 +32,9 @@ Server::Server()
 		ServerCreate();											//サーバーソケット
 
 	if (socket == nullptr) delete this;
-	clientController=new ClientController();
+	clientController=std::make_shared<ClientController>();
 	//ソケットの管理クラスのスレッド開始
-	clientController->StartThread(clientController);
+	clientController->StartThread(clientController.get());
 	
 }
 
@@ -45,7 +45,7 @@ Server::~Server()
 	ExtensionMutex::DeleteInstance();													//mutex管理classインスタンスの削除
 	Cipher::DeleteInstance();
 	if(socket!=nullptr)delete socket;
-	if (clientController != nullptr)delete clientController;
+	clientController = nullptr;
 }
 
 void Server::AcceptLoop()
@@ -58,7 +58,7 @@ void Server::AcceptLoop()
 
 void Server::AcceptSocket()
 {
-	Client* clientSocket;																//クライアントのソケット情報を一時的に保存する変数
+	std::shared_ptr<Client> clientSocket;																//クライアントのソケット情報を一時的に保存する変数
 
 	//accept
 	SOCKET initSocket;
@@ -66,12 +66,12 @@ void Server::AcceptSocket()
 	initSocket = socket->Accept();
 
 		//クライアントのソケットをコントローラークラスに追加する
-		clientSocket = new Client();
+		clientSocket = std::make_shared<Client>();
 		clientSocket->SetSocket(initSocket);											//Socketクラスにクライアントの情報を代入する
 		MUTEX.Lock();																	//排他制御Lock
 		clientController->SetSocket(clientSocket);										//作ったクライアント情報はSocketControllerクラスで管理
 		MUTEX.Unlock();																	//排他制御Unlock
 
 		printf("来ました\n");
-		clientSocket->StartRecvThread(clientSocket);									//recv処理のスレッド開始
+		clientSocket->StartRecvThread(clientSocket.get());									//recv処理のスレッド開始
 }

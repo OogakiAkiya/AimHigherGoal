@@ -18,13 +18,15 @@ private:
 	//---------------------------------------------------------
 	//変数
 	//---------------------------------------------------------
+	//フォームに使用する変数
 	std::string ipBuf;
 	int ipBufLen=0;
 	std::string idBuf;
 	int idBufLen=0;
 	std::string msg="";
-
+	ImGuiWindowFlags window_flags = 0;
 	ImguiWrapper* imgui;
+
 	int states = 0;
 	ImageSprite* title;						//タイトル画像
 };

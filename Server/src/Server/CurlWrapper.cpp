@@ -21,7 +21,8 @@ CurlWrapper::~CurlWrapper()
 			break;
 		}
 	}
-	thread->detach();
+	if(thread!=nullptr)thread->detach();
+	thread = nullptr;
 }
 
 void CurlWrapper::HTTPConnect(std::string* _data, std::string _url, std::string _postData)
@@ -72,7 +73,7 @@ void CurlWrapper::PosUpdataLoop(Data* _data)
 
 	while (curl) {
 		//メッセージの生成
-		query << "player=" << _data->GetId()->c_str();
+		query << "player=" << userId.c_str();
 		query << "&x=" << _data->GetX();
 		query << "&y=" << _data->GetY();
 		query << "&z=" << _data->GetZ();
@@ -104,7 +105,8 @@ void CurlWrapper::PosUpdataLoop(Data* _data)
 
 void CurlWrapper::StartThread(CurlWrapper* _curl,Data* _data)
 {
-	thread = new std::thread(HttpLauncher,(void*)_curl,_data);
+	//thread = new std::thread(HttpLauncher,(void*)_curl,_data);
+	thread = std::make_shared<std::thread>(HttpLauncher, (void*)_curl, _data);
 }
 
 void CurlWrapper::DBGetPos(char* _data, std::string _userId)
@@ -119,6 +121,8 @@ void CurlWrapper::DBGetPos(char* _data, std::string _userId)
 	//送信データの生成
 	query << "player=" << _userId.c_str();
 	query >> output;
+
+	userId = _userId;
 
 	//接続設定
 	HTTPConnect(&buf, "http://lifestyle-qa.com/get_pos.php", output.c_str());

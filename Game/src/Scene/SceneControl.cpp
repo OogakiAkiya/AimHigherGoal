@@ -32,17 +32,17 @@ SceneControl::~SceneControl()
 
 void SceneControl::Update()
 {
+	//シーンチェンジ処理
+	if (scene->GetEndFlg() == true) {					//endflgがtrueになっていたらシーンチェンジ
+		delete scene;
+		scene = new GameMain();
+	}
 	//シーン更新処理
 	scene->Update();									//保持するシーンの情報更新
 
 	//カメラ情報取得
 	camera = scene->GetCamera();						//視点用カメラの取得
 
-	//シーンチェンジ処理
-	if (scene->GetEndFlg() == true) {					//endflgがtrueになっていたらシーンチェンジ
-		delete scene;
-		scene = new GameMain();
-	}
 }
 
 void SceneControl::Render3D()

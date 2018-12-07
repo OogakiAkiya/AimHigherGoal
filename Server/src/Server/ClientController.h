@@ -6,7 +6,7 @@ class ClientController
 public:
 	ClientController();
 	~ClientController();
-	void SetSocket(Client* _socket);										//ソケットリストに追加
+	void SetSocket(std::shared_ptr<Client> _socket);										//ソケットリストに追加
 	bool SerchNumber(int _number);											//引数と同じルームナンバーが存在するか調べる
 	void StartThread(ClientController* _socketController);					//スレッド開始
 	void ControllerThread();												//スレッドが動作させる関数
@@ -32,9 +32,9 @@ private:
 	//---------------------------------------------------------
 	//変数
 	//---------------------------------------------------------
-	std::vector<Client*> socketList;										//ソケット配列
+	std::vector<std::shared_ptr<Client>> socketList;										//ソケット配列
 	std::vector<int> roomNumberList;										//生成されたルーム番号を保存
-	std::thread* thread;													//スレッド
+	std::shared_ptr<std::thread> thread;													//スレッド
 };
 
 ////////////////////////////////////////////////////////////////////

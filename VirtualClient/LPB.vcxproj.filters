@@ -1,0 +1,258 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="ソース ファイル\Library">
+      <UniqueIdentifier>{9c1dd7ae-a485-45d8-81dc-65ce744c78ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game">
+      <UniqueIdentifier>{8f2a67b0-1477-45b3-9be7-44c0dc530922}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Scene">
+      <UniqueIdentifier>{af88bc16-8854-4f81-9813-424c49841647}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\Camera">
+      <UniqueIdentifier>{2f4f6487-cb86-4c0d-83f9-743df0b17a37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\CharacterBase">
+      <UniqueIdentifier>{393a2369-cfde-4ee5-a8b6-8ab3218eef79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\Vector">
+      <UniqueIdentifier>{23601c50-35c4-4c5a-8dd2-ea8dda79b183}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\Mouse">
+      <UniqueIdentifier>{f231202c-8b30-4fac-a071-795fa44cdc12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\ImageSprite">
+      <UniqueIdentifier>{61f45653-50ae-4da6-a783-d4d9656011b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\DirectX">
+      <UniqueIdentifier>{98beb188-2fa0-48b6-9ed9-5e46decf580b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\XFile">
+      <UniqueIdentifier>{1e8d0599-c77a-42a6-8195-1f21b700bacf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\Client">
+      <UniqueIdentifier>{f9a89f10-72f2-49e0-ab2c-6fbad828ac18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\Client\Client">
+      <UniqueIdentifier>{0737f5c4-c63d-45d9-a420-21be7d3c10be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\Client\Data">
+      <UniqueIdentifier>{09533b5f-13f5-4343-9266-749e572f60be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\Client\ExtensionMutex">
+      <UniqueIdentifier>{537e3219-d04c-41d5-9d9d-cab12041f626}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\Client\Cipher">
+      <UniqueIdentifier>{443af70d-2400-4239-84c0-d46249056420}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\Client\Cipher\OpenSSLAES">
+      <UniqueIdentifier>{c34a88c8-d682-4178-b145-329d46ed3085}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\Client\Socket">
+      <UniqueIdentifier>{af4ac866-463d-41ee-9923-50c3752c0a49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\Client\Cipher\OpenSSLRSA">
+      <UniqueIdentifier>{90b9ecc8-bc82-48d9-bc8e-e044ac085c93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\imgui">
+      <UniqueIdentifier>{f2379993-9545-4f84-88cd-f8fab4525cb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\VisualCWrapper">
+      <UniqueIdentifier>{6b7445cf-53fe-4bb3-b243-87465a15e153}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\GameMain.cpp">
+      <Filter>ソース ファイル\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\SceneBase.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\SceneControl.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\Camera\Camera.cpp">
+      <Filter>ソース ファイル\Library\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\CharacterBase\CharacterBase.cpp">
+      <Filter>ソース ファイル\Library\CharacterBase</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\DirectX\D3D.cpp">
+      <Filter>ソース ファイル\Library\DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\ImageSprite\ImageSprite.cpp">
+      <Filter>ソース ファイル\Library\ImageSprite</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\Mouse\Mouse.cpp">
+      <Filter>ソース ファイル\Library\Mouse</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\Vertex\Vertex.cpp">
+      <Filter>ソース ファイル\Library\Vector</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\XFile\CheckMesh.cpp">
+      <Filter>ソース ファイル\Library\XFile</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\XFile\XFILE.cpp">
+      <Filter>ソース ファイル\Library\XFile</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\Client\Socket.cpp">
+      <Filter>ソース ファイル\Library\Client\Socket</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\Client\ExtensionMutex.cpp">
+      <Filter>ソース ファイル\Library\Client\ExtensionMutex</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\Client\Data.cpp">
+      <Filter>ソース ファイル\Library\Client\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\Client\Client.cpp">
+      <Filter>ソース ファイル\Library\Client\Client</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\Client\Cipher\OpenSSLAES.cpp">
+      <Filter>ソース ファイル\Library\Client\Cipher\OpenSSLAES</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\Client\Cipher\Cipher.cpp">
+      <Filter>ソース ファイル\Library\Client\Cipher</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\Client\Cipher\OpenSSLRSA.cpp">
+      <Filter>ソース ファイル\Library\Client\Cipher\OpenSSLRSA</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\imgui\imgui.cpp">
+      <Filter>ソース ファイル\Library\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\imgui\imgui_demo.cpp">
+      <Filter>ソース ファイル\Library\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\imgui\imgui_draw.cpp">
+      <Filter>ソース ファイル\Library\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\imgui\imgui_widgets.cpp">
+      <Filter>ソース ファイル\Library\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\imgui\ImguiWrapper.cpp">
+      <Filter>ソース ファイル\Library\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\VisualCWrapper\VisualCWrapper.cpp">
+      <Filter>ソース ファイル\Library\VisualCWrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\imgui\imgui_impl_dx9.cpp">
+      <Filter>ソース ファイル\Library\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\imgui\imgui_impl_win32.cpp">
+      <Filter>ソース ファイル\Library\imgui</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Game\GameMain.h">
+      <Filter>ソース ファイル\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\SceneBase.h">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\SceneControl.h">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\LibraryInclude.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\Camera\Camera.h">
+      <Filter>ソース ファイル\Library\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\CharacterBase\CharacterBase.h">
+      <Filter>ソース ファイル\Library\CharacterBase</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\DirectX\D3D.h">
+      <Filter>ソース ファイル\Library\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\ImageSprite\ImageSprite.h">
+      <Filter>ソース ファイル\Library\ImageSprite</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\Mouse\Mouse.h">
+      <Filter>ソース ファイル\Library\Mouse</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\Vertex\Vertex.h">
+      <Filter>ソース ファイル\Library\Vector</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\XFile\CheckMesh.h">
+      <Filter>ソース ファイル\Library\XFile</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\XFile\XFILE.h">
+      <Filter>ソース ファイル\Library\XFile</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\ShaderInclude.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\StandardLibraryInclude.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Include.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\Client\Socket.h">
+      <Filter>ソース ファイル\Library\Client\Socket</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\Client\ExtensionMutex.h">
+      <Filter>ソース ファイル\Library\Client\ExtensionMutex</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\Client\Data.h">
+      <Filter>ソース ファイル\Library\Client\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\Client\Client.h">
+      <Filter>ソース ファイル\Library\Client\Client</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\Client\Cipher\OpenSSLAES.h">
+      <Filter>ソース ファイル\Library\Client\Cipher\OpenSSLAES</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\Client\Cipher\Cipher.h">
+      <Filter>ソース ファイル\Library\Client\Cipher</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\Client\Cipher\OpenSSLRSA.h">
+      <Filter>ソース ファイル\Library\Client\Cipher\OpenSSLRSA</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\imgui\imconfig.h">
+      <Filter>ソース ファイル\Library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\imgui\imgui.h">
+      <Filter>ソース ファイル\Library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\imgui\imgui_internal.h">
+      <Filter>ソース ファイル\Library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\imgui\imstb_rectpack.h">
+      <Filter>ソース ファイル\Library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\imgui\imstb_textedit.h">
+      <Filter>ソース ファイル\Library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\imgui\imstb_truetype.h">
+      <Filter>ソース ファイル\Library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\imgui\ImguiWrapper.h">
+      <Filter>ソース ファイル\Library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\VisualCWrapper\VisualCWrapper.h">
+      <Filter>ソース ファイル\Library\VisualCWrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\imgui\imgui_impl_dx9.h">
+      <Filter>ソース ファイル\Library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\imgui\imgui_impl_win32.h">
+      <Filter>ソース ファイル\Library\imgui</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

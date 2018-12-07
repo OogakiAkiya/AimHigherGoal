@@ -29,7 +29,8 @@ private:
 	CURL* curl;																//URLへのアクセスに必要な設定などが入る
 	CURLcode code;															//処理に成功したかエラーチェックに使う
 	bool endFlg=true;
-	std::thread* thread;														//別スレッド処理
+	std::shared_ptr <std::thread> thread;														//別スレッド処理
+	std::string userId;
 };
 
 struct RecvBuffer {

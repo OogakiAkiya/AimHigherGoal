@@ -23,9 +23,9 @@ private:
 	//---------------------------------------------------------
 	//’è”
 	//---------------------------------------------------------
-	Socket* socket=nullptr;
-	bool available=false;
-	ClientController* clientController=nullptr;
+	Socket* socket = nullptr;
+	std::shared_ptr<ClientController> clientController = nullptr;
+	bool available = false;
 	struct addrinfo *result = NULL;
 	struct addrinfo hints;
 
