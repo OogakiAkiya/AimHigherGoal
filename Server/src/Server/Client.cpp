@@ -185,7 +185,9 @@ void Client::CreateCompleteData()
 				char decodeData[BYTESIZE];
 				//復号処理
 				memcpy(data, &tempDataList[sizeof(int)], decodeSize);
+				MUTEX.Lock();
 				aes->Decode(decodeData, data, decodeSize);
+				MUTEX.Unlock();
 
 				//完全データの生成
 				int byteSize = *(int*)decodeData;																	//4byte分だけ取得しintの値にキャスト

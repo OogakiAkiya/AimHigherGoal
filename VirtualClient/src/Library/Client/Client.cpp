@@ -88,7 +88,9 @@ void Client::Recv()
 						char data[BYTESIZE];																	//復号前データ
 						char decodeData[BYTESIZE];																//復号データ
 						memcpy(data, &tempDataList[sizeof(int)], decodeSize);
+						mutex->Lock();
 						cipher->GetOpenSSLAES()->Decode(decodeData, data, decodeSize);
+						mutex->Unlock();
 						int byteSize = *(int*)decodeData;														//4byte分だけ取得しintの値にキャスト
 						std::vector<char> compData(byteSize);													//完全データ
 						memcpy(&compData[0], &decodeData[sizeof(int)], byteSize);								//サイズ以外のデータを使用し完全データを作成
@@ -136,7 +138,9 @@ void Client::SendUserInformation(Data * _data)
 	char senData[BYTESIZE];									//送信データ
 
 	//暗号処理
+	Lock();
 	int encode_size = cipher->GetOpenSSLAES()->Encode(encodeData, origin,sendData.base.size+sizeof(UserData));
+	Unlock();
 	memcpy(senData, &encode_size, sizeof(int));
 	memcpy(&senData[sizeof(int)], encodeData, encode_size);
 
@@ -163,7 +167,9 @@ void Client::SendPos(Data* _data)
 	char sendData[BYTESIZE];										//送信データ
 
 	//暗号処理
+	Lock();
 	int encode_size = cipher->GetOpenSSLAES()->Encode(encodeData, origin, sizeof(PosData));
+	Unlock();
 	memcpy(sendData, &encode_size, sizeof(int));
 	memcpy(&sendData[sizeof(int)], encodeData, encode_size);
 

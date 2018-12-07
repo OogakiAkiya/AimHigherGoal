@@ -87,7 +87,9 @@ void Client::Recv()
 					char data[BYTESIZE];																	//復号前データ
 					char decodeData[BYTESIZE];																//復号データ
 					memcpy(data, &tempDataList[sizeof(int)], decodeSize);
+					mutex->Lock();
 					cipher->GetOpenSSLAES()->Decode(decodeData, data, decodeSize);
+					mutex->Unlock();
 					int byteSize = *(int*)decodeData;														//4byte分だけ取得しintの値にキャスト
 					std::vector<char> compData(byteSize);													//完全データ
 					memcpy(&compData[0], &decodeData[sizeof(int)], byteSize);								//サイズ以外のデータを使用し完全データを作成
@@ -158,7 +160,9 @@ void Client::SendPos(Data* _data)
 	char sendData[BYTESIZE];										//送信データ
 
 	//暗号処理
+	mutex->Lock();
 	int encode_size = cipher->GetOpenSSLAES()->Encode(encodeData, origin, sizeof(PosData));
+	mutex->Unlock();
 	memcpy(sendData, &encode_size, sizeof(int));
 	memcpy(&sendData[sizeof(int)], encodeData, encode_size);
 
@@ -189,7 +193,9 @@ void Client::SendAttack(Data* _data)
 			data.socket = element;
 			
 			//暗号処理
+			mutex->Lock();
 			int encodeSize = cipher->GetOpenSSLAES()->Encode(encodeData, (char*)&data, sizeof(AttckData));
+			mutex->Unlock();
 			memcpy(sendData, &encodeSize, sizeof(int));
 			memcpy(&sendData[sizeof(int)], encodeData, encodeSize);
 
@@ -331,7 +337,9 @@ void Client::ExchangeKey()
 
 	//暗号処理
 	cipher->GetOpenSSLAES()->GetKey(keyBuf);												//共通鍵取得
+	mutex->Lock();
 	int outlen = cipher->GetOpenSSLRSA()->Encode(endata, keyBuf, EVP_MAX_KEY_LENGTH);		//暗号化処理
+	mutex->Unlock();
 	memcpy(sendbuf, &outlen, sizeof(int));
 	memcpy(&sendbuf[sizeof(int)], &endata, outlen);
 	
