@@ -25,23 +25,26 @@
     <Filter Include="ソース ファイル\Library\Cipher\OpenSSLAES">
       <UniqueIdentifier>{b3f56cb3-c71e-42e5-8582-e0c0ba29b303}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Server\CurlWrapper">
-      <UniqueIdentifier>{65d815b4-2b91-4b62-a275-cc479c355313}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Library\Cipher\OpenSSLRSA">
       <UniqueIdentifier>{7fb7d8e9-a987-4c19-bbf6-e96d25802e13}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Library\json">
+    <Filter Include="ソース ファイル\Library\CurlWrapper">
+      <UniqueIdentifier>{65d815b4-2b91-4b62-a275-cc479c355313}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\Data">
+      <UniqueIdentifier>{20179a6c-c2fe-49b5-8bec-26939196436e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\Mutex">
+      <UniqueIdentifier>{6a853e14-ef2d-43dd-bc51-40c816155171}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\Json">
       <UniqueIdentifier>{e15d25b9-4ea4-4f80-b45f-7d301da8be21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\Socket">
+      <UniqueIdentifier>{f0b06b36-57b7-444a-ad23-25d082fcdc30}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Library\Data.cpp">
-      <Filter>ソース ファイル\Library</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Library\ExtensionMutex.cpp">
-      <Filter>ソース ファイル\Library</Filter>
-    </ClCompile>
     <ClCompile Include="src\Server\Server.cpp">
       <Filter>ソース ファイル\Server</Filter>
     </ClCompile>
@@ -60,26 +63,26 @@
     <ClCompile Include="src\Server\ClientController.cpp">
       <Filter>ソース ファイル\Server</Filter>
     </ClCompile>
-    <ClCompile Include="src\Server\Socket.cpp">
-      <Filter>ソース ファイル\Server</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Server\CurlWrapper.cpp">
-      <Filter>ソース ファイル\Server\CurlWrapper</Filter>
-    </ClCompile>
     <ClCompile Include="src\Library\Cipher\OpenSSLRSA.cpp">
       <Filter>ソース ファイル\Library\Cipher\OpenSSLRSA</Filter>
     </ClCompile>
     <ClCompile Include="src\Library\json\json11.cpp">
-      <Filter>ソース ファイル\Library\json</Filter>
+      <Filter>ソース ファイル\Library\Json</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\CurlWrapper\CurlWrapper.cpp">
+      <Filter>ソース ファイル\Library\CurlWrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\Mutex\ExtensionMutex.cpp">
+      <Filter>ソース ファイル\Library\Mutex</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\Data\Data.cpp">
+      <Filter>ソース ファイル\Library\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\Socket\Socket.cpp">
+      <Filter>ソース ファイル\Library\Socket</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Library\Data.h">
-      <Filter>ソース ファイル\Library</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Library\ExtensionMutex.h">
-      <Filter>ソース ファイル\Library</Filter>
-    </ClInclude>
     <ClInclude Include="src\Include.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -98,20 +101,26 @@
     <ClInclude Include="src\Server\ClientController.h">
       <Filter>ソース ファイル\Server</Filter>
     </ClInclude>
-    <ClInclude Include="src\Server\Socket.h">
-      <Filter>ソース ファイル\Server</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Server\CurlWrapper.h">
-      <Filter>ソース ファイル\Server\CurlWrapper</Filter>
-    </ClInclude>
     <ClInclude Include="src\Library\Cipher\OpenSSLRSA.h">
       <Filter>ソース ファイル\Library\Cipher\OpenSSLRSA</Filter>
     </ClInclude>
     <ClInclude Include="src\Library\json\json11.hpp">
-      <Filter>ソース ファイル\Library\json</Filter>
+      <Filter>ソース ファイル\Library\Json</Filter>
     </ClInclude>
     <ClInclude Include="src\Server\Server.h">
       <Filter>ソース ファイル\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\CurlWrapper\CurlWrapper.h">
+      <Filter>ソース ファイル\Library\CurlWrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\Mutex\ExtensionMutex.h">
+      <Filter>ソース ファイル\Library\Mutex</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\Data\Data.h">
+      <Filter>ソース ファイル\Library\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\Socket\Socket.h">
+      <Filter>ソース ファイル\Library\Socket</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

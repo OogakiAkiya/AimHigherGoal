@@ -1,11 +1,11 @@
 #include"../Include.h"
-#include"../Library/ExtensionMutex.h"
-#include"../Library/Data.h"
+#include"../Library/Mutex/ExtensionMutex.h"
+#include"../Library/Data/Data.h"
 #include"../Library/Cipher/OpenSSLAES.h"
 #include"../Library/Cipher/OpenSSLRSA.h"
 #include"../Library/Cipher/Cipher.h"
-#include"CurlWrapper.h"
-#include"Socket.h"
+#include"../Library/CurlWrapper/CurlWrapper.h"
+#include"../Library/Socket/Socket.h"
 #include"Client.h"
 #include "ClientController.h"
 
@@ -207,7 +207,9 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 		sendBuf.id = 0x18;
 
 		//à√çÜâªèàóù
+		MUTEX.Lock();
 		int encodeSize = _socket->GetAES()->Encode(encode, (char*)&sendBuf, sizeof(BaseData));	//à√çÜâªèàóù
+		MUTEX.Unlock();
 		memcpy(sendData, &encodeSize, sizeof(int));
 		memcpy(&sendData[sizeof(int)], encode, encodeSize);
 		

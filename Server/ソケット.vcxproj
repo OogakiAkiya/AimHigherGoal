@@ -38,15 +38,15 @@
     <ClCompile Include="src\Library\Cipher\Cipher.cpp" />
     <ClCompile Include="src\Library\Cipher\OpenSSLAES.cpp" />
     <ClCompile Include="src\Library\Cipher\OpenSSLRSA.cpp" />
-    <ClCompile Include="src\Library\Data.cpp" />
-    <ClCompile Include="src\Library\ExtensionMutex.cpp" />
+    <ClCompile Include="src\Library\CurlWrapper\CurlWrapper.cpp" />
+    <ClCompile Include="src\Library\Data\Data.cpp" />
     <ClCompile Include="src\Library\json\json11.cpp" />
+    <ClCompile Include="src\Library\Mutex\ExtensionMutex.cpp" />
+    <ClCompile Include="src\Library\Socket\Socket.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Server\Client.cpp" />
     <ClCompile Include="src\Server\ClientController.cpp" />
-    <ClCompile Include="src\Server\CurlWrapper.cpp" />
     <ClCompile Include="src\Server\Server.cpp" />
-    <ClCompile Include="src\Server\Socket.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Include.h" />
@@ -54,14 +54,14 @@
     <ClInclude Include="src\Library\Cipher\Cipher.h" />
     <ClInclude Include="src\Library\Cipher\OpenSSLAES.h" />
     <ClInclude Include="src\Library\Cipher\OpenSSLRSA.h" />
-    <ClInclude Include="src\Library\Data.h" />
-    <ClInclude Include="src\Library\ExtensionMutex.h" />
+    <ClInclude Include="src\Library\CurlWrapper\CurlWrapper.h" />
+    <ClInclude Include="src\Library\Data\Data.h" />
     <ClInclude Include="src\Library\json\json11.hpp" />
+    <ClInclude Include="src\Library\Mutex\ExtensionMutex.h" />
+    <ClInclude Include="src\Library\Socket\Socket.h" />
     <ClInclude Include="src\Server\Client.h" />
     <ClInclude Include="src\Server\ClientController.h" />
-    <ClInclude Include="src\Server\CurlWrapper.h" />
     <ClInclude Include="src\Server\Server.h" />
-    <ClInclude Include="src\Server\Socket.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{9CB8D5F2-5328-47A5-B16E-D94E210D05EB}</ProjectGuid>

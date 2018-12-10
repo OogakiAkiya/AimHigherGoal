@@ -17,8 +17,8 @@ public:
 	int GetRoomNumber();
 	std::shared_ptr<Data> GetData();
 	int GetState();
-	std::shared_ptr<OpenSSLAES> GetAES();
-	std::shared_ptr<CurlWrapper> GetCurl();
+	OpenSSLAES* GetAES();
+	CurlWrapper* GetCurl();
 	void SetSocket(SOCKET _socket);
 	void SetNumber(int _number);
 	
@@ -55,13 +55,13 @@ private:
 	//変数
 	//---------------------------------------------------------
 	int roomNumber=0;
-	int state=0;											//ソケットの状態を表す(0:通常,-1:デリート待ち)
+	int state=0;															//ソケットの状態を表す(0:通常,-1:デリート待ち)
 	std::unique_ptr<std::queue<std::vector<char>>> completeDataQueList;		//完全データ配列
-	std::vector<char> tempDataList;							//一時データ配列
-	std::shared_ptr<Data> data;								//ユーザーの各データが格納されている
-	std::shared_ptr<OpenSSLAES> aes;						//共通鍵暗号クラス
-	std::shared_ptr<CurlWrapper> curl=nullptr;				//Http通信クラス
-	std::shared_ptr<std::thread> thread = nullptr;
+	std::vector<char> tempDataList;											//一時データ配列
+	std::shared_ptr<Data> data;												//ユーザーの各データが格納されている
+	std::unique_ptr<OpenSSLAES> aes;										//共通鍵暗号クラス
+	std::unique_ptr<CurlWrapper> curl=nullptr;								//Http通信クラス
+	std::unique_ptr<std::thread> thread = nullptr;
 };
 
 #endif

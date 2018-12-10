@@ -1,6 +1,6 @@
-#include"../Include.h"
-#include"../Library/Data.h"
-#include"../Library/ExtensionMutex.h"
+#include"../../Include.h"
+#include"../Data/Data.h"
+#include"../Mutex/ExtensionMutex.h"
 #include "CurlWrapper.h"
 #pragma comment(lib,"libcurl.dll.a")
 
@@ -14,16 +14,15 @@ CurlWrapper::CurlWrapper()
 CurlWrapper::~CurlWrapper()
 {
 	//解放処理
-	if(thread!=nullptr)thread->detach();
+	if (thread != nullptr)thread->detach();
 	thread = nullptr;
 	curl_easy_cleanup(curl);
 	curl = nullptr;
-	userId = nullptr;
 }
 
 void CurlWrapper::HTTPConnect(std::string* _data, std::string _url, std::string _postData)
 {
-	CURL* tempCurl;																//URLへのアクセスに必要な設定などが入る
+	CURL* tempCurl;																			//URLへのアクセスに必要な設定などが入る
 	tempCurl = curl_easy_init();
 
 	//ユーザー追加処理
@@ -35,8 +34,8 @@ void CurlWrapper::HTTPConnect(std::string* _data, std::string _url, std::string 
 	//接続設定
 	curl_easy_setopt(tempCurl, CURLOPT_URL,_url.c_str());
 	curl_easy_setopt(tempCurl, CURLOPT_POST, 1);											//POST設定
-	curl_easy_setopt(tempCurl, CURLOPT_POSTFIELDS,_postData.c_str());							//送信データの設定
-	curl_easy_setopt(tempCurl, CURLOPT_WRITEFUNCTION, BufferWriter);					//書込み関数設定
+	curl_easy_setopt(tempCurl, CURLOPT_POSTFIELDS,_postData.c_str());						//送信データの設定
+	curl_easy_setopt(tempCurl, CURLOPT_WRITEFUNCTION, BufferWriter);						//書込み関数設定
 	curl_easy_setopt(tempCurl, CURLOPT_WRITEDATA, &buf);									//書込み変数設定
 
 																							//送信
@@ -57,18 +56,19 @@ void CurlWrapper::HTTPConnect(std::string* _data, std::string _url, std::string 
 void CurlWrapper::PosUpdataLoop(std::shared_ptr<Data> _data)
 {
 	//ユーザー追加処理
-	if (curl == NULL)return;
+	if (curl == nullptr)return;
 	std::stringstream query;
 	std::string output;
 
 	//接続設定
 	curl_easy_setopt(curl, CURLOPT_URL, "http://lifestyle-qa.com/update_user_data.php");
 	curl_easy_setopt(curl, CURLOPT_POST, 1);
-
+	curl_easy_setopt(curl,CURLOPT_TIMEOUT,1L);													//1秒でデータを受信できなければタイムアウト処理
+	curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 2L);											//2秒以内に接続できなければタイムアウト処理
 
 	while (curl) {
 		//メッセージの生成
-		if(userId==nullptr){return;}
+		if(userId==nullptr)return;
 		query << "player=" << userId->c_str();
 		query << "&x=" << _data->GetX();
 		query << "&y=" << _data->GetY();
@@ -79,8 +79,12 @@ void CurlWrapper::PosUpdataLoop(std::shared_ptr<Data> _data)
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, output.c_str());			//メッセージ設定
 		code = curl_easy_perform(curl);										//URLへの接続
 
-	//送信失敗したかの判断
+		//送信失敗したかの判断
 		if (code != CURLE_OK) {
+			if (code == CURLE_BAD_FUNCTION_ARGUMENT) {
+				printf("%sがタイムアウトしています\n",_data->GetId()->c_str());
+				continue;
+			}
 			printf("code=%d\n", code);
 			return;
 		}
@@ -95,9 +99,9 @@ void CurlWrapper::PosUpdataLoop(std::shared_ptr<Data> _data)
 
 }
 
-void CurlWrapper::StartThread(std::shared_ptr<CurlWrapper> _curl,std::shared_ptr<Data> _data)
+void CurlWrapper::StartThread(CurlWrapper* _curl,std::shared_ptr<Data> _data)
 {
-	thread = std::make_shared<std::thread>(HttpLauncher, (void*)_curl.get(), _data);
+	thread = std::make_unique<std::thread>(HttpLauncher, (void*)_curl, _data);
 }
 
 void CurlWrapper::DBGetPos(char* _data, std::shared_ptr<std::string> _userId)

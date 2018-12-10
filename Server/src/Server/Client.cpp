@@ -1,19 +1,19 @@
 #include"../Include.h"
-#include"../Library/ExtensionMutex.h"
-#include"../Library/Data.h"
+#include"../Library/Mutex/ExtensionMutex.h"
+#include"../Library/Data/Data.h"
 #include"../Library/Cipher/OpenSSLAES.h"
 #include"../Library/Cipher/OpenSSLRSA.h"
 #include"../Library/Cipher/Cipher.h"
-#include"CurlWrapper.h"
-#include"Socket.h"
+#include"../Library/CurlWrapper/CurlWrapper.h"
+#include"../Library/Socket/Socket.h"
 #include "Client.h"
 
 Client::Client()
 {
 	completeDataQueList = std::make_unique <std::queue<std::vector<char>>>();
 	data = std::make_shared<Data>();
-	curl = std::make_shared<CurlWrapper>();
-	aes = std::make_shared<OpenSSLAES>();
+	curl = std::make_unique<CurlWrapper>();
+	aes = std::make_unique<OpenSSLAES>();
 }
 
 Client::~Client()
@@ -21,10 +21,11 @@ Client::~Client()
 	//解放処理
 	if(thread!=nullptr)thread->detach();											//スレッド終了
 	thread = nullptr;
-	data = nullptr;
 	curl = nullptr;
 	aes=nullptr;
 	completeDataQueList = nullptr;
+	data = nullptr;
+
 }
 
 void Client::Recv()
@@ -38,12 +39,12 @@ void Client::Recv()
 
 void Client::StartRecvThread(Client* _client)
 {
-	thread = std::make_shared<std::thread>(RecvLauncher, (void*)_client);
+	thread = std::make_unique<std::thread>(RecvLauncher, (void*)_client);
 }
 
 void Client::StartHttpThread()
 {
-	curl->StartThread(curl, data);
+	curl->StartThread(curl.get(), data);
 }
 
 SOCKET Client::GetSocket()
@@ -66,14 +67,14 @@ int Client::GetState()
 	return state;
 }
 
-std::shared_ptr<OpenSSLAES> Client::GetAES()
+OpenSSLAES* Client::GetAES()
 {
-	return aes;
+	return aes.get();
 }
 
-std::shared_ptr<CurlWrapper> Client::GetCurl()
+CurlWrapper* Client::GetCurl()
 {
-	return curl;
+	return curl.get();
 }
 
 
