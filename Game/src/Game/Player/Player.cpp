@@ -5,8 +5,8 @@ Player::Player()
 {
 	//インスタンスの生成
 	camera = new Camera(camera->THREE_PERSON_PERSPECTiVE);									//カメラ設定
-	data = new Data();
-
+	//data = new Data();
+	data = std::make_shared<Data>();
 	// スキンメッシュ読み込み
 	SPtr<CSkinMesh> sm = std::make_shared<CSkinMesh>();
 	sm->LoadXFile("images/Hackadoll_1/model.x");
@@ -22,7 +22,7 @@ Player::Player()
 
 	//ユーザーデータ送信
 	data->SetId(*CLIENT.GetPlayerData()->GetId());
-	CLIENT.SendUserInformation(data);
+	CLIENT.SendUserInformation(data.get());
 
 	while (1) {
 		if (CLIENT.GetInitFlg() == true) {
@@ -40,7 +40,7 @@ Player::~Player()
 	//解放処理
 	toonShader.Release();
 	delete camera;
-	delete data;
+	data=nullptr;
 }
 
 void Player::Update()
@@ -146,7 +146,7 @@ void Player::State()
 
 	//特定の処理の時のみループアニメーションを設定
 	if (data->GetAnimation() == WAIT || data->GetAnimation() == WALK || data->GetAnimation() == RUN) {
-		if (skinAnimation.GetAnimeNo() != WAIT&&data->GetAnimation() == WAIT)CLIENT.SendPos(data);			//アニメーションがWAITの場合一回目だけデータを送る
+		if (skinAnimation.GetAnimeNo() != WAIT&&data->GetAnimation() == WAIT)CLIENT.SendPos(data.get());			//アニメーションがWAITの場合一回目だけデータを送る
 		ChangeAnimation(data->GetAnimation(), true, 0.8f);														//ループアニメーション
 	}
 	else {
@@ -154,7 +154,7 @@ void Player::State()
 	}
 
 	//プレイヤーの座標を送信
-	if(data->GetAnimation()!=WAIT)CLIENT.SendPos(data);														//サーバーに座標を送信
+	if(data->GetAnimation()!=WAIT)CLIENT.SendPos(data.get());														//サーバーに座標を送信
 }
 
 void Player::Attack()

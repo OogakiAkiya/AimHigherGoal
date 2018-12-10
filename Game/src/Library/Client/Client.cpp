@@ -14,9 +14,16 @@ Client* Client::s_Instance = nullptr;
 Client::Client()
 {
 	//インスタンスの生成
-	cipher = new Cipher();										//暗号処理用クラス
-	mutex = new ExtensionMutex();								//排他制御用クラス
-	playerData = new Data();
+	cipher = std::make_unique<Cipher>();													//暗号処理
+	mutex = std::make_unique<ExtensionMutex>();												//排他制御
+	//socket = std::make_unique<Socket>();
+	playerData = std::make_unique<Data>();
+	//tempDataList = std::make_unique<std::vector<char>>();							//一時的にデータを保存
+	for (int i = 0; i < ENEMYAMOUNT; i++) {
+		enemyData[i] = std::make_shared<Data>();												//プレイヤー以外の敵情報を保持
+	}
+	dataQueueList = std::make_shared<std::queue<Data>>();										//完成品データから作成された各情報を保持
+
 }
 
 Client::~Client()
@@ -24,16 +31,25 @@ Client::~Client()
 	//解放処理
 	if(socket!=nullptr)socket->Close();
 	if(thread!=nullptr)thread->detach();
-	delete mutex;
-	delete cipher;
+	cipher = nullptr;													//暗号処理
+	mutex = nullptr;												//排他制御
 	delete socket;
-	delete playerData;
+	socket = nullptr;
+	playerData = nullptr;
+	//tempDataList = nullptr;							//一時的にデータを保存
+	tempDataList.clear();
+	thread = nullptr;
+	for (int i = 0; i < ENEMYAMOUNT; i++) {
+		enemyData[i] = nullptr;												//プレイヤー以外の敵情報を保持
+	}
+	dataQueueList = nullptr;										//完成品データから作成された各情報を保持
 }
 
 
 void Client::StartThread()
 {
-	thread = new std::thread(ClientThreadLauncher, (void*)s_Instance);
+	thread = std::make_unique<std::thread>(ClientThreadLauncher, (void*)s_Instance);
+
 }
 
 bool Client::CreateSocket(std::string _ip)
@@ -44,7 +60,10 @@ bool Client::CreateSocket(std::string _ip)
 		delete socket;
 		socket = nullptr;
 	}
-
+	if (thread != nullptr) {
+		thread->detach();
+		thread = nullptr;
+	}
 	//ソケット生成
 	socket = Socket::Instantiate()->
 		SetProtocolVersion_Dual().
@@ -52,6 +71,7 @@ bool Client::CreateSocket(std::string _ip)
 		SetIpAddress(_ip.c_str()).
 		SetPortNumber("49155").
 		ClientCreate();
+
 	if (socket == nullptr)return false;
 
 	//Recv処理を行うスレッドを開始させる
@@ -170,14 +190,14 @@ void Client::SendPos(Data* _data)
 	send(CLIENT.GetSocket(), sendData, sizeof(int) + encode_size, 0);
 }
 
-void Client::SendAttack(Data* _data)
+void Client::SendAttack(std::shared_ptr<Data> _data)
 {
 	//当たったかどうかを判定
 	float length;
 	D3DXVECTOR3 vectorLength;
 	D3DXVECTOR3 playerVector(_data->GetX(), _data->GetY(), _data->GetZ());											//プレイヤーのベクトル
-	for (int element = 0; element < 3; element++) {																	//idは敵の区別
-		D3DXVECTOR3 enemyVector(enemyData[element].GetX(), enemyData[element].GetY(), enemyData[element].GetZ());	//敵のベクトル
+	for (int element = 0; element < ENEMYAMOUNT; element++) {																	//idは敵の区別
+		D3DXVECTOR3 enemyVector(enemyData[element]->GetX(), enemyData[element]->GetY(), enemyData[element]->GetZ());	//敵のベクトル
 		vectorLength = enemyVector - playerVector;																	//二つのベクトルの差
 		length = D3DXVec3Length(&vectorLength);
 
@@ -217,12 +237,12 @@ SOCKET Client::GetSocket()
 
 Data Client::GetData()
 {
-	return dataQueueList.front();
+	return dataQueueList->front();
 }
 
 Data* Client::GetPlayerData()
 {
-	return playerData;
+	return playerData.get();
 }
 
 bool Client::GetInitFlg()
@@ -232,7 +252,7 @@ bool Client::GetInitFlg()
 
 void Client::DeleteData()
 {
-	dataQueueList.pop();
+	dataQueueList->pop();
 }
 
 void Client::ClearData()
@@ -245,13 +265,13 @@ void Client::ClearData()
 
 bool Client::DataEmpty()
 {
-	if (dataQueueList.empty() == true)return true;
+	if (dataQueueList->empty() == true)return true;
 	return false;
 }
 
-void Client::SetEnemyData(int _enemyid, Data * data)
+void Client::SetEnemyData(int _enemyid, std::shared_ptr<Data> data)
 {
-	enemyData[_enemyid] = *data;
+	enemyData[_enemyid]= data;
 }
 
 void Client::Lock()
@@ -308,7 +328,7 @@ void Client::DataManipulate(const std::vector<char>* _data)
 		recvData = *(int*)&_data->at(sizeof(char) + sizeof(float) * 3 + sizeof(int));
 		data.SetAnimation(recvData);
 		Lock();
-		dataQueueList.push(data);
+		dataQueueList->push(data);
 		Unlock();
 		break;
 	}
@@ -321,7 +341,7 @@ void Client::DataManipulate(const std::vector<char>* _data)
 		data.SetAngle(0);
 		data.SetAnimation(DAMAGE);
 		Lock();
-		dataQueueList.push(data);
+		dataQueueList->push(data);
 		Unlock();
 		break;
 	}

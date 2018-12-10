@@ -16,6 +16,7 @@
 #include<mutex>
 #include<queue>
 #include<sstream>
+#include<memory>
 
 //openssl
 #include<openssl/rand.h>

@@ -44,7 +44,7 @@ private:
 
 	//Camera* camera;
 	int enemyId;
-	Data data;
+	std::shared_ptr<Data> data;
 	char jumpFlg = 0;
 	D3DXMATRIX initMat;
 	D3DXVECTOR3 acceleration = { 0.001f,0.0f,0.0f };					//‰Á‘¬“x

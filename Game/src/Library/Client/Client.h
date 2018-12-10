@@ -12,7 +12,7 @@ public:
 	//---------------------------------------------------------
 	void SendUserInformation(Data* _data);
 	void SendPos(Data* _data);
-	void SendAttack(Data* _data);
+	void SendAttack(std::shared_ptr<Data> _data);
 
 	//---------------------------------------------------------
 	//情報取得
@@ -25,7 +25,7 @@ public:
 	void DeleteData();
 	void ClearData();
 	bool DataEmpty();
-	void SetEnemyData(int _enemyid, Data* data);
+	void SetEnemyData(int _enemyid, std::shared_ptr<Data> data);
 
 	//---------------------------------------------------------
 	//排他制御
@@ -65,20 +65,20 @@ private:
 	static const int ATTACK = 11;										//攻撃
 	static const int DAMAGE = 13;										//ダメージを受けた
 	static const int BYTESIZE = 256;									//送受信に使用するchar配列のデータ量
-
+	static const int ENEMYAMOUNT = 3;
 	//---------------------------------------------------------
 	//変数
 	//---------------------------------------------------------
-	Cipher* cipher=nullptr;														//暗号処理
-	ExtensionMutex* mutex = nullptr;												//排他制御
+	std::unique_ptr<Cipher> cipher = nullptr;														//暗号処理
+	std::unique_ptr <ExtensionMutex> mutex = nullptr;												//排他制御
 	Socket* socket = nullptr;
-	std::queue<Data> dataQueueList;										//完成品データから作成された各情報を保持
-	float count = 0;
+	std::shared_ptr <Data> enemyData[ENEMYAMOUNT];													//プレイヤー以外の敵情報を保持
+	std::unique_ptr <Data> playerData=nullptr;
+	std::shared_ptr <std::queue<Data>> dataQueueList=nullptr;										//完成品データから作成された各情報を保持
 	std::vector<char> tempDataList;									//一時的にデータを保存
-	Data enemyData[3];													//プレイヤー以外の敵情報を保持
-	std::thread* thread=nullptr;
+	std::unique_ptr <std::thread> thread=nullptr;
 	bool initFlag=false;
-	Data* playerData;
+	float count = 0;
 
 	//---------------------------------------------------------
 	//シングルトン

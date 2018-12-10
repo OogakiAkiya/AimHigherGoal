@@ -3,6 +3,7 @@
 
 Enemy::Enemy(int _id)
 {
+	data = std::make_shared<Data>();
 	//初期座標の設定
 	enemyId = _id;
 	switch (enemyId) {
@@ -27,14 +28,15 @@ Enemy::Enemy(int _id)
 	skinAnimation.ChangeAnime("立ち", true);						// アニメータにアニメーションを設定
 
 
-	skinChara.CreateMove(data.GetPos());							//移動
-	data.SetAnimation(WAIT);
+	skinChara.CreateMove(data->GetPos());							//移動
+	data->SetAnimation(WAIT);
 
 
 }
 
 Enemy::~Enemy()
 {
+	data = nullptr;
 }
 
 void Enemy::Update()
@@ -43,27 +45,27 @@ void Enemy::Update()
 	if (standFlg == true) {
 		if (skinAnimation.GetAnimePos() > 25 && skinAnimation.GetAnimeNo() == WAKEUP) {
 			standFlg = false;
-			data.SetAnimation(WAIT);
+			data->SetAnimation(WAIT);
 			if (CLIENT.DataEmpty() == false) {
 				CLIENT.Lock();
 				CLIENT.ClearData();										//取得データ全削除
 				CLIENT.Unlock();
 			}
-			ChangeAnimation(data.GetAnimation(), true);
+			ChangeAnimation(data->GetAnimation(), true);
 			return;
 		}
-		ChangeAnimation(data.GetAnimation(), false);					//アニメーションの変更
-		skinChara.CreateMove(data.GetPos());							//プレイヤーの座標設定
-		skinChara.RotateY_Local(data.GetAngle());						//angle分回転
+		ChangeAnimation(data->GetAnimation(), false);					//アニメーションの変更
+		skinChara.CreateMove(data->GetPos());							//プレイヤーの座標設定
+		skinChara.RotateY_Local(data->GetAngle());						//angle分回転
 		skinAnimation.Animation(1);										// アニメーションを進行
 		skinBoon.CalcBoneMatrix();										// 全ボーン、TransMatを使用しLocalMatを更新する
 		return;
 	}
 
 	//ダメージを受けていた時
-	if (data.GetAnimation() == DAMAGE) {								//ダメージアニメーションの制御
+	if (data->GetAnimation() == DAMAGE) {								//ダメージアニメーションの制御
 		Damage();
-		//ChangeAnimation(data.GetAnimation(), false, 0.8f);
+		//ChangeAnimation(data->GetAnimation(), false, 0.8f);
 		return;
 	}
 
@@ -76,34 +78,34 @@ void Enemy::Update()
 		recvdata = CLIENT.GetData();									//データ取得
 		CLIENT.Unlock();
 		if (recvdata.GetAnimation() == DAMAGE) {					//送られてきたデータがダメージだった場合
-			data.SetAnimation(recvdata.GetAnimation());
+			data->SetAnimation(recvdata.GetAnimation());
 			acceleration.z = 0.1;
 		}
 		else {
 			trans.x = -recvdata.GetX();							//マイナス余分
 			trans.y = recvdata.GetY();
 			trans.z = -recvdata.GetZ();							//マイナス余分
-			data.SetAngle(recvdata.GetAngle() + 180);			//180度余分
-			data.SetAnimation(recvdata.GetAnimation());
+			data->SetAngle(recvdata.GetAngle() + 180);			//180度余分
+			data->SetAnimation(recvdata.GetAnimation());
 
-			data.SetPos(trans);									//受け取った座標分の移動
+			data->SetPos(trans);									//受け取った座標分の移動
 			TransDataPos(initMat);								//エネミーの初期座標分だけ移動させる
 		}
 
 		//特定のアニメーションの変更処理
-		if (data.GetAnimation() == WAIT || data.GetAnimation() == WALK || data.GetAnimation() == RUN) {
-			ChangeAnimation(data.GetAnimation(), true,0.8f);
+		if (data->GetAnimation() == WAIT || data->GetAnimation() == WALK || data->GetAnimation() == RUN) {
+			ChangeAnimation(data->GetAnimation(), true,0.8f);
 		}
 		else {
-			ChangeAnimation(data.GetAnimation(), false, 0.8f);
+			ChangeAnimation(data->GetAnimation(), false, 0.8f);
 		}
 	}
 
 	//クライアントクラスにデータセット
-	CLIENT.SetEnemyData(enemyId, &data);
+	CLIENT.SetEnemyData(enemyId, data);
 
-	skinChara.CreateMove(data.GetPos());			//プレイヤーの座標設定
-	skinChara.RotateY_Local(data.GetAngle());							//angle分回転
+	skinChara.CreateMove(data->GetPos());			//プレイヤーの座標設定
+	skinChara.RotateY_Local(data->GetAngle());							//angle分回転
 	skinAnimation.Animation(1);									// アニメーションを進行
 	skinBoon.CalcBoneMatrix();								// 全ボーン、TransMatを使用しLocalMatを更新する
 
@@ -154,26 +156,26 @@ Camera* Enemy::GetCamera()
 void Enemy::State()
 {
 
-	if (data.GetAnimation() != ATTACK) {															//プレイヤーが攻撃しているならその他の動作をしない
-		if (jumpFlg == 0) data.SetAnimation(WAIT);												//何も動作していないなら待機モーションに設定
+	if (data->GetAnimation() != ATTACK) {															//プレイヤーが攻撃しているならその他の動作をしない
+		if (jumpFlg == 0) data->SetAnimation(WAIT);												//何も動作していないなら待機モーションに設定
 
-		if (data.GetAnimation() != JUMPUP&&data.GetAnimation() != JUMPDOWN&&data.GetAnimation() != LANDING) {			//プレイヤーがジャンプしていなかったら移動モーションを使用する
-			if (GetAsyncKeyState('W') & 0x8000) data.SetAnimation(WALK);						//移動状態に設定
-			if (GetAsyncKeyState('A') & 0x8000) data.SetAnimation(WALK);						//移動状態に設定
-			if (GetAsyncKeyState('S') & 0x8000) data.SetAnimation(WALK);						//移動状態に設定
-			if (GetAsyncKeyState('D') & 0x8000) data.SetAnimation(WALK);						//移動状態に設定
+		if (data->GetAnimation() != JUMPUP&&data->GetAnimation() != JUMPDOWN&&data->GetAnimation() != LANDING) {			//プレイヤーがジャンプしていなかったら移動モーションを使用する
+			if (GetAsyncKeyState('W') & 0x8000) data->SetAnimation(WALK);						//移動状態に設定
+			if (GetAsyncKeyState('A') & 0x8000) data->SetAnimation(WALK);						//移動状態に設定
+			if (GetAsyncKeyState('S') & 0x8000) data->SetAnimation(WALK);						//移動状態に設定
+			if (GetAsyncKeyState('D') & 0x8000) data->SetAnimation(WALK);						//移動状態に設定
 		}
 
 		if (GetAsyncKeyState(VK_SPACE) & 0x8000
-			&& data.GetAnimation() != JUMPUP
-			&& data.GetAnimation() != JUMPDOWN
-			&& data.GetAnimation() != LANDING) {
-			data.SetAnimation(JUMPUP);															//ジャンプ状態に設定
+			&& data->GetAnimation() != JUMPUP
+			&& data->GetAnimation() != JUMPDOWN
+			&& data->GetAnimation() != LANDING) {
+			data->SetAnimation(JUMPUP);															//ジャンプ状態に設定
 		}
 	}
-	if (GetAsyncKeyState(VK_LBUTTON) & 0x8000 && jumpFlg == 0) data.SetAnimation(ATTACK);																//ジャンプしていない状態で左クリックで攻撃
+	if (GetAsyncKeyState(VK_LBUTTON) & 0x8000 && jumpFlg == 0) data->SetAnimation(ATTACK);																//ジャンプしていない状態で左クリックで攻撃
 
-	switch (data.GetAnimation()) {
+	switch (data->GetAnimation()) {
 	case WAIT:							//待機モーション
 		Wait();
 		break;
@@ -190,11 +192,11 @@ void Enemy::State()
 		break;
 	}
 
-	if (data.GetAnimation() == WAIT || data.GetAnimation() == WALK || data.GetAnimation() == RUN) {
-		ChangeAnimation(data.GetAnimation(), true);
+	if (data->GetAnimation() == WAIT || data->GetAnimation() == WALK || data->GetAnimation() == RUN) {
+		ChangeAnimation(data->GetAnimation(), true);
 	}
 	else {
-		ChangeAnimation(data.GetAnimation(), false);
+		ChangeAnimation(data->GetAnimation(), false);
 
 	}
 
@@ -203,13 +205,13 @@ void Enemy::State()
 
 void Enemy::Attack()
 {
-	data.SetAnimation(ATTACK);												//攻撃モーションの設定
+	data->SetAnimation(ATTACK);												//攻撃モーションの設定
 
 	if (skinAnimation.GetAnimeNo() == ATTACK&&skinAnimation.GetAnimePos() >= 20) {
-		CLIENT.SendAttack(&data);														//攻撃が当たっているかどうかの判断と当たっていた場合データを敵に送る
+		CLIENT.SendAttack(data);														//攻撃が当たっているかどうかの判断と当たっていた場合データを敵に送る
 	}
 
-	if (skinAnimation.IsAnimationEnd() == true) data.SetAnimation(WAIT);			//攻撃が終わったら待機モーションに戻る
+	if (skinAnimation.IsAnimationEnd() == true) data->SetAnimation(WAIT);			//攻撃が終わったら待機モーションに戻る
 }
 
 void Enemy::Jump()
@@ -217,20 +219,20 @@ void Enemy::Jump()
 	if (jumpFlg == 0) {
 		jumpFlg = 1;												//1はジャンプ上昇中
 		acceleration.y = 0.2f;										//ジャンプする初速設定
-		data.SetAnimation(JUMPUP);											//上昇ジャンプ
+		data->SetAnimation(JUMPUP);											//上昇ジャンプ
 	}
 
 	if (acceleration.y < 0 && jumpFlg == 1) {
 		jumpFlg = 2;												//2はジャンプ下降中
-		data.SetAnimation(JUMPDOWN);										//下降
+		data->SetAnimation(JUMPDOWN);										//下降
 	}
 
-	if (data.GetY() <= 0) {												//キャラクターのy座標が0よりも小さくなった時
+	if (data->GetY() <= 0) {												//キャラクターのy座標が0よりも小さくなった時
 		if (jumpFlg == 2) {											//ジャンプ下降中のみ通る
 			jumpFlg = 3;											//3は着地状態
-			data.SetAnimation(LANDING);									//着地
+			data->SetAnimation(LANDING);									//着地
 		}
-		data.SetY(0);
+		data->SetY(0);
 	}
 	if (jumpFlg == 3) {
 		if (skinAnimation.IsAnimationEnd() == true)jumpFlg = 0;			//アニメーションが終わったらジャンプ終了
@@ -247,14 +249,14 @@ void Enemy::Jump()
 
 void Enemy::Wait()
 {
-	data.SetAnimation(WAIT);																//待機モーション
+	data->SetAnimation(WAIT);																//待機モーション
 	acceleration = { 0.001f,0.0f,0.0f };											//加速度初期化
 }
 
 void Enemy::Move()
 {
-	if (data.GetAnimation() == WALK&&skinAnimation.GetAnimeNo() != RUN)data.SetAnimation(WALK);
-	//if (data.GetAnimation() == WALK&&acceleration.z > (MOVESPEEDLIMIT - 0.03))data.SetAnimation(RUN);			//一定の速度に達するとアニメーションをする
+	if (data->GetAnimation() == WALK&&skinAnimation.GetAnimeNo() != RUN)data->SetAnimation(WALK);
+	//if (data->GetAnimation() == WALK&&acceleration.z > (MOVESPEEDLIMIT - 0.03))data->SetAnimation(RUN);			//一定の速度に達するとアニメーションをする
 
 	D3DXVECTOR3 ToVec(0.0f, 0.0f, 0.0f), tempVec;
 	//移動
@@ -300,7 +302,7 @@ void Enemy::Rotation(D3DXVECTOR3 _vec)
 	//if (acceleration.z > MOVESPEEDLIMIT) acceleration.z = MOVESPEEDLIMIT;			//上限値の設定
 	if (jumpFlg == 0) {
 		/*回転*/
-		D3DXMatrixRotationY(&rotation, D3DXToRadian(data.GetAngle()));							//回転用行列に回転量を合成
+		D3DXMatrixRotationY(&rotation, D3DXToRadian(data->GetAngle()));							//回転用行列に回転量を合成
 
 		D3DXVECTOR3 nowvec;																//①今向いてる方向
 		D3DXVec3TransformNormal(&nowvec, &D3DXVECTOR3(0.0f, 0.0f, 1.0f), &rotation);
@@ -311,7 +313,7 @@ void Enemy::Rotation(D3DXVECTOR3 _vec)
 		rotation_angle = D3DXVec3Dot(&nowvec, &tovec);
 		rotation_angle = D3DXToDegree(acos(rotation_angle));
 		if (rotation_angle >= 0.1f) {													//①と②の外積を求めてそのベクトルが上を向いてたら+下を向いていたら-する
-			float nowangle = data.GetAngle();
+			float nowangle = data->GetAngle();
 			D3DXVECTOR3 vCross;															//①と②の外積
 			D3DXVec3Cross(&vCross, &nowvec, &tovec);									//外積
 			D3DXVec3Normalize(&vCross, &vCross);										//正規化
@@ -326,10 +328,10 @@ void Enemy::Rotation(D3DXVECTOR3 _vec)
 			else {
 				nowangle += rotation_angle;												//真後ろつまり真逆ベクトルを見られたときは足しても引いてもよい
 			}
-			data.SetAngle(nowangle);
+			data->SetAngle(nowangle);
 		}
 		/*回転*/
-		D3DXMatrixRotationY(&rotation, D3DXToRadian(data.GetAngle()));
+		D3DXMatrixRotationY(&rotation, D3DXToRadian(data->GetAngle()));
 	}
 	TransDataPos(trans);
 
@@ -346,8 +348,8 @@ void Enemy::ChangeAnimation(int _animation, bool _roop, double _speed)
 
 bool Enemy::Damage()
 {
-	if (skinAnimation.GetAnimePos()>40 && data.GetAnimation() == DAMAGE) {
-		data.SetAnimation(WAKEUP);
+	if (skinAnimation.GetAnimePos()>40 && data->GetAnimation() == DAMAGE) {
+		data->SetAnimation(WAKEUP);
 		standFlg = true;
 		if (CLIENT.DataEmpty() == false) {
 			CLIENT.Lock();
@@ -363,8 +365,8 @@ bool Enemy::Damage()
 	acceleration.z -= 0.003;											//加速度を減らす
 	if (acceleration.z < 0)acceleration.z = 0.0f;
 
-	skinChara.CreateMove(data.GetPos());			//プレイヤーの座標設定
-	skinChara.RotateY_Local(data.GetAngle());							//angle分回転
+	skinChara.CreateMove(data->GetPos());			//プレイヤーの座標設定
+	skinChara.RotateY_Local(data->GetAngle());							//angle分回転
 	skinAnimation.Animation(1);									// アニメーションを進行
 	skinBoon.CalcBoneMatrix();								// 全ボーン、TransMatを使用しLocalMatを更新する
 	return true;
@@ -374,14 +376,14 @@ bool Enemy::Damage()
 void Enemy::TransDataPos(D3DXMATRIX _trans)
 {
 	D3DXVECTOR3 transpos(_trans._41, _trans._42, _trans._43);
-	D3DXVECTOR3 pos(data.GetX(), data.GetY(), data.GetZ());
+	D3DXVECTOR3 pos(data->GetX(), data->GetY(), data->GetZ());
 	pos += transpos;
-	data.SetPos(pos);
+	data->SetPos(pos);
 }
 
 D3DXMATRIX* Enemy::CreateMat()
 {
 	D3DXMATRIX returnmat;
-	D3DXMatrixTranslation(&returnmat, data.GetX(), data.GetY(), data.GetZ());
+	D3DXMatrixTranslation(&returnmat, data->GetX(), data->GetY(), data->GetZ());
 	return &returnmat;
 }

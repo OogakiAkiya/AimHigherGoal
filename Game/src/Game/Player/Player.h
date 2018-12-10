@@ -47,7 +47,7 @@ private:
 	//シェーダ
 	ToonShader toonShader;
 
-	Data* data;
+	std::shared_ptr<Data> data=nullptr;
 	char jumpFlg = 0;
 	bool attackFlg = false;
 	D3DXVECTOR3 acceleration = { 0.001f,0.0f,0.0f };					//加速度
