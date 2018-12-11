@@ -16,9 +16,7 @@ Client::Client()
 	//インスタンスの生成
 	cipher = std::make_unique<Cipher>();													//暗号処理
 	mutex = std::make_unique<ExtensionMutex>();												//排他制御
-	//socket = std::make_unique<Socket>();
 	playerData = std::make_unique<Data>();
-	//tempDataList = std::make_unique<std::vector<char>>();							//一時的にデータを保存
 	for (int i = 0; i < ENEMYAMOUNT; i++) {
 		enemyData[i] = std::make_shared<Data>();												//プレイヤー以外の敵情報を保持
 	}
@@ -36,7 +34,6 @@ Client::~Client()
 	delete socket;
 	socket = nullptr;
 	playerData = nullptr;
-	//tempDataList = nullptr;							//一時的にデータを保存
 	tempDataList.clear();
 	thread = nullptr;
 	for (int i = 0; i < ENEMYAMOUNT; i++) {

@@ -6,26 +6,26 @@
 Cipher::Cipher()
 {
 	//共通鍵暗号
-	aes = new OpenSSLAES();
+	aes = std::make_unique<OpenSSLAES>();
 	aes->CreateKey();									//キーの生成
 
 	//公開鍵暗号
-	rsa = new OpenSSLRSA();
+	rsa = std::make_unique<OpenSSLRSA>();
 	rsa->ReadPublicKey("key/public-key.pem");			//キーの読み込み
 }
 
 Cipher::~Cipher()
 {
-	delete aes;
-	delete rsa;
+	aes = nullptr;
+	rsa = nullptr;
 }
 
 OpenSSLAES* Cipher::GetOpenSSLAES()
 {
-	return aes;
+	return aes.get();
 }
 
 OpenSSLRSA * Cipher::GetOpenSSLRSA()
 {
-	return rsa;
+	return rsa.get();
 }

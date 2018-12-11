@@ -30,7 +30,6 @@ private:
 	int Multiple16(int _data);											//ˆø”‚Ì’l‚ğ16‚Ì”{”‚É‚È‚é‚æ‚¤‚ÉŒvZ‚·‚é
 	unsigned char* key;
 	unsigned char* iv = (unsigned char*)"abcdefghijklmnop";
-
 	EVP_CIPHER_CTX* en;
 
 };

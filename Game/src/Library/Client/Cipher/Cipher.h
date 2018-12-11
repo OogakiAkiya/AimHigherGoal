@@ -15,8 +15,8 @@ private:
 	//---------------------------------------------------------
 	//•Ï”
 	//---------------------------------------------------------
-	OpenSSLAES* aes;				//‹¤’ÊŒ®ˆÃ†
-	OpenSSLRSA* rsa;				//ŒöŠJŒ®ˆÃ†
+	std::unique_ptr<OpenSSLAES> aes=nullptr;				//‹¤’ÊŒ®ˆÃ†
+	std::unique_ptr <OpenSSLRSA> rsa=nullptr;				//ŒöŠJŒ®ˆÃ†
 };
 
 #endif

@@ -57,29 +57,33 @@ Socket & Socket::SetPortNumber(std::string _port)
 	return *this;
 }
 
-Socket * Socket::ServerCreate()
+Socket & Socket::SetAsynchronous()
 {
-	if(AddressSet()==false)return nullptr;
-	if(Create()==false)return nullptr;
-	if(Bind()==false)return nullptr;
-	if(Listen()==false)return nullptr;
-
-	return this;
+	asynchronousFlg = true;
+	return *this;
 }
 
-Socket * Socket::ClientCreate(bool _asynchronousFlag)
+std::shared_ptr<Socket> Socket::ServerCreate(std::shared_ptr<Socket> _this)
 {
-	if (AddressSet() == false)return nullptr;
-	if (Create() == false)return nullptr;
-	if (Connect() == false)return nullptr;
+	if(_this->AddressSet()==false)return nullptr;
+	if(_this->Create()==false)return nullptr;
+	if(_this->Bind()==false)return nullptr;
+	if(_this->Listen()==false)return nullptr;
 
-	//非同期通信ON/OFF
-	if (_asynchronousFlag) {
+	return _this;
+}
+
+std::shared_ptr<Socket> Socket::ClientCreate(std::shared_ptr<Socket> _this)
+{
+	if (_this->AddressSet() == false)return nullptr;
+	if (_this->Create() == false)return nullptr;
+	if (_this->Connect() == false)return nullptr;
+	if (asynchronousFlg) {
 		unsigned long value = 1;
 		ioctlsocket(socket, FIONBIO, &value);					//非同期通信化
 	}
 
-	return this;
+	return _this;
 }
 
 
@@ -89,7 +93,6 @@ bool Socket::AddressSet()
 	//ソケットが使用可能かのチェック
 	int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
 	if (iResult != 0) {
-		available = true;
 		return false;
 	}
 
@@ -100,7 +103,6 @@ bool Socket::AddressSet()
 	if (iResult != 0) {
 		printf("getaddrinfo failed:%d\n", iResult);
 		WSACleanup();
-		available = true;
 		return false;
 	}
 	return true;
@@ -115,7 +117,6 @@ bool Socket::Create()
 		printf("Error at socket():%ld\n", WSAGetLastError());
 		freeaddrinfo(result);					//メモリの解放
 		WSACleanup();							//ソケットの解放
-		available = true;
 		return false;
 	}
 	return true;
@@ -154,6 +155,7 @@ void Socket::Close()
 		closesocket(socket);
 		WSACleanup();
 	}
+	
 	closesocket(socket);
 	WSACleanup();
 }
@@ -202,9 +204,4 @@ SOCKET Socket::Accept()
 SOCKET Socket::GetSocket()
 {
 	return socket;
-}
-
-Socket * Socket::Instantiate()
-{
-	return new Socket();
 }

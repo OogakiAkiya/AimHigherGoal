@@ -9,14 +9,14 @@
 GameMain::GameMain()
 {
 	//マップ生成
-	feald = new Ground();
+	feald = std::make_unique<Ground>();
 
 	//キャラ生成
-	CharacterBase* temp = new Player();
+	std::shared_ptr<CharacterBase> temp = std::make_shared<Player>();
 	characterList.push_back(temp);
 
 	for (int i = 0;i<3; i++) {
-		temp = new Enemy(i);
+		temp = std::make_shared<Enemy>(i);
 		characterList.push_back(temp);
 	}
 
@@ -34,13 +34,11 @@ GameMain::GameMain()
 GameMain::~GameMain()
 {
 	//解放処理
-	delete feald;								//地面削除
-	CharacterBase* deleteChara;					//キャラ削除
-	for (auto element : characterList) {
-		deleteChara = element;
-		delete deleteChara;
+	feald=nullptr;								//地面削除
+	for (int i = 0; i < characterList.size(); i++) {
+		characterList[i] = nullptr;
 	}
-	characterList.erase(characterList.begin(), characterList.end());
+	characterList.clear();
 }
 
 void GameMain::Update()

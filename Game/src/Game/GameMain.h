@@ -14,8 +14,8 @@ private:
 	//---------------------------------------------------------
 	//変数
 	//---------------------------------------------------------
-	Ground* feald;						//地面
-	std::vector<CharacterBase*> characterList;
+	std::unique_ptr<Ground> feald;						//地面
+	std::vector<std::shared_ptr<CharacterBase>> characterList;
 	//お試し
 	XFILE* s_mesh;						//メッシュ
 	D3DXMATRIX s_mat;					//座標用行列

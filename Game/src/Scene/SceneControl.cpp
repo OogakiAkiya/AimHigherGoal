@@ -14,9 +14,7 @@ SceneControl::SceneControl()
 	//インスタンスの生成
 	CheckMesh::GetInstance();												//メッシュ情報を重複して読み込まないためのクラス
 	Mouse::GetInstance();													//マウスを管理する
-	//SceneBase* temp = new GameMain();					//ゲームシーンから開始
-	scene = new TitleMain();
-
+	scene = std::make_unique<TitleMain>();
 	//シーンメインカメラ設定
 	camera = scene->GetCamera();						//視点用カメラの取得
 }
@@ -24,7 +22,7 @@ SceneControl::SceneControl()
 SceneControl::~SceneControl()
 {
 	//解放処理
-	delete scene;
+	scene = nullptr;
 	Mouse::DeleteInstance();
 	CheckMesh::DeleteInstance();
 
@@ -34,8 +32,7 @@ void SceneControl::Update()
 {
 	//シーンチェンジ処理
 	if (scene->GetEndFlg() == true) {					//endflgがtrueになっていたらシーンチェンジ
-		delete scene;
-		scene = new GameMain();
+		scene = std::make_unique<GameMain>();
 	}
 	//シーン更新処理
 	scene->Update();									//保持するシーンの情報更新

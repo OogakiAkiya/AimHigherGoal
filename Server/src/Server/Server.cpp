@@ -23,14 +23,13 @@ Server::Server()
 	srand(time(0));
 
 	//ソケット初期化
-	socket = Socket::Instantiate()->
-		SetProtocolVersion_IPv4().								//IPv6
+	socket = make_shared<Socket>();
+	socket = socket->
+		SetProtocolVersion_IPv4().								//IPv4
 		SetProtocol_TCP().										//TCP
-		SetIpAddress("0.0.0.0").
+		SetIpAddress("0,0,0,0").								//アドレス指定
 		SetPortNumber("49155").									//ポート番号
-		ServerCreate();											//サーバーソケット
-
-	if (socket == nullptr) delete this;
+		ServerCreate(socket);									//サーバーソケット生成
 	clientController=std::make_shared<ClientController>();
 	//ソケットの管理クラスのスレッド開始
 	clientController->StartThread(clientController.get());
@@ -40,16 +39,16 @@ Server::Server()
 
 Server::~Server()
 {
-	socket->Close();
 	ExtensionMutex::DeleteInstance();													//mutex管理classインスタンスの削除
 	Cipher::DeleteInstance();
-	if(socket!=nullptr)delete socket;
+	socket = nullptr;
 	clientController = nullptr;
 }
 
 void Server::AcceptLoop()
 {
 	while (1) {
+		if (socket == nullptr)return;
 		AcceptSocket();
 	}
 }
@@ -63,14 +62,14 @@ void Server::AcceptSocket()
 	SOCKET initSocket;
 	initSocket = INVALID_SOCKET;					//client_socket初期化
 	initSocket = socket->Accept();
+	if (initSocket == INVALID_SOCKET)return;
+	//クライアントのソケットをコントローラークラスに追加する
+	clientSocket = std::make_shared<Client>();
+	clientSocket->SetSocket(initSocket);											//Socketクラスにクライアントの情報を代入する
+	MUTEX.Lock();																	//排他制御Lock
+	clientController->SetSocket(clientSocket);										//作ったクライアント情報はSocketControllerクラスで管理
+	MUTEX.Unlock();																	//排他制御Unlock
 
-		//クライアントのソケットをコントローラークラスに追加する
-		clientSocket = std::make_shared<Client>();
-		clientSocket->SetSocket(initSocket);											//Socketクラスにクライアントの情報を代入する
-		MUTEX.Lock();																	//排他制御Lock
-		clientController->SetSocket(clientSocket);										//作ったクライアント情報はSocketControllerクラスで管理
-		MUTEX.Unlock();																	//排他制御Unlock
-
-		printf("来ました\n");
-		clientSocket->StartRecvThread(clientSocket.get());									//recv処理のスレッド開始
+	printf("来ました\n");
+	clientSocket->StartRecvThread(clientSocket.get());									//recv処理のスレッド開始
 }

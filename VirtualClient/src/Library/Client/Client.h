@@ -68,12 +68,13 @@ private:
 	ExtensionMutex* mutex = nullptr;												//排他制御
 	Socket* socket = nullptr;
 	std::queue<Data> dataQueueList;										//完成品データから作成された各情報を保持
-	float count = 0;
 	std::vector<char> tempDataList;									//一時的にデータを保存
 	Data enemyData[3];													//プレイヤー以外の敵情報を保持
 	std::shared_ptr<std::thread> thread=nullptr;
-	bool initFlag=false;
 	Data* playerData;
+	float count = 0;
+	bool initFlag = false;
+
 };
 
 
