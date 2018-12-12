@@ -1,8 +1,6 @@
 #ifndef Camera_h
 #define Camera_h
 
-class CharacterBase;
-
 class Camera {
 public:
 	Camera(int _flg=ORIGINAL);
@@ -12,14 +10,14 @@ public:
 	//---------------------------------------------------------
 	//情報取得
 	//---------------------------------------------------------
-	D3DXVECTOR3 GetPos();
-	D3DXVECTOR3 GetLook();
-	D3DXVECTOR3 GetHead();
-	D3DXMATRIX GetView();
-	D3DXMATRIX GetProj();
+	D3DXVECTOR3* GetPos();
+	D3DXVECTOR3* GetLook();
+	D3DXVECTOR3* GetHead();
+	D3DXMATRIX* GetView();
+	D3DXMATRIX* GetProj();
 	D3DXMATRIX GetRotMat();
-	D3DXMATRIX GetMat();
-	void SetMat(D3DXMATRIX _mat);
+	D3DXMATRIX* GetMat();
+	void SetMat(D3DXMATRIX* _mat);
 
 	//---------------------------------------------------------
 	//定数
@@ -38,6 +36,9 @@ private:
 	D3DXVECTOR3 head;		//カメラの頭の向き
 	D3DXMATRIX mat;			//カメラ行列
 	D3DXMATRIX targetmat;	//追従する対象の行列
+	D3DXMATRIX view;		//ビュー行列
+	D3DXMATRIX proj;		//射影行列
+
 };
 
 #endif

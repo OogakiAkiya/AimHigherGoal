@@ -24,6 +24,7 @@ Camera::Camera(int _flg)
 
 Camera::~Camera()
 {
+
 }
 
 
@@ -46,55 +47,51 @@ void Camera::ComplianceUpdate()
 }
 
 
-D3DXVECTOR3 Camera::GetPos()
+D3DXVECTOR3* Camera::GetPos()
 {
-	return pos;
+	return &pos;
 }
 
-D3DXVECTOR3 Camera::GetLook()
+D3DXVECTOR3* Camera::GetLook()
 {
-	return look;
+	return &look;
 }
 
-D3DXVECTOR3 Camera::GetHead()
+D3DXVECTOR3* Camera::GetHead()
 {
-	return head;
+	return &head;
 }
 
-D3DXMATRIX Camera::GetView()
+D3DXMATRIX* Camera::GetView()
 {
-	D3DXMATRIX mview;
-
 	//ÉrÉÖÅ[ÇÃçÏê¨
-	D3DXMatrixLookAtLH(&mview, &pos, &look, &head);
-	return mview;
+	D3DXMatrixLookAtLH(&view, &pos, &look, &head);
+	return &view;
 }
 
-D3DXMATRIX Camera::GetProj()
+D3DXMATRIX* Camera::GetProj()
 {
-	D3DXMATRIX mProj;
-
 	// ìäâeçsóÒÇÃê›íË
-	D3DXMatrixPerspectiveFovLH(&mProj, D3DXToRadian(60), (float)DX.SCRW / (float)DX.SCRH, 1.0f, 1000.0f);
+	D3DXMatrixPerspectiveFovLH(&proj, D3DXToRadian(60), (float)DX.SCRW / (float)DX.SCRH, 1.0f, 1000.0f);
 
-	return mProj;
+	return &proj;
 }
 
 D3DXMATRIX Camera::GetRotMat()
 {
-	D3DXMATRIX temp;
-	D3DXMatrixIdentity(&temp);
-	D3DXMatrixRotationY(&temp, D3DXToRadian(angle));		//ç∂âEÇ…âÒì]Ç≥ÇπÇÈ
-	return temp;
+	D3DXMATRIX rotation;
+	D3DXMatrixIdentity(&rotation);
+	D3DXMatrixRotationY(&rotation, D3DXToRadian(angle));		//ç∂âEÇ…âÒì]Ç≥ÇπÇÈ
+	return rotation;
 }
 
-D3DXMATRIX Camera::GetMat()
+D3DXMATRIX* Camera::GetMat()
 {
-	return mat;
+	return &mat;
 }
 
-void Camera::SetMat(D3DXMATRIX _mat)
+void Camera::SetMat(D3DXMATRIX* _mat)
 {
-	targetmat = _mat;
+	targetmat = *_mat;
 }
 

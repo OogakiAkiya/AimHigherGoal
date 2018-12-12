@@ -158,9 +158,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Game\GameMain.h">
-      <Filter>ソース ファイル\Game</Filter>
-    </ClInclude>
     <ClInclude Include="src\Scene\SceneBase.h">
       <Filter>ソース ファイル\Scene</Filter>
     </ClInclude>
@@ -253,6 +250,9 @@
     </ClInclude>
     <ClInclude Include="src\Library\imgui\imgui_impl_win32.h">
       <Filter>ソース ファイル\Library\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\GameMain.h">
+      <Filter>ソース ファイル\Game</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -12,7 +12,7 @@ struct CharaStatus {
 
 class CharacterBase {
 public:
-	virtual ~CharacterBase(){}
+	virtual ~CharacterBase() {};
 	virtual void Update()=0;
 	virtual void Render3D() = 0;
 	virtual void Render2D() = 0;
@@ -21,7 +21,7 @@ public:
 	//---------------------------------------------------------
 	D3DXMATRIX* GetMat();
 	CharaStatus* Getstatus();
-	Camera* GetCamera();
+	std::shared_ptr<Camera> GetCamera();
 
 	//---------------------------------------------------------
 	//情報書き込み
@@ -57,8 +57,8 @@ protected:
 	//---------------------------------------------------------
 	//3Dモデルを扱うための行列
 	//---------------------------------------------------------
-	Camera* camera;
-	XFILE* mesh;					//メッシュ
+	std::shared_ptr<Camera> camera;
+	std::weak_ptr<XFILE> mesh;					//メッシュ
 	D3DXMATRIX baseMat;					//キャラクターの行列
 	CharaStatus status;				//キャラクターステータス
 	

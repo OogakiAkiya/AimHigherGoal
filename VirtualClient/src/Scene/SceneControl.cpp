@@ -10,7 +10,7 @@ SceneControl::SceneControl()
 	//インスタンスの生成
 	CheckMesh::GetInstance();												//メッシュ情報を重複して読み込まないためのクラス
 	Mouse::GetInstance();													//マウスを管理する
-	scene = new GameMain();					//ゲームシーンから開始
+	scene = std::make_shared<GameMain>();					//ゲームシーンから開始
 	camera = scene->GetCamera();						//視点用カメラの取得
 
 }
@@ -18,7 +18,7 @@ SceneControl::SceneControl()
 SceneControl::~SceneControl()
 {
 	//解放処理
-	delete scene;
+	scene=nullptr;
 	Mouse::DeleteInstance();
 	CheckMesh::DeleteInstance();
 
@@ -43,12 +43,12 @@ void SceneControl::Render2D()
 	scene->Render2D();
 }
 
-D3DXMATRIX SceneControl::GetCameraView()
+D3DXMATRIX* SceneControl::GetCameraView()
 {
 	return camera->GetView();
 }
 
-D3DXMATRIX SceneControl::GetCameraProj()
+D3DXMATRIX* SceneControl::GetCameraProj()
 {
 	return camera->GetProj();
 }

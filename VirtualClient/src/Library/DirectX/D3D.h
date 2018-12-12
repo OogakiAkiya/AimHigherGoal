@@ -16,7 +16,7 @@ public:
 	//---------------------------------------------------------
 	LPDIRECT3DDEVICE9 GetDevice();
 	LPD3DXSPRITE GetSprite();
-	D3DLIGHT9 GetLight();
+	D3DLIGHT9* GetLight();
 	LPD3DXFONT GetFont();
 
 	//---------------------------------------------------------
@@ -28,7 +28,7 @@ public:
 	//---------------------------------------------------------
 	//マクロ
 	//---------------------------------------------------------
-	static const int SCRW = 1280;	// ウィンドウ幅（Width
+	static const int SCRW = 1280;		// ウィンドウ幅（Width
 	static const int SCRH = 720;		// ウィンドウ高さ（Height
 	static const int	FVF_VERTEX = (D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
 
@@ -39,12 +39,12 @@ private:
 	//---------------------------------------------------------
 	//変数
 	//---------------------------------------------------------
-	LPDIRECT3D9				lpD3D;		// Direct3Dインターフェイス
-	LPDIRECT3DDEVICE9		lpD3DDevice;	// Direct3DDeviceインターフェイス
+	LPDIRECT3D9	lpD3D;				// Direct3Dインターフェイス
+	LPDIRECT3DDEVICE9 lpD3DDevice;	// Direct3DDeviceインターフェイス
 	D3DPRESENT_PARAMETERS d3dpp;
 	D3DLIGHT9 light;
-	LPD3DXSPRITE lpSprite;	// スプライト
-	LPD3DXFONT lpFont;		// フォント
+	LPD3DXSPRITE lpSprite;			// スプライト
+	LPD3DXFONT lpFont;				// フォント
 
 	//---------------------------------------------------------
 	//シングルトン

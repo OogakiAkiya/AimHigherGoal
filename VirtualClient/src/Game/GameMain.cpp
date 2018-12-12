@@ -6,9 +6,9 @@
 
 GameMain::GameMain()
 {
-	imgui = new ImguiWrapper(*WIN.GetHwnd());
-	camera = new Camera();
-	data = new Data();
+	imgui =std::make_shared<ImguiWrapper>(*WIN.GetHwnd());
+	camera = std::make_shared<Camera>();
+	data = std::make_shared<Data>();
 }
 
 GameMain::~GameMain()
@@ -17,8 +17,8 @@ GameMain::~GameMain()
 		client = nullptr;
 	}
 	clientList.clear();
-	delete camera;
-	delete imgui;
+	camera=nullptr;
+	imgui=nullptr;
 }
 
 

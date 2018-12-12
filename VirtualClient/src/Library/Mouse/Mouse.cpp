@@ -44,9 +44,9 @@ void Mouse::FreeUpdate()
 }
 
 
-POINT Mouse::GetMousePt()
+POINT* Mouse::GetMousePt()
 {
-	return mouseBasePt;
+	return &mouseBasePt;
 }
 
 float Mouse::GetMoveX()

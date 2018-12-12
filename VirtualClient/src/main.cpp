@@ -41,8 +41,8 @@ void GameFrame(void)
 
 
 	//行列設定
-	DEV->SetTransform(D3DTS_VIEW, &SCENE.GetCameraView());
-	DEV->SetTransform(D3DTS_PROJECTION, &SCENE.GetCameraProj());
+	DEV->SetTransform(D3DTS_VIEW, SCENE.GetCameraView());
+	DEV->SetTransform(D3DTS_PROJECTION, SCENE.GetCameraProj());
 
 	// 3D描画
 	Render3D();
@@ -72,8 +72,8 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev,
 	timeBeginPeriod(1);
 
 	
-	ClientToScreen(*WIN.GetHwnd(), &MOUSE.GetMousePt());								//クライアント座標に変換
-	SetCursorPos(MOUSE.GetMousePt().x, MOUSE.GetMousePt().y);
+	ClientToScreen(*WIN.GetHwnd(), MOUSE.GetMousePt());								//クライアント座標に変換
+	SetCursorPos(MOUSE.GetMousePt()->x, MOUSE.GetMousePt()->y);
 	
 	//フォグ
 	DEV->SetRenderState(D3DRS_FOGENABLE, TRUE);								//フォグ有効化

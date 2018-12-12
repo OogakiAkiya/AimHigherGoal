@@ -207,9 +207,9 @@ LPD3DXSPRITE D3D::GetSprite()
 	return lpSprite;
 }
 
-D3DLIGHT9 D3D::GetLight()
+D3DLIGHT9* D3D::GetLight()
 {
-	return light;
+	return &light;
 }
 
 LPD3DXFONT D3D::GetFont()
