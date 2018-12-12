@@ -97,7 +97,7 @@ bool Socket::AddressSet()
 	}
 
 	//’ÊMİ’è
-	hints.ai_socktype = SOCK_STREAM;		//ŒÅ’è
+	hints.ai_socktype = SOCK_STREAM;							//ŒÅ’è
 	hints.ai_flags = AI_PASSIVE;
 	iResult = getaddrinfo(NULL, port->c_str(), &hints, &result);
 	if (iResult != 0) {

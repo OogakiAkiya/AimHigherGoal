@@ -71,7 +71,7 @@ private:
 	//---------------------------------------------------------
 	std::unique_ptr<Cipher> cipher = nullptr;														//暗号処理
 	std::unique_ptr <ExtensionMutex> mutex = nullptr;												//排他制御
-	Socket* socket = nullptr;
+	std::shared_ptr<Socket> socket = nullptr;
 	std::shared_ptr <Data> enemyData[ENEMYAMOUNT];													//プレイヤー以外の敵情報を保持
 	std::unique_ptr <Data> playerData=nullptr;
 	std::shared_ptr <std::queue<Data>> dataQueueList=nullptr;										//完成品データから作成された各情報を保持

@@ -27,11 +27,9 @@ Client::Client()
 Client::~Client()
 {
 	//解放処理
-	if(socket!=nullptr)socket->Close();
 	if(thread!=nullptr)thread->detach();
 	cipher = nullptr;													//暗号処理
 	mutex = nullptr;												//排他制御
-	delete socket;
 	socket = nullptr;
 	playerData = nullptr;
 	tempDataList.clear();
@@ -53,8 +51,6 @@ bool Client::CreateSocket(std::string _ip)
 {
 	//既にソケットが存在する場合削除する
 	if (socket != nullptr) {
-		socket->Close();
-		delete socket;
 		socket = nullptr;
 	}
 	if (thread != nullptr) {
@@ -62,12 +58,13 @@ bool Client::CreateSocket(std::string _ip)
 		thread = nullptr;
 	}
 	//ソケット生成
-	socket = Socket::Instantiate()->
+	socket = std::make_shared<Socket>();
+	socket = socket->
 		SetProtocolVersion_Dual().
 		SetProtocol_TCP().
 		SetIpAddress(_ip.c_str()).
 		SetPortNumber("49155").
-		ClientCreate();
+		ClientCreate(socket);
 
 	if (socket == nullptr)return false;
 

@@ -4,13 +4,15 @@
 Socket::Socket()
 {
 	ZeroMemory(&hints, sizeof(hints));
-	ip.erase();
-	port.erase();
+	ip = std::make_unique<std::string>();
+	port = std::make_unique<std::string>();
 }
 
 Socket::~Socket()
 {
 	Close();
+	ip = nullptr;
+	port = nullptr;
 }
 
 Socket & Socket::SetProtocolVersion_IPv4()
@@ -45,39 +47,43 @@ Socket & Socket::SetProtocol_UDP()
 
 Socket & Socket::SetIpAddress(std::string _addrs)
 {
-	ip=_addrs;
+	ip->assign(_addrs);
 	return *this;
 }
 
 Socket & Socket::SetPortNumber(std::string _port)
 {
-	port = _port;
+	port->assign(_port);
 	return *this;
 }
 
-Socket * Socket::ServerCreate()
+Socket & Socket::SetAsynchronous()
 {
-	if (AddressSet() == false)return nullptr;
-	if (Create() == false)return nullptr;
-	if (Bind() == false)return nullptr;
-	if (Listen() == false)return nullptr;
-
-	return this;
+	asynchronousFlg = true;
+	return *this;
 }
 
-Socket * Socket::ClientCreate(bool _asynchronousflg)
+std::shared_ptr<Socket> Socket::ServerCreate(std::shared_ptr<Socket> _this)
 {
-	if (AddressSet() == false)return nullptr;
-	if(Create()==false)return nullptr;
-	if(Connect()==false)return nullptr;
+	if (_this->AddressSet() == false)return nullptr;
+	if (_this->Create() == false)return nullptr;
+	if (_this->Bind() == false)return nullptr;
+	if (_this->Listen() == false)return nullptr;
 
-	//非同期通信ON/OFF
-	if (_asynchronousflg) {
+	return _this;
+}
+
+std::shared_ptr<Socket> Socket::ClientCreate(std::shared_ptr<Socket> _this)
+{
+	if (_this->AddressSet() == false)return nullptr;
+	if (_this->Create() == false)return nullptr;
+	if (_this->Connect() == false)return nullptr;
+	if (asynchronousFlg) {
 		unsigned long value = 1;
 		ioctlsocket(m_socket, FIONBIO, &value);					//非同期通信化
 	}
 
-	return this;
+	return _this;
 }
 
 
@@ -87,18 +93,16 @@ bool Socket::AddressSet()
 	//socket使用可能かのチェック
 	int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
 	if (iResult != 0) {
-		is_available = true;
 		return false;
 	}
 
 	//通信設定
 	hints.ai_socktype = SOCK_STREAM;		//固定
 	hints.ai_flags = AI_PASSIVE;
-	iResult = getaddrinfo(ip.c_str(), port.c_str(), &hints, &result);
+	iResult = getaddrinfo(ip->c_str(), port->c_str(), &hints, &result);
 	if (iResult != 0) {
 		printf("getaddrinfo failed:%d\n", iResult);
 		WSACleanup();
-		is_available = true;
 		return false;
 	}
 	return true;
@@ -113,7 +117,6 @@ bool Socket::Create()
 		printf("Error at socket():%ld\n", WSAGetLastError());
 		freeaddrinfo(result);					//メモリの解放
 		WSACleanup();							//ソケットの解放
-		is_available = true;
 		return false;
 	}
 	return true;
@@ -200,13 +203,7 @@ SOCKET Socket::Accept()
 	return recvsocket;
 }
 
-
 SOCKET Socket::GetSocket()
 {
 	return m_socket;
-}
-
-Socket * Socket::Instantiate()
-{
-	return new Socket();
 }
