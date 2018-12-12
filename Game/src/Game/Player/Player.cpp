@@ -4,8 +4,7 @@
 Player::Player()
 {
 	//インスタンスの生成
-	camera = new Camera(camera->THREE_PERSON_PERSPECTiVE);									//カメラ設定
-	//data = new Data();
+	camera = std::make_shared<Camera>(camera->THREE_PERSON_PERSPECTiVE);									//カメラ設定
 	data = std::make_shared<Data>();
 	// スキンメッシュ読み込み
 	SPtr<CSkinMesh> sm = std::make_shared<CSkinMesh>();
@@ -39,7 +38,7 @@ Player::~Player()
 {
 	//解放処理
 	toonShader.Release();
-	delete camera;
+	camera=nullptr;
 	data=nullptr;
 }
 
@@ -48,7 +47,7 @@ void Player::Update()
 	//更新処理
 	State();												//プレイヤーの状態をチェックしその処理を実行する
 	D3DXMATRIX mat=*CreateMat();
-	camera->SetMat(mat);									//カメラにPlayerの行列を渡す
+	camera->SetMat(&mat);									//カメラにPlayerの行列を渡す
 	camera->ComplianceUpdate();								//追従カメラを起動
 	skinChara.CreateMove(data->GetPos());					//プレイヤーの座標設定
 	skinChara.RotateY_Local(data->GetAngle());				//angle分回転
@@ -65,21 +64,21 @@ void Player::Render2D()
 void Player::Render3D()
 {
 	// 固定機能から、ビュー行列と射影行列を取得
-	DEV->GetTransform(D3DTS_VIEW, &camera->GetView());
-	DEV->GetTransform(D3DTS_PROJECTION, &camera->GetProj());
+	DEV->GetTransform(D3DTS_VIEW, camera->GetView());
+	DEV->GetTransform(D3DTS_PROJECTION, camera->GetProj());
 	// シェーダ側のグローバル定数に射影行列をセット
-	toonShader.SetTransformProj(&camera->GetProj());
+	toonShader.SetTransformProj(camera->GetProj());
 	// シェーダ側のグローバル定数にビュー行列をセット
-	toonShader.SetTransformView(&camera->GetView());
+	toonShader.SetTransformView(camera->GetView());
 
 	// ビュー行列からカメラ行列に変換する
 
 	// 固定機能のライト情報を取得し、シェーダ側のグローバル定数にライト情報をセット
-	D3DLIGHT9 light = DX.GetLight();	// 固定機能のライト情報を取得
+	D3DLIGHT9 light = *DX.GetLight();	// 固定機能のライト情報を取得
 	toonShader.SetDirectionalLight(&light);
 
 	// シェーダ側のグローバル定数にカメラ座標をセット
-	toonShader.SetCamPos(&D3DXVECTOR3(camera->GetPos().x, camera->GetPos().y, camera->GetPos().z));
+	toonShader.SetCamPos(&D3DXVECTOR3(camera->GetPos()->x, camera->GetPos()->y, camera->GetPos()->z));
 	toonShader.SetTransformWorld(&skinChara);	// シェーダ側のグローバル定数にワールド行列をセットする
 	toonShader.DrawMesh(&skinBone);			// シェーダで描画
 	

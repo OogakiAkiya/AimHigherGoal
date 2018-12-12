@@ -16,8 +16,8 @@ private:
 	//---------------------------------------------------------
 	LPD3DXMESH lpMesh = NULL;			//メッシュの形状
 	DWORD numMaterial = 0;				//マテリアルの数
-	D3DMATERIAL9* mat = NULL;			//マテリアルの内容
-	LPDIRECT3DTEXTURE9* texture = NULL;		//テクスチャ
+	D3DMATERIAL9* mat = nullptr;			//マテリアルの内容
+	LPDIRECT3DTEXTURE9* texture = nullptr;		//テクスチャ
 
 };
 #endif

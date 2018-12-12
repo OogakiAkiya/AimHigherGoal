@@ -18,7 +18,7 @@ void SceneBase::Render2D()
 {
 }
 
-Camera* SceneBase::GetCamera()
+std::shared_ptr<Camera> SceneBase::GetCamera()
 {
 	return camera;
 }

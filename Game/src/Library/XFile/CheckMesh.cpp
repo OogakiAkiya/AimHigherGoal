@@ -12,7 +12,7 @@ CheckMesh::CheckMesh() {
 CheckMesh::~CheckMesh(){
 }
 
-XFILE* CheckMesh::Get(std::string _pass) {
+std::shared_ptr<XFILE> CheckMesh::Get(std::string _pass) {
 
 	//ƒŠƒXƒg“à‚É‚ ‚é‚©’Tõ
 	if (meshList.find(_pass) != meshList.end()) {
@@ -20,9 +20,9 @@ XFILE* CheckMesh::Get(std::string _pass) {
 	}
 
 	//‚È‚©‚Á‚½ê‡V‚µ‚­¶¬‚µ’Ç‰Á
-	XFILE* lpx = new XFILE();
+	std::shared_ptr<XFILE> lpx = std::make_shared<XFILE>();
 	lpx->Load(DEV, _pass);
-	meshList.insert(std::pair<std::string, XFILE*>(_pass, lpx));
+	meshList.insert(std::pair<std::string, std::shared_ptr<XFILE>>(_pass, lpx));
 	return lpx;
 }
 

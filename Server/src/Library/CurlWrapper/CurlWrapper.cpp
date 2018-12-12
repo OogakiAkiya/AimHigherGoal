@@ -63,7 +63,7 @@ void CurlWrapper::PosUpdataLoop(std::shared_ptr<Data> _data)
 	//接続設定
 	curl_easy_setopt(curl, CURLOPT_URL, "http://lifestyle-qa.com/update_user_data.php");
 	curl_easy_setopt(curl, CURLOPT_POST, 1);
-	curl_easy_setopt(curl,CURLOPT_TIMEOUT,1L);													//1秒でデータを受信できなければタイムアウト処理
+	curl_easy_setopt(curl,CURLOPT_TIMEOUT,2L);													//2秒でデータを受信できなければタイムアウト処理
 	curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 2L);											//2秒以内に接続できなければタイムアウト処理
 
 	while (curl) {
@@ -82,7 +82,7 @@ void CurlWrapper::PosUpdataLoop(std::shared_ptr<Data> _data)
 		//送信失敗したかの判断
 		if (code != CURLE_OK) {
 			if (code == CURLE_BAD_FUNCTION_ARGUMENT) {
-				printf("%sがタイムアウトしています\n",_data->GetId()->c_str());
+				printf("%sがタイムアウトしました\n",_data->GetId()->c_str());
 				continue;
 			}
 			printf("code=%d\n", code);

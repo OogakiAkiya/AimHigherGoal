@@ -14,7 +14,7 @@ CharaStatus* CharacterBase::Getstatus()
 	return &status;
 }
 
-Camera* CharacterBase::GetCamera()
+std::shared_ptr<Camera> CharacterBase::GetCamera()
 {
 	return camera;
 }

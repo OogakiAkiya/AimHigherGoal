@@ -72,7 +72,7 @@ void GameMain::Render3D()
 	//環境描画
 	DEV->SetRenderState(D3DRS_LIGHTING, FALSE);			//ライトOFF
 	feald->Draw();										//地面描画
-	s_mesh->Draw(DEV, &s_mat);							//空描画(一時的)
+	s_mesh.lock()->Draw(DEV, &s_mat);							//空描画(一時的)
 	DEV->SetRenderState(D3DRS_LIGHTING, TRUE);			//ライトON
 
 }

@@ -5,26 +5,28 @@
 
 ExtensionMutex::ExtensionMutex()
 {
+	mtx = std::make_unique<std::mutex>();
 }
 
 
 ExtensionMutex::~ExtensionMutex()
 {
+	mtx = nullptr;
 }
 
 void ExtensionMutex::Lock()
 {
-	mtx.lock();
+	mtx->lock();
 }
 
 void ExtensionMutex::Unlock()
 {
-	mtx.unlock();
+	mtx->unlock();
 }
 
 bool ExtensionMutex::TryUnlock()
 {
-	if (mtx.try_lock() == false) {
+	if (mtx->try_lock() == false) {
 		//Ž¸”s
 		return false;
 	}

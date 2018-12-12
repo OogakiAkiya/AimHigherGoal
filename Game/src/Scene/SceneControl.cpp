@@ -25,7 +25,7 @@ SceneControl::~SceneControl()
 	scene = nullptr;
 	Mouse::DeleteInstance();
 	CheckMesh::DeleteInstance();
-
+	camera = nullptr;
 }
 
 void SceneControl::Update()
@@ -52,12 +52,12 @@ void SceneControl::Render2D()
 	scene->Render2D();
 }
 
-D3DXMATRIX SceneControl::GetCameraView()
+D3DXMATRIX* SceneControl::GetCameraView()
 {
 	return camera->GetView();
 }
 
-D3DXMATRIX SceneControl::GetCameraProj()
+D3DXMATRIX* SceneControl::GetCameraProj()
 {
 	return camera->GetProj();
 }

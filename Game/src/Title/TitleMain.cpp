@@ -5,9 +5,9 @@
 TitleMain::TitleMain()
 {
 	//インスタンスの生成
-	imgui = new ImguiWrapper(*WIN.GetHwnd());
-	camera = new Camera();
-	title = new ImageSprite();
+	imgui =std::make_unique<ImguiWrapper>(*WIN.GetHwnd());
+	camera = std::make_shared<Camera>();
+	title =std::make_unique<ImageSprite>();
 	//画像ロード処理
 	title->Load("images/Title.png", 1280, 720);
 	ipBuf.resize(256);
@@ -22,9 +22,9 @@ TitleMain::TitleMain()
 
 TitleMain::~TitleMain()
 {
-	delete imgui;
-	delete camera;
-	delete title;
+	imgui=nullptr;
+	title=nullptr;
+	camera = nullptr;
 }
 
 void TitleMain::Update()

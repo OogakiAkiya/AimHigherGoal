@@ -17,7 +17,7 @@ private:
 	std::unique_ptr<Ground> feald;						//地面
 	std::vector<std::shared_ptr<CharacterBase>> characterList;
 	//お試し
-	XFILE* s_mesh;						//メッシュ
+	std::weak_ptr<XFILE> s_mesh;						//メッシュ
 	D3DXMATRIX s_mat;					//座標用行列
 };
 

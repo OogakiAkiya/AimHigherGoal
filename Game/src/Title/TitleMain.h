@@ -25,10 +25,10 @@ private:
 	int idBufLen=0;
 	std::string msg="";
 	ImGuiWindowFlags window_flags = 0;
-	ImguiWrapper* imgui;
+	std::unique_ptr<ImguiWrapper> imgui;
 
 	int states = 0;
-	ImageSprite* title;						//タイトル画像
+	std::unique_ptr<ImageSprite> title;						//タイトル画像
 };
 
 #endif

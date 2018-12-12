@@ -47,7 +47,7 @@ bool ClientController::SerchNumber(int _number)
 
 void ClientController::StartThread(ClientController* _socketController)
 {
-	thread = std::make_shared<std::thread>(ControllerThreadLauncher, (void*)_socketController);
+	thread = std::make_unique<std::thread>(ControllerThreadLauncher, (void*)_socketController);
 }
 
 
