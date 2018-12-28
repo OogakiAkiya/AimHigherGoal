@@ -32,7 +32,7 @@ void GameMain::Update()
 
 	const char* items[] = {"1","10", "100", "1000", "10000"};
 	static int item_current = 0;
-	ImGui::Combo("combo", &item_current, items, IM_ARRAYSIZE(items));
+	ImGui::Combo("", &item_current, items, IM_ARRAYSIZE(items));
 
 	//í«â¡É{É^Éì
 	if (ImGui::Button("ADD")) {
@@ -54,7 +54,6 @@ void GameMain::Update()
 			query.clear(std::stringstream::goodbit);
 
 			//í«â¡èàóù
-			//clientList.push_back(temp);
 			clientList[i] = temp;
 			if (item_current == 4)Sleep(10);
 		}
