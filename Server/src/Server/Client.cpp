@@ -136,6 +136,10 @@ void Client::RecvLoop(int _loopType)
 			MUTEX.Unlock();
 			return;
 		}
+		else if (WSAGetLastError() == 10035) {
+			//非同期の場合clientがsendしていなかったときにおこるエラー
+			continue;
+		}
 		else {
 			//接続エラーが起こった時
 			printf("recv failed:%d\n%d", WSAGetLastError(), iResult);

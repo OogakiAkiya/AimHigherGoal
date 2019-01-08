@@ -69,7 +69,10 @@ std::shared_ptr<Socket> Socket::ServerCreate(std::shared_ptr<Socket> _this)
 	if(_this->Create()==false)return nullptr;
 	if(_this->Bind()==false)return nullptr;
 	if(_this->Listen()==false)return nullptr;
-
+	if (asynchronousFlg) {
+		unsigned long value = 1;
+		ioctlsocket(socket, FIONBIO, &value);					//非同期通信化
+	}
 	return _this;
 }
 
@@ -189,15 +192,15 @@ bool Socket::Listen()
 
 SOCKET Socket::Accept()
 {
-	SOCKET recvsocket;
-	recvsocket = accept(socket, NULL, NULL);										//ここでクライアントがなければ待機
-	if (recvsocket == INVALID_SOCKET) {
+	SOCKET recvSocket;
+	recvSocket = accept(socket, NULL, NULL);										//ここでクライアントがなければ待機
+	if (socket== INVALID_SOCKET) {
 		printf("accept failed:%d\n", WSAGetLastError());
 		closesocket(socket);
 		WSACleanup();
-		return 0;
+		return INVALID_SOCKET;
 	}
-	return recvsocket;
+	return recvSocket;
 }
 
 

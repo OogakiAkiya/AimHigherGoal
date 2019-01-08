@@ -43,7 +43,7 @@ void CurlWrapper::HTTPConnect(std::string* _data, std::string _url, std::string 
 
 	//‘—M¸”s‚µ‚½‚©‚Ì”»’f
 	if (code != CURLE_OK) {
-		printf("code=%d\n", code);
+		printf("curl ErrorCode=%d\n", code);
 		return;
 	}
 
@@ -81,11 +81,12 @@ void CurlWrapper::PosUpdataLoop(std::shared_ptr<Data> _data)
 
 		//‘—M¸”s‚µ‚½‚©‚Ì”»’f
 		if (code != CURLE_OK) {
-			if (code == CURLE_BAD_FUNCTION_ARGUMENT) {
+			if (code == CURLE_BAD_FUNCTION_ARGUMENT|| code == CURLE_OPERATION_TIMEDOUT) {
 				printf("%s‚ªƒ^ƒCƒ€ƒAƒEƒg‚µ‚Ü‚µ‚½\n",_data->GetId()->c_str());
 				continue;
 			}
-			printf("code=%d\n", code);
+			//code=6”­¶
+			printf("curl ErrorCode=%d\n", code);
 			return;
 		}
 
@@ -94,7 +95,7 @@ void CurlWrapper::PosUpdataLoop(std::shared_ptr<Data> _data)
 		query.clear(std::stringstream::goodbit);
 		output.clear();
 
-		Sleep(1000);													//1•b‘Ò‚Â
+		//Sleep(500);													//0.5•b‘Ò‚Â
 	}
 
 }

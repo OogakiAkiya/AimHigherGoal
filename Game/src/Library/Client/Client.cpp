@@ -64,6 +64,7 @@ bool Client::CreateSocket(std::string _ip)
 		SetProtocol_TCP().
 		SetIpAddress(_ip.c_str()).
 		SetPortNumber("49155").
+		SetAsynchronous().
 		ClientCreate(socket);
 
 	if (socket == nullptr)return false;
@@ -125,8 +126,7 @@ void Client::Recv()
 		}
 		else {
 			//エラー処理
-			int error = WSAGetLastError();
-			if (error != 10035) {									//非同期の場合このエラーが呼び出されることがよくあるが致命的でないためスルーさせて良い
+			if (WSAGetLastError() != 10035) {									//非同期の場合このエラーが呼び出されることがよくあるが致命的でないためスルーさせて良い
 				break;
 			}
 		}

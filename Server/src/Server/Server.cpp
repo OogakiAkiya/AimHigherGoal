@@ -29,6 +29,7 @@ Server::Server()
 		SetProtocol_TCP().										//TCP
 		SetIpAddress("0,0,0,0").								//アドレス指定
 		SetPortNumber("49155").									//ポート番号
+		SetAsynchronous().										//非同期化
 		ServerCreate(socket);									//サーバーソケット生成
 	clientController=std::make_shared<ClientController>();
 	//ソケットの管理クラスのスレッド開始
