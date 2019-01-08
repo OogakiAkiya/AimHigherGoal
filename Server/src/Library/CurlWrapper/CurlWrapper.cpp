@@ -66,7 +66,6 @@ void CurlWrapper::PosUpdataLoop(std::shared_ptr<Data> _data)
 	curl_easy_setopt(curl,CURLOPT_TIMEOUT,2L);													//2秒でデータを受信できなければタイムアウト処理
 	curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 2L);											//2秒以内に接続できなければタイムアウト処理
 
-	while (curl) {
 		//メッセージの生成
 		if(userId==nullptr)return;
 		query << "player=" << userId->c_str();
@@ -83,7 +82,7 @@ void CurlWrapper::PosUpdataLoop(std::shared_ptr<Data> _data)
 		if (code != CURLE_OK) {
 			if (code == CURLE_BAD_FUNCTION_ARGUMENT|| code == CURLE_OPERATION_TIMEDOUT) {
 				printf("%sがタイムアウトしました\n",_data->GetId()->c_str());
-				continue;
+				return;
 			}
 			//code=6発生
 			printf("curl ErrorCode=%d\n", code);
@@ -96,14 +95,8 @@ void CurlWrapper::PosUpdataLoop(std::shared_ptr<Data> _data)
 		output.clear();
 
 		//Sleep(500);													//0.5秒待つ
-	}
-
 }
 
-void CurlWrapper::StartThread(CurlWrapper* _curl,std::shared_ptr<Data> _data)
-{
-	thread = std::make_unique<std::thread>(HttpLauncher, (void*)_curl, _data);
-}
 
 void CurlWrapper::DBGetPos(char* _data, std::shared_ptr<std::string> _userId)
 {

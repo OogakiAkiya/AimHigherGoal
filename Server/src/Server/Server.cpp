@@ -32,8 +32,6 @@ Server::Server()
 		SetAsynchronous().										//非同期化
 		ServerCreate(socket);									//サーバーソケット生成
 	clientController=std::make_shared<ClientController>();
-	//ソケットの管理クラスのスレッド開始
-	clientController->StartThread(clientController.get());
 	
 }
 
@@ -51,6 +49,7 @@ void Server::AcceptLoop()
 	while (1) {
 		if (socket == nullptr)return;
 		AcceptSocket();
+		clientController->Update();
 	}
 }
 
@@ -72,5 +71,5 @@ void Server::AcceptSocket()
 	MUTEX.Unlock();																	//排他制御Unlock
 
 	printf("来ました\n");
-	clientSocket->StartRecvThread(clientSocket.get());									//recv処理のスレッド開始
+	//clientSocket->StartRecvThread(clientSocket.get());									//recv処理のスレッド開始
 }

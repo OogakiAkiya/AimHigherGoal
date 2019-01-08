@@ -28,24 +28,21 @@ Client::~Client()
 
 }
 
-void Client::Recv()
+void Client::Update()
 {
 	//鍵交換
-	RecvLoop(EXCHANGEKEY);
-	
+	if (!keyChangeFlg) {
+		RecvLoop(EXCHANGEKEY);
+	}
 	//完全データ作成処理
-	RecvLoop(CREATECOMPLETEDATA);
+	if (keyChangeFlg) {
+		RecvLoop(CREATECOMPLETEDATA);
+	}
+	if (posGetFlg) {
+		curl->PosUpdataLoop(data);				//スレッドを使わない場合重くなる
+	}
 }
 
-void Client::StartRecvThread(Client* _client)
-{
-	thread = std::make_unique<std::thread>(RecvLauncher, (void*)_client);
-}
-
-void Client::StartHttpThread()
-{
-	curl->StartThread(curl.get(), data);
-}
 
 SOCKET Client::GetSocket()
 {
@@ -88,6 +85,11 @@ void Client::SetNumber(int _number)
 	roomNumber = _number;
 }
 
+void Client::SetPosGetFlg()
+{
+	posGetFlg = true;
+}
+
 std::vector<char>* Client::GetCompleteData()
 {
 	return &completeDataQueList->front();
@@ -108,7 +110,6 @@ bool Client::EmptyCompleteData()
 
 void Client::RecvLoop(int _loopType)
 {
-	while (1) {
 		int iResult;										//送られてきたデータ量が格納される
 		char rec[BYTESIZE*2];								//受信データ
 
@@ -138,7 +139,7 @@ void Client::RecvLoop(int _loopType)
 		}
 		else if (WSAGetLastError() == 10035) {
 			//非同期の場合clientがsendしていなかったときにおこるエラー
-			continue;
+			return;
 		}
 		else {
 			//接続エラーが起こった時
@@ -148,7 +149,6 @@ void Client::RecvLoop(int _loopType)
 			MUTEX.Unlock();
 			return;
 		}
-	}
 }
 
 bool Client::ExchangeKey()
@@ -169,6 +169,7 @@ bool Client::ExchangeKey()
 			aes->SetKey((unsigned char*)decodeData, outLen);												//共通鍵を設定
 			MUTEX.Unlock();
 			tempDataList.erase(tempDataList.begin(), tempDataList.begin() + (decodeSize + sizeof(int)));	//完全データ作成に使用した分を削除
+			keyChangeFlg = true;
 			return true;
 		}
 		else {

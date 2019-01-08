@@ -30,11 +30,18 @@ ClientController::~ClientController()
 	socketList.clear();
 }
 
+void ClientController::Update()
+{
+	ControllerThread();
+	SocketThread();
+}
+
 void ClientController::SetSocket(std::shared_ptr<Client> _socket)
 {
 	addSocketPool.push_back(_socket);
 }
 
+/*
 bool ClientController::SerchNumber(int _number)
 {
 	for (auto element : socketList) {
@@ -44,18 +51,12 @@ bool ClientController::SerchNumber(int _number)
 	}
 	return false;
 }
-
-void ClientController::StartThread(ClientController* _socketController)
-{
-	thread = std::make_unique<std::thread>(ControllerThreadLauncher, (void*)_socketController);
-}
-
+*/
 
 void ClientController::ControllerThread()
 {
-	while (1) {
 		//サーバーに接続しているクライアントがいるか判定
-		if (socketList.empty() == true&&addSocketPool.empty()==true)continue;
+		if (socketList.empty() == true&&addSocketPool.empty()==true)return;
 		//完全データの処理
 		try {
 			for (auto& client : socketList) {
@@ -98,6 +99,13 @@ void ClientController::ControllerThread()
 			addSocketPool.clear();
 		}
 		MUTEX.Unlock();
+}
+
+void ClientController::SocketThread()
+{
+	if (socketList.empty() == true)return;
+	for (auto& client : socketList) {
+		client->Update();
 	}
 }
 
@@ -147,11 +155,10 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 		//送信処理
 		send(_socket->GetSocket(), sendData, sizeof(int) + encodeSize, 0);						//作成したデータの作成
 
-		_socket->StartHttpThread();
-
 		//解放処理
 		free(temp);
 		id = nullptr;
+		_socket->SetPosGetFlg();
 		break;
 	}
 	//座標更新

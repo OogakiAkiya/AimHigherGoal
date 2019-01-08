@@ -6,18 +6,11 @@ class ClientController
 public:
 	ClientController();
 	~ClientController();
-	void SetSocket(std::shared_ptr<Client> _socket);										//ソケットリストに追加
+	void Update();
+	void SetSocket(std::shared_ptr<Client> _socket);						//ソケットリストに追加
 	bool SerchNumber(int _number);											//引数と同じルームナンバーが存在するか調べる
-	void StartThread(ClientController* _socketController);					//スレッド開始
 	void ControllerThread();												//スレッドが動作させる関数
-
-	//---------------------------------------------------------
-	//ランチャー
-	//---------------------------------------------------------
-	static void ControllerThreadLauncher(void* args) {
-		reinterpret_cast<ClientController*>(args)->ControllerThread();		// 無理やりvoid*型にキャストして、本命の処理を実行する。
-	}
-
+	void SocketThread();
 private:
 	//---------------------------------------------------------
 	//ローカル関数
