@@ -35,7 +35,7 @@ void ClientController::Update()
 {
 	ControllerUpdate();
 	SocketUpdate();
-	CreateDBData();
+	DBCreateData();
 }
 
 void ClientController::SetSocket(std::shared_ptr<Client> _socket)
@@ -93,7 +93,8 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 		_socket->GetData()->SetId(playerId);
 
 		//プレイヤーの座標取得
-		_socket->GetCurl()->DBGetPos(recvData,playerId);
+		//_socket->GetCurl()->DBGetPos(recvData,playerId);
+		DBGetPos(recvData, playerId);
 		_socket->GetData()->SetX(*(float*)recvData);
 		_socket->GetData()->SetY(*(float*)&recvData[sizeof(float)]);
 		_socket->GetData()->SetZ(*(float*)&recvData[sizeof(float) * 2]);
@@ -171,7 +172,7 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 	}
 }
 
-void ClientController::CreateDBData()
+void ClientController::DBCreateData()
 {
 	std::stringstream query;						//webサーバーに送るデータ
 	std::string output;								//queryのままだとエラーが起こりstring型に入れるとなくなる
@@ -197,6 +198,45 @@ void ClientController::CreateDBData()
 
 	std::thread thread(PosRegistration, output);
 	thread.detach();
+
+
+}
+
+void ClientController::DBGetPos(char * _data, std::shared_ptr<std::string> _userId)
+{
+	//ユーザー追加処理
+	std::stringstream query;
+	std::string output = "";																//送信用データ
+	std::string buf;																		//受け取ったデータを格納する
+	std::string error;
+	char recvdata[256];
+
+	//送信データの生成
+	query << "player=" << _userId.get()->c_str();
+	query >> output;
+
+	std::unique_ptr<CurlWrapper> curl = std::make_unique<CurlWrapper>();
+	curl->HTTPConnect(&buf, "http://lifestyle-qa.com/get_pos.php", output.c_str());
+	curl = nullptr;
+
+	//jsonから値の取得
+	float x = 0.0f;
+	float y = 0.0f;
+	float z = 0.0f;
+
+	if (buf.length() != 0) {
+		auto json = json11::Json::parse(buf, error);
+
+		x = std::stof(json["x"].string_value());
+		y = std::stof(json["y"].string_value());
+		z = std::stof(json["z"].string_value());
+	}
+
+	//データ代入
+	memcpy(recvdata, &x, sizeof(float));
+	memcpy(&recvdata[sizeof(float)], &y, sizeof(float));
+	memcpy(&recvdata[sizeof(float) * 2], &z, sizeof(float));
+	memcpy(_data, recvdata, sizeof(float) * 3);
 
 
 }

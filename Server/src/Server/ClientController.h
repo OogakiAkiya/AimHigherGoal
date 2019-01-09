@@ -15,7 +15,8 @@ private:
 	//ƒ[ƒJƒ‹ŠÖ”
 	//---------------------------------------------------------
 	void DataManipulate(Client* _socket,std::vector<char>* _data);
-	void CreateDBData();
+	void DBCreateData();
+	void DBGetPos(char* _data, std::shared_ptr<std::string> _userId);
 	int CreateSendData(char* _encryptionData, Client* _socket, char* _originalData, int _dataLen);
 	//---------------------------------------------------------
 	//’è”
