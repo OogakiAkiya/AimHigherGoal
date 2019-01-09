@@ -30,7 +30,7 @@ Server::Server()
 		SetPortNumber("49155").									//ポート番号
 		SetAsynchronous().										//非同期化
 		ServerCreate(socket);									//サーバーソケット生成
-	clientController=std::make_shared<ClientController>();
+	clientController=std::make_unique<ClientController>();
 	
 }
 

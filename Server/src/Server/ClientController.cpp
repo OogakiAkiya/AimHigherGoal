@@ -33,21 +33,21 @@ void PosRegistration(std::string _data)
 
 void ClientController::Update()
 {
-	ControllerThread();
-	SocketThread();
+	ControllerUpdate();
+	SocketUpdate();
 	CreateDBData();
 }
 
 void ClientController::SetSocket(std::shared_ptr<Client> _socket)
 {
-	addSocketPool.push_back(_socket);
+	socketList.push_back(_socket);
 }
 
 
-void ClientController::ControllerThread()
+void ClientController::ControllerUpdate()
 {
 	//サーバーに接続しているクライアントがいるか判定
-	if (socketList.empty() == true && addSocketPool.empty() == true)return;
+	if (socketList.empty() == true)return;
 	//完全データの処理
 	for (auto& client : socketList) {
 		if (client->EmptyCompleteData() == true)break;				//完全データがなければ以下処理は行わない
@@ -63,22 +63,9 @@ void ClientController::ControllerThread()
 			socketList.erase(socketList.begin() + i);
 		}
 	}
-
-	//追加処理
-	if (!addSocketPool.empty()) {
-		int counter = 0;
-		int nowSize = socketList.size();
-		socketList.resize(nowSize + addSocketPool.size());
-		for (auto& socket : addSocketPool) {
-			socketList[nowSize + counter] = socket;
-			socket = nullptr;
-			counter++;
-		}
-		addSocketPool.clear();
-	}
 }
 
-void ClientController::SocketThread()
+void ClientController::SocketUpdate()
 {
 	if (socketList.empty() == true)return;
 	for (auto& client : socketList) {
@@ -94,19 +81,19 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 	case 0x01: {
 		//送信用データ
 		char recvData[BYTESIZE];
-		char encode[BYTESIZE];																		//暗号化データを入れる
 		char sendData[BYTESIZE];																	//送信データ
 
+		//プレイヤーIDの整形
 		int idsize = *(int*)&_data->at(sizeof(char));
 		char* temp=(char*)malloc(idsize);
 		memcpy(temp, &_data->at(sizeof(char) + sizeof(int)), idsize);
-		std::shared_ptr<std::string> id = std::make_shared<std::string>(temp);
-		id->resize(idsize);
+		std::shared_ptr<std::string> playerId = std::make_shared<std::string>(temp);
+		playerId->resize(idsize);																	//idのサイズが一定にならないのでresize
 
-		_socket->GetData()->SetId(id);
+		_socket->GetData()->SetId(playerId);
 
 		//プレイヤーの座標取得
-		_socket->GetCurl()->DBGetPos(recvData,id);
+		_socket->GetCurl()->DBGetPos(recvData,playerId);
 		_socket->GetData()->SetX(*(float*)recvData);
 		_socket->GetData()->SetY(*(float*)&recvData[sizeof(float)]);
 		_socket->GetData()->SetZ(*(float*)&recvData[sizeof(float) * 2]);
@@ -120,26 +107,21 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 		userData.z = _socket->GetData()->GetZ();
 
 
-		//暗号化処理
-		char* origin = (char*)&userData;
-		int encodeSize = _socket->GetAES()->Encode(encode, origin, sizeof(UserData));		//暗号化
-
-		memcpy(sendData, &encodeSize, sizeof(int));
-		memcpy(&sendData[sizeof(int)], encode, encodeSize);
+		//送信用データの作成
+		int amountSize=CreateSendData(sendData, _socket, (char*)&userData, sizeof(UserData));
 
 		//送信処理
-		send(_socket->GetSocket(), sendData, sizeof(int) + encodeSize, 0);						//作成したデータの作成
+		send(_socket->GetSocket(), sendData, amountSize, 0);
 
 		//解放処理
 		free(temp);
-		id = nullptr;
+		playerId = nullptr;
 		_socket->SetPosGetFlg();
 		break;
 	}
 	//座標更新
 	case 0x15: {
 		//送信用データ
-		char encode[BYTESIZE];																		//暗号化データを入れる
 		char sendData[BYTESIZE];																	//送信データ
 
 		//データの整形をし値をセット
@@ -159,21 +141,17 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 		data.angle = _socket->GetData()->GetAngle();
 		data.animation = _socket->GetData()->GetAnimation();
 
-		//暗号化処理
-		char* origin = (char*)&data;
-		int encodeSize = _socket->GetAES()->Encode(encode, origin, sizeof(PosData));		//暗号化
-		memcpy(sendData, &encodeSize, sizeof(int));
-		memcpy(&sendData[sizeof(int)], encode, encodeSize);
+		//送信用データの作成
+		int amountSize = CreateSendData(sendData, _socket, (char*)&data, sizeof(PosData));
 
 		//送信処理
-		send(_socket->GetSocket(), sendData,sizeof(int)+encodeSize, 0);						//作成したデータの作成
+		send(_socket->GetSocket(), sendData, amountSize , 0);
 		//printf("送信データ\nsize=%d\nid=%04x\nx=%f\ny=%f\nz=%f\nangle=%f\nanimation=%d\n", data.size, data.id, data.x, data.y, data.z, data.angle, data.animation);
 		break;
 	}
 
 	//攻撃処理
 	case 0x17:
-		char encode[BYTESIZE];																				//暗号データ
 		char sendData[BYTESIZE];																				//送信データ
 
 		//今は使ってないが複数のPCとつなげた場合ここを使用することになる
@@ -184,13 +162,11 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 		sendBuf.size = sizeof(BaseData) - sizeof(int);
 		sendBuf.id = 0x18;
 
-		//暗号化処理
-		int encodeSize = _socket->GetAES()->Encode(encode, (char*)&sendBuf, sizeof(BaseData));	//暗号化処理
-		memcpy(sendData, &encodeSize, sizeof(int));
-		memcpy(&sendData[sizeof(int)], encode, encodeSize);
-		
+		//送信用データの作成
+		int amountSize = CreateSendData(sendData, _socket, (char*)&sendBuf, sizeof(BaseData));
+
 		//送信処理
-		send(_socket->GetSocket(), (char*)&sendData,encodeSize+sizeof(int), 0);				//作成したデータの作成
+		send(_socket->GetSocket(), (char*)&sendData,amountSize, 0);
 		break;
 	}
 }
@@ -223,5 +199,16 @@ void ClientController::CreateDBData()
 	thread.detach();
 
 
+}
+
+
+int ClientController::CreateSendData(char* _encryptionData, Client* _socket,char* _originalData,int _dataLen)
+{
+	char encode[BYTESIZE];																		//暗号化データを入れる
+	int encodeSize = _socket->GetAES()->Encode(encode, _originalData, _dataLen);		//暗号化
+	memcpy(_encryptionData, &encodeSize, sizeof(int));											//元のデータサイズが先頭に入る
+	memcpy(&_encryptionData[sizeof(int)], encode, encodeSize);
+
+	return encodeSize+sizeof(int);
 }
 

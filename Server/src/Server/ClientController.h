@@ -8,14 +8,15 @@ public:
 	~ClientController();
 	void Update();
 	void SetSocket(std::shared_ptr<Client> _socket);						//ソケットリストに追加
-	void ControllerThread();												//スレッドが動作させる関数
-	void SocketThread();
+	void ControllerUpdate();												//スレッドが動作させる関数
+	void SocketUpdate();
 private:
 	//---------------------------------------------------------
 	//ローカル関数
 	//---------------------------------------------------------
 	void DataManipulate(Client* _socket,std::vector<char>* _data);
 	void CreateDBData();
+	int CreateSendData(char* _encryptionData, Client* _socket, char* _originalData, int _dataLen);
 	//---------------------------------------------------------
 	//定数
 	//---------------------------------------------------------
@@ -25,7 +26,6 @@ private:
 	//変数
 	//---------------------------------------------------------
 	std::vector<std::shared_ptr<Client>> socketList;										//ソケット配列
-	std::vector<std::shared_ptr<Client>> addSocketPool;										//ソケット配列
 	std::vector<int> roomNumberList;														//生成されたルーム番号を保存
 };
 
