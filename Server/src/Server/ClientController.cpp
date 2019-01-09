@@ -27,7 +27,7 @@ ClientController::~ClientController()
 void PosRegistration(std::string _data)
 {
 	std::unique_ptr<CurlWrapper> curl = std::make_unique<CurlWrapper>();
-	curl->HTTPConnect(nullptr, "http://lifestyle-qa.com/update_user_arraydata.php", _data);
+	curl->HTTPConnect(nullptr, "http://lifestyle-qa.com/update_user_arraydata.php", _data,"DBCreateData");
 	curl = nullptr;
 }
 
@@ -216,7 +216,7 @@ void ClientController::DBGetPos(char * _data, std::shared_ptr<std::string> _user
 	query >> output;
 
 	std::unique_ptr<CurlWrapper> curl = std::make_unique<CurlWrapper>();
-	curl->HTTPConnect(&buf, "http://lifestyle-qa.com/get_pos.php", output.c_str());
+	curl->HTTPConnect(&buf, "http://lifestyle-qa.com/get_pos.php", output.c_str(),*_userId.get());
 	curl = nullptr;
 
 	//jsonから値の取得
@@ -238,17 +238,17 @@ void ClientController::DBGetPos(char * _data, std::shared_ptr<std::string> _user
 	memcpy(&recvdata[sizeof(float) * 2], &z, sizeof(float));
 	memcpy(_data, recvdata, sizeof(float) * 3);
 
-
 }
 
 
 int ClientController::CreateSendData(char* _encryptionData, Client* _socket,char* _originalData,int _dataLen)
 {
-	char encode[BYTESIZE];																		//暗号化データを入れる
-	int encodeSize = _socket->GetAES()->Encode(encode, _originalData, _dataLen);		//暗号化
-	memcpy(_encryptionData, &encodeSize, sizeof(int));											//元のデータサイズが先頭に入る
-	memcpy(&_encryptionData[sizeof(int)], encode, encodeSize);
+	char encode[BYTESIZE];																		//暗号化データ
 
-	return encodeSize+sizeof(int);
+	int encodeSize = _socket->GetAES()->Encode(encode, _originalData, _dataLen);				//暗号化
+	memcpy(_encryptionData, &encodeSize, sizeof(int));											//元のデータサイズが先頭に入る
+	memcpy(&_encryptionData[sizeof(int)], encode, encodeSize);									//暗号化データを入れる
+
+	return encodeSize+sizeof(int);																//暗号化のデータサイズ+先頭に入れたデータサイズ
 }
 

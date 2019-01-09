@@ -11,16 +11,12 @@ Client::Client()
 {
 	completeDataQueList = std::make_unique <std::queue<std::vector<char>>>();
 	data = std::make_shared<Data>();
-	curl = std::make_unique<CurlWrapper>();
 	aes = std::make_unique<OpenSSLAES>();
 }
 
 Client::~Client()
 {
 	//解放処理
-	if(thread!=nullptr)thread->detach();											//スレッド終了
-	thread = nullptr;
-	curl = nullptr;
 	aes=nullptr;
 	completeDataQueList = nullptr;
 	data = nullptr;
@@ -37,20 +33,12 @@ void Client::Update()
 	if (keyChangeFlg) {
 		RecvLoop(CREATECOMPLETEDATA);
 	}
-	if (posGetFlg) {
-		//curl->PosUpdataLoop(data);				//スレッドを使わない場合重くなる
-	}
 }
 
 
 SOCKET Client::GetSocket()
 {
 	return data->GetSocket();
-}
-
-int Client::GetRoomNumber()
-{
-	return roomNumber;
 }
 
 std::shared_ptr<Data> Client::GetData()
@@ -66,22 +54,6 @@ int Client::GetState()
 OpenSSLAES* Client::GetAES()
 {
 	return aes.get();
-}
-
-CurlWrapper* Client::GetCurl()
-{
-	return curl.get();
-}
-
-
-void Client::SetSocket(SOCKET _socket)
-{
-	data->SetSocket(_socket);
-}
-
-void Client::SetNumber(int _number)
-{
-	roomNumber = _number;
 }
 
 void Client::SetPosGetFlg()

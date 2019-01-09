@@ -54,17 +54,18 @@ void Server::AcceptLoop()
 
 void Server::AcceptSocket()
 {
-	std::shared_ptr<Client> clientSocket;																//クライアントのソケット情報を一時的に保存する変数
+	std::shared_ptr<Client> clientSocket;											//クライアントのソケット情報を一時的に保存する変数
 
 	//accept
 	SOCKET initSocket;
-	initSocket = INVALID_SOCKET;					//client_socket初期化
+	initSocket = INVALID_SOCKET;													//client_socket初期化
 	initSocket = socket->Accept();
-	if (initSocket == INVALID_SOCKET)return;
+	if (initSocket == INVALID_SOCKET)return;										//アクセスがなかった場合ここで終わる
+
 	//クライアントのソケットをコントローラークラスに追加する
 	clientSocket = std::make_shared<Client>();
-	clientSocket->SetSocket(initSocket);											//Socketクラスにクライアントの情報を代入する
+	clientSocket->GetData()->SetSocket(initSocket);									//接続のあったソケットをセット
 	clientController->SetSocket(clientSocket);										//作ったクライアント情報はSocketControllerクラスで管理
 
-	printf("来ました\n");
+	printf("アクセスがありました\n");
 }

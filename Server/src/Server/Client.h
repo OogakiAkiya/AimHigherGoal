@@ -12,13 +12,9 @@ public:
 	//情報取得
 	//---------------------------------------------------------
 	SOCKET GetSocket();
-	int GetRoomNumber();
 	std::shared_ptr<Data> GetData();
 	int GetState();
 	OpenSSLAES* GetAES();
-	CurlWrapper* GetCurl();
-	void SetSocket(SOCKET _socket);
-	void SetNumber(int _number);
 	void SetPosGetFlg();
 	bool GetPosGetFlg();
 	//---------------------------------------------------------
@@ -46,7 +42,6 @@ private:
 	//---------------------------------------------------------
 	//変数
 	//---------------------------------------------------------
-	int roomNumber=0;
 	int state=0;															//ソケットの状態を表す(0:通常,-1:デリート待ち)
 	bool keyChangeFlg = false;
 	bool posGetFlg = false;
@@ -54,8 +49,6 @@ private:
 	std::vector<char> tempDataList;											//一時データ配列
 	std::shared_ptr<Data> data;												//ユーザーの各データが格納されている
 	std::unique_ptr<OpenSSLAES> aes;										//共通鍵暗号クラス
-	std::unique_ptr<CurlWrapper> curl=nullptr;								//Http通信クラス
-	std::unique_ptr<std::thread> thread = nullptr;
 };
 
 #endif

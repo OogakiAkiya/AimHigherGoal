@@ -17,7 +17,7 @@ CurlWrapper::~CurlWrapper()
 	curl = nullptr;
 }
 
-void CurlWrapper::HTTPConnect(std::string* _data, std::string _url, std::string _postData)
+void CurlWrapper::HTTPConnect(std::string* _data, std::string _url, std::string _postData,std::string _userID)
 {
 	//ユーザー追加処理
 	if (curl == NULL)return;
@@ -35,8 +35,19 @@ void CurlWrapper::HTTPConnect(std::string* _data, std::string _url, std::string 
 
 	//送信失敗したかの判断
 	if (code != CURLE_OK) {
-		printf("curl ErrorCode=%d\n", code);
-		return;
+		switch (code) {
+		case CURLE_BAD_FUNCTION_ARGUMENT:
+		case CURLE_OPERATION_TIMEDOUT:
+			printf("%sがタイムアウトしました\n", _userID.c_str());
+			break;
+		case CURLE_RECV_ERROR:
+			printf("%sがネットワークデータの受信に失敗しました", _userID.c_str());
+			break;
+		default:
+			printf("%s:curl ErrorCode=%d\n", _userID.c_str(),code);
+			break;
+		}
+
 	}
 
 	if (_data != nullptr)*_data = buf;
