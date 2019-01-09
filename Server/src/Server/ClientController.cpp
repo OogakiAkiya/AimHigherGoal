@@ -73,7 +73,6 @@ void ClientController::SocketUpdate()
 	}
 }
 
-
 void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 {
 	char id = *(char*)&_data->at(0);
@@ -93,8 +92,9 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 		_socket->GetData()->SetId(playerId);
 
 		//プレイヤーの座標取得
-		//_socket->GetCurl()->DBGetPos(recvData,playerId);
 		DBGetPos(recvData, playerId);
+
+		//取得したデータをセット
 		_socket->GetData()->SetX(*(float*)recvData);
 		_socket->GetData()->SetY(*(float*)&recvData[sizeof(float)]);
 		_socket->GetData()->SetZ(*(float*)&recvData[sizeof(float) * 2]);

@@ -17,14 +17,6 @@ private:
 	//---------------------------------------------------------
 	CURL* curl;																//URLへのアクセスに必要な設定などが入る
 	CURLcode code;															//処理に成功したかエラーチェックに使う
-	bool endFlg=true;
-	std::unique_ptr <std::thread> thread;									//別スレッド処理
-	std::shared_ptr<std::string> userId;
-};
-
-struct RecvBuffer {
-	std::vector<char>* data;
-	int dataSize;
 };
 
 #endif
