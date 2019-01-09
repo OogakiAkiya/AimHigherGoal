@@ -8,7 +8,6 @@ public:
 	~ClientController();
 	void Update();
 	void SetSocket(std::shared_ptr<Client> _socket);						//ソケットリストに追加
-	bool SerchNumber(int _number);											//引数と同じルームナンバーが存在するか調べる
 	void ControllerThread();												//スレッドが動作させる関数
 	void SocketThread();
 private:
@@ -16,7 +15,7 @@ private:
 	//ローカル関数
 	//---------------------------------------------------------
 	void DataManipulate(Client* _socket,std::vector<char>* _data);
-
+	void CreateDBData();
 	//---------------------------------------------------------
 	//定数
 	//---------------------------------------------------------

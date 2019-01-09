@@ -1,5 +1,4 @@
 #include"../Include.h"
-#include"../Library/Mutex/ExtensionMutex.h"
 #include"../Library/Data/Data.h"
 #include"../Library/Cipher/OpenSSLAES.h"
 #include"../Library/Cipher/OpenSSLRSA.h"
@@ -36,30 +35,7 @@ void ClientController::Update()
 {
 	ControllerThread();
 	SocketThread();
-
-
-	//実行するsqlの作成
-	std::stringstream query;
-	std::string output;
-	std::vector<std::shared_ptr<Data>> datas;
-	for (auto socket : socketList) {
-		if (socket->GetPosGetFlg()) {
-			datas.push_back(socket->GetData());
-		}
-	}
-	if (datas.size() <= 0)return;
-	query << "amount=" << datas.size();
-	for (int i = 0; i < datas.size(); i++) {
-		query << "&" << "player" << i << "=" << datas[i]->GetId()->c_str();
-		query << "&" << "x" << i << "=" << datas[i]->GetX();
-		query << "&" << "y" << i << "=" << datas[i]->GetY();
-		query << "&" << "z" << i << "=" << datas[i]->GetZ();
-	}
-	query >> output;
-	
-	std::thread thread(PosRegistration, output);
-	thread.detach();
-	
+	CreateDBData();
 }
 
 void ClientController::SetSocket(std::shared_ptr<Client> _socket)
@@ -67,64 +43,39 @@ void ClientController::SetSocket(std::shared_ptr<Client> _socket)
 	addSocketPool.push_back(_socket);
 }
 
-/*
-bool ClientController::SerchNumber(int _number)
-{
-	for (auto element : socketList) {
-		if (element->GetRoomNumber() == _number) {		
-			return true;								//同じルームナンバーが見つかった
-		}
-	}
-	return false;
-}
-*/
 
 void ClientController::ControllerThread()
 {
-		//サーバーに接続しているクライアントがいるか判定
-		if (socketList.empty() == true&&addSocketPool.empty()==true)return;
-		//完全データの処理
-		try {
-			for (auto& client : socketList) {
-				if (client->EmptyCompleteData() == true)break;				//完全データがなければ以下処理は行わない
-				DataManipulate(client.get(), client->GetCompleteData());
-				MUTEX.Lock();
-				client->DeleteCompleteData();
-				MUTEX.Unlock();
-			}
-		}
-		catch (std::exception error) {
-			printf("ClientController=%s\n", error.what());
-		}
-		catch (...) {
+	//サーバーに接続しているクライアントがいるか判定
+	if (socketList.empty() == true && addSocketPool.empty() == true)return;
+	//完全データの処理
+	for (auto& client : socketList) {
+		if (client->EmptyCompleteData() == true)break;				//完全データがなければ以下処理は行わない
+		DataManipulate(client.get(), client->GetCompleteData());
+		client->DeleteCompleteData();
+	}
 
+	//切断処理が行われたソケットを削除
+	int count = 0;
+	for (int i = 0; i < socketList.size(); i++) {
+		if (socketList[i]->GetState() == -1) {
+			socketList[i] == nullptr;
+			socketList.erase(socketList.begin() + i);
 		}
+	}
 
-		//切断処理が行われたソケットを削除
-		int count = 0;
-		for (int i = 0;i<socketList.size(); i++) {
-			if (socketList[i]->GetState() == -1) {
-				MUTEX.Lock();
-				socketList[i]==nullptr;
-				socketList.erase(socketList.begin() + i);
-				MUTEX.Unlock();
-			}
+	//追加処理
+	if (!addSocketPool.empty()) {
+		int counter = 0;
+		int nowSize = socketList.size();
+		socketList.resize(nowSize + addSocketPool.size());
+		for (auto& socket : addSocketPool) {
+			socketList[nowSize + counter] = socket;
+			socket = nullptr;
+			counter++;
 		}
-
-		//追加処理
-		MUTEX.Lock();
-		if (!addSocketPool.empty()) {
-			int counter = 0;
-			int nowSize = socketList.size();
-			socketList.resize(nowSize + addSocketPool.size());
-			for (auto& socket : addSocketPool) {
-				socketList[nowSize + counter] = socket;
-				socket = nullptr;
-				counter++;
-			}
-			addSocketPool.clear();
-		}
-		MUTEX.Unlock();
+		addSocketPool.clear();
+	}
 }
 
 void ClientController::SocketThread()
@@ -152,17 +103,13 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 		std::shared_ptr<std::string> id = std::make_shared<std::string>(temp);
 		id->resize(idsize);
 
-		MUTEX.Lock();
 		_socket->GetData()->SetId(id);
-		MUTEX.Unlock();
 
 		//プレイヤーの座標取得
 		_socket->GetCurl()->DBGetPos(recvData,id);
-		MUTEX.Lock();
 		_socket->GetData()->SetX(*(float*)recvData);
 		_socket->GetData()->SetY(*(float*)&recvData[sizeof(float)]);
 		_socket->GetData()->SetZ(*(float*)&recvData[sizeof(float) * 2]);
-		MUTEX.Unlock();
 
 		//送信データ作成
 		UserData userData;
@@ -196,13 +143,11 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 		char sendData[BYTESIZE];																	//送信データ
 
 		//データの整形をし値をセット
-		MUTEX.Lock();
 		_socket->GetData()->SetX(*(float*)&_data->at(sizeof(char)));
 		_socket->GetData()->SetY(*(float*)&_data->at(sizeof(char) + sizeof(float) * 1));
 		_socket->GetData()->SetZ(*(float*)&_data->at(sizeof(char) + sizeof(float) * 2));
 		_socket->GetData()->SetAngle(*(float*)&_data->at(sizeof(char) + sizeof(float) * 3));
 		_socket->GetData()->SetAnimation(*(int*)&_data->at(sizeof(char) + sizeof(float) * 4));
-		MUTEX.Unlock();
 
 		//送信データの作成
 		PosData data;
@@ -216,9 +161,7 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 
 		//暗号化処理
 		char* origin = (char*)&data;
-		MUTEX.Lock();
 		int encodeSize = _socket->GetAES()->Encode(encode, origin, sizeof(PosData));		//暗号化
-		MUTEX.Unlock();
 		memcpy(sendData, &encodeSize, sizeof(int));
 		memcpy(&sendData[sizeof(int)], encode, encodeSize);
 
@@ -242,9 +185,7 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 		sendBuf.id = 0x18;
 
 		//暗号化処理
-		MUTEX.Lock();
 		int encodeSize = _socket->GetAES()->Encode(encode, (char*)&sendBuf, sizeof(BaseData));	//暗号化処理
-		MUTEX.Unlock();
 		memcpy(sendData, &encodeSize, sizeof(int));
 		memcpy(&sendData[sizeof(int)], encode, encodeSize);
 		
@@ -252,5 +193,35 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 		send(_socket->GetSocket(), (char*)&sendData,encodeSize+sizeof(int), 0);				//作成したデータの作成
 		break;
 	}
+}
+
+void ClientController::CreateDBData()
+{
+	std::stringstream query;						//webサーバーに送るデータ
+	std::string output;								//queryのままだとエラーが起こりstring型に入れるとなくなる
+	std::vector<std::shared_ptr<Data>> datas;		//送信するデータ一覧
+
+	//送るデータの選別
+	for (auto socket : socketList) {
+		if (socket->GetPosGetFlg()) {
+			datas.push_back(socket->GetData());
+		}
+	}
+	if (datas.size() <= 0)return;
+
+	//データの作成
+	query << "amount=" << datas.size();
+	for (int i = 0; i < datas.size(); i++) {
+		query << "&" << "player" << i << "=" << datas[i]->GetId()->c_str();
+		query << "&" << "x" << i << "=" << datas[i]->GetX();
+		query << "&" << "y" << i << "=" << datas[i]->GetY();
+		query << "&" << "z" << i << "=" << datas[i]->GetZ();
+	}
+	query >> output;
+
+	std::thread thread(PosRegistration, output);
+	thread.detach();
+
+
 }
 

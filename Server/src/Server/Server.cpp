@@ -16,7 +16,6 @@ using namespace std;
 Server::Server()
 {
 	//シングルトン作成
-	ExtensionMutex::GetInstance();								//mutex管理classインスタンス生成
 	Cipher::GetInstance();
 	
 	//ランダム処理の初期化
@@ -38,7 +37,6 @@ Server::Server()
 
 Server::~Server()
 {
-	ExtensionMutex::DeleteInstance();													//mutex管理classインスタンスの削除
 	Cipher::DeleteInstance();
 	socket = nullptr;
 	clientController = nullptr;
@@ -66,10 +64,7 @@ void Server::AcceptSocket()
 	//クライアントのソケットをコントローラークラスに追加する
 	clientSocket = std::make_shared<Client>();
 	clientSocket->SetSocket(initSocket);											//Socketクラスにクライアントの情報を代入する
-	MUTEX.Lock();																	//排他制御Lock
 	clientController->SetSocket(clientSocket);										//作ったクライアント情報はSocketControllerクラスで管理
-	MUTEX.Unlock();																	//排他制御Unlock
 
 	printf("来ました\n");
-	//clientSocket->StartRecvThread(clientSocket.get());									//recv処理のスレッド開始
 }

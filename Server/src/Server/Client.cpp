@@ -1,5 +1,4 @@
 #include"../Include.h"
-#include"../Library/Mutex/ExtensionMutex.h"
 #include"../Library/Data/Data.h"
 #include"../Library/Cipher/OpenSSLAES.h"
 #include"../Library/Cipher/OpenSSLRSA.h"
@@ -137,9 +136,7 @@ void Client::RecvLoop(int _loopType)
 		else if (iResult == 0) {
 			//接続を終了するとき
 			printf("切断されました\n");
-			MUTEX.Lock();
 			state = -1;
-			MUTEX.Unlock();
 			return;
 		}
 		else if (WSAGetLastError() == 10035) {
@@ -149,9 +146,7 @@ void Client::RecvLoop(int _loopType)
 		else {
 			//接続エラーが起こった時
 			printf("recv failed:%d\n%d", WSAGetLastError(), iResult);
-			MUTEX.Lock();
 			state = -1;
-			MUTEX.Unlock();
 			return;
 		}
 }
@@ -170,9 +165,7 @@ bool Client::ExchangeKey()
 			//復号処理
 			memcpy(data, &tempDataList[sizeof(int)], decodeSize);											//復号するデータのコピー
 			int outLen = CIPHER.GetOpenSSLRSA()->Decode(decodeData, data, decodeSize);						//公開鍵暗号の復号
-			MUTEX.Lock();
 			aes->SetKey((unsigned char*)decodeData, outLen);												//共通鍵を設定
-			MUTEX.Unlock();
 			tempDataList.erase(tempDataList.begin(), tempDataList.begin() + (decodeSize + sizeof(int)));	//完全データ作成に使用した分を削除
 			keyChangeFlg = true;
 			return true;
@@ -186,43 +179,29 @@ bool Client::ExchangeKey()
 void Client::CreateCompleteData()
 {
 	while (tempDataList.size() >= sizeof(int)) {
-		try {
-			//復号に十分なデータがあるかチェック
-			int decodeSize = *(int*)&tempDataList[0];
-			if (decodeSize <= (int)tempDataList.size() - sizeof(int)) {
+		//復号に十分なデータがあるかチェック
+		int decodeSize = *(int*)&tempDataList[0];
+		if (decodeSize <= (int)tempDataList.size() - sizeof(int)) {
 
-				//変数宣言
-				char data[BYTESIZE];																			//復号前データ
-				char decodeData[BYTESIZE];
-				//復号処理
-				memcpy(data, &tempDataList[sizeof(int)], decodeSize);
-				MUTEX.Lock();
-				aes->Decode(decodeData, data, decodeSize);
-				MUTEX.Unlock();
+			//変数宣言
+			char data[BYTESIZE];																			//復号前データ
+			char decodeData[BYTESIZE];
+			//復号処理
+			memcpy(data, &tempDataList[sizeof(int)], decodeSize);
+			aes->Decode(decodeData, data, decodeSize);
 
-				//完全データの生成
-				int byteSize = *(int*)decodeData;																	//4byte分だけ取得しintの値にキャスト
-				if (byteSize < BYTESIZE&&byteSize>0) {
-					std::vector<char> compData(byteSize);															//完全データ
-					memcpy(&compData[0], &decodeData[sizeof(int)], byteSize);										//サイズ以外のデータを使用し完全データを作成
-					MUTEX.Lock();																					//排他制御開始
-					completeDataQueList->push(compData);																//完全データ配列に格納
-					MUTEX.Unlock();																					//排他制御終了
-				}
-				tempDataList.erase(tempDataList.begin(), tempDataList.begin() + (decodeSize + sizeof(int)));		//完全データ作成に使用した分を削除
-
+			//完全データの生成
+			int byteSize = *(int*)decodeData;																	//4byte分だけ取得しintの値にキャスト
+			if (byteSize < BYTESIZE&&byteSize>0) {
+				std::vector<char> compData(byteSize);															//完全データ
+				memcpy(&compData[0], &decodeData[sizeof(int)], byteSize);										//サイズ以外のデータを使用し完全データを作成
+				completeDataQueList->push(compData);																//完全データ配列に格納
 			}
-			else {
-				break;
-			}
-		}
-		catch (std::exception error) {																			//
-			printf("Client=%s", error.what());																			//例外メッセージが入る
+			tempDataList.erase(tempDataList.begin(), tempDataList.begin() + (decodeSize + sizeof(int)));		//完全データ作成に使用した分を削除
 
 		}
-		catch (...) {																							//最終的にここ
-			//assert(false&&"なんかエラーです")
-			printf("なんかのエラー");
+		else {
+			break;
 		}
 	}
 }
