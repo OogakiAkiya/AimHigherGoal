@@ -47,6 +47,10 @@ void CurlWrapper::HTTPConnect(std::string* _data, std::string _url, std::string 
 		return;
 	}
 
+	if (_data == nullptr) {
+		curl_easy_cleanup(tempCurl);
+		return;
+	}
 	*_data = buf;
 	curl_easy_cleanup(tempCurl);
 
@@ -95,6 +99,51 @@ void CurlWrapper::PosUpdataLoop(std::shared_ptr<Data> _data)
 		output.clear();
 
 		//Sleep(500);													//0.5秒待つ
+}
+
+void CurlWrapper::ArrayPosUpdata()
+{
+	//ユーザー追加処理
+	if (curl == nullptr)return;
+	std::stringstream query;
+	std::string output;
+
+	//接続設定
+	curl_easy_setopt(curl, CURLOPT_URL, "http://lifestyle-qa.com/update_user_arraydata.php");
+	curl_easy_setopt(curl, CURLOPT_POST, 1);
+	curl_easy_setopt(curl, CURLOPT_TIMEOUT, 5L);													//2秒でデータを受信できなければタイムアウト処理
+	curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 5L);											//2秒以内に接続できなければタイムアウト処理
+
+		//メッセージの生成
+	float pos = 1.01f;
+	query << "amount=" << 4;
+	for (int i = 0; i < 4; i++) {
+		query << "&" << "player" << i << "=" << "test" << i;
+		query << "&" << "x" << i << "=" << pos;
+		query << "&" << "y" << i << "=" << pos;
+		query << "&" << "z" << i << "=" << pos;
+	}
+	query >> output;
+
+	//送信
+	curl_easy_setopt(curl, CURLOPT_POSTFIELDS, output.c_str());			//メッセージ設定
+	code = curl_easy_perform(curl);										//URLへの接続
+
+	//送信失敗したかの判断
+	if (code != CURLE_OK) {
+		if (code == CURLE_BAD_FUNCTION_ARGUMENT || code == CURLE_OPERATION_TIMEDOUT) {
+			printf("がタイムアウトしました\n");
+			return;
+		}
+		//code=6発生
+		printf("curl ErrorCode=%d\n", code);
+		return;
+	}
+
+	//文字列内をクリーン
+	query.str("");
+	query.clear(std::stringstream::goodbit);
+	output.clear();
 }
 
 

@@ -12,16 +12,11 @@
 
 ClientController::ClientController()
 {
-	
 }
 
 
 ClientController::~ClientController()
 {
-	//スレッド終了処理
-	if(thread!=nullptr)thread->detach();
-	thread = nullptr;
-
 	//解放処理
 	roomNumberList.clear();
 	for (int i = 0; i < socketList.size(); i++) {
@@ -30,10 +25,41 @@ ClientController::~ClientController()
 	socketList.clear();
 }
 
+void PosRegistration(std::string _data)
+{
+	std::unique_ptr<CurlWrapper> curl = std::make_unique<CurlWrapper>();
+	curl->HTTPConnect(nullptr, "http://lifestyle-qa.com/update_user_arraydata.php", _data);
+	curl = nullptr;
+}
+
 void ClientController::Update()
 {
 	ControllerThread();
 	SocketThread();
+
+
+	//実行するsqlの作成
+	std::stringstream query;
+	std::string output;
+	std::vector<std::shared_ptr<Data>> datas;
+	for (auto socket : socketList) {
+		if (socket->GetPosGetFlg()) {
+			datas.push_back(socket->GetData());
+		}
+	}
+	if (datas.size() <= 0)return;
+	query << "amount=" << datas.size();
+	for (int i = 0; i < datas.size(); i++) {
+		query << "&" << "player" << i << "=" << datas[i]->GetId()->c_str();
+		query << "&" << "x" << i << "=" << datas[i]->GetX();
+		query << "&" << "y" << i << "=" << datas[i]->GetY();
+		query << "&" << "z" << i << "=" << datas[i]->GetZ();
+	}
+	query >> output;
+	
+	std::thread thread(PosRegistration, output);
+	thread.detach();
+	
 }
 
 void ClientController::SetSocket(std::shared_ptr<Client> _socket)
@@ -124,6 +150,8 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 		char* temp=(char*)malloc(idsize);
 		memcpy(temp, &_data->at(sizeof(char) + sizeof(int)), idsize);
 		std::shared_ptr<std::string> id = std::make_shared<std::string>(temp);
+		id->resize(idsize);
+
 		MUTEX.Lock();
 		_socket->GetData()->SetId(id);
 		MUTEX.Unlock();
@@ -225,3 +253,4 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 		break;
 	}
 }
+

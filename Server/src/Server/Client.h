@@ -20,6 +20,7 @@ public:
 	void SetSocket(SOCKET _socket);
 	void SetNumber(int _number);
 	void SetPosGetFlg();
+	bool GetPosGetFlg();
 	//---------------------------------------------------------
 	//完全データを扱う関数
 	//---------------------------------------------------------

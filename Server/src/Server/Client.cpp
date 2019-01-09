@@ -39,7 +39,7 @@ void Client::Update()
 		RecvLoop(CREATECOMPLETEDATA);
 	}
 	if (posGetFlg) {
-		curl->PosUpdataLoop(data);				//スレッドを使わない場合重くなる
+		//curl->PosUpdataLoop(data);				//スレッドを使わない場合重くなる
 	}
 }
 
@@ -88,6 +88,11 @@ void Client::SetNumber(int _number)
 void Client::SetPosGetFlg()
 {
 	posGetFlg = true;
+}
+
+bool Client::GetPosGetFlg()
+{
+	return posGetFlg;
 }
 
 std::vector<char>* Client::GetCompleteData()
