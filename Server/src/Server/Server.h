@@ -21,7 +21,7 @@ private:
 	const char* PORTNUMBER = "49155";						//ƒ|[ƒg”Ô†
 
 	//---------------------------------------------------------
-	//’è”
+	//•Ï”
 	//---------------------------------------------------------
 	std::shared_ptr<Socket> socket = nullptr;
 	std::unique_ptr<ClientController> clientController = nullptr;

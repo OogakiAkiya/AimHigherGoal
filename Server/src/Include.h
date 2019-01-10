@@ -16,7 +16,6 @@
 #include<algorithm>
 #include<thread>
 #include<queue>
-#include<future>
 
 //curl
 #include<curl/curl.h>
