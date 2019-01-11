@@ -10,6 +10,7 @@ void main()
 	std::unique_ptr<LoadBalancer> loadBalancer=std::make_unique<LoadBalancer>();
 	loadBalancer->Updata();
 	Sleep(20000);
+
 	loadBalancer = nullptr;
 	//ExtensionMutex::DeleteInstance();
 }

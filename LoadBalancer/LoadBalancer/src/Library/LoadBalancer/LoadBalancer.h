@@ -15,7 +15,8 @@ public:
 	void Updata();
 private:
 	void CreateServerProcess();
-	void CreateServerPipe(int _pipeNumber);
+	void CreateInputPipe(int _pipeNumber);
+	void CreateOutputPipe(int _pipeNumber);
 
 	//---------------------------------------------------------
 	//定数
@@ -30,7 +31,7 @@ private:
 	std::unique_ptr<Process> process;
 	std::vector<OutputData> dataList;								//クライアントに送信するデータ
 
-	std::map<std::string, std::shared_ptr<NamedPipe>>outputPipeMap;	//パイプ名,パイプ
+	std::map<std::string, std::shared_ptr<NamedPipe>>inputPipeMap;	//パイプ名,パイプ
 	std::map<std::string, int> serverList;						//パイプ名,アクセス数
 	std::map<std::string, SOCKET> socketList;					//パイプ名,SOCKET
 	std::map<SOCKET, std::string>pipeList;						//SOCKET,パイプ名

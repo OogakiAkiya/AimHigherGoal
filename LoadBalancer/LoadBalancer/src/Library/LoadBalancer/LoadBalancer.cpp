@@ -14,16 +14,17 @@ LoadBalancer::LoadBalancer()
 LoadBalancer::~LoadBalancer()
 {
 	process = nullptr;
-	for (auto itr = outputPipeMap.begin(); itr != outputPipeMap.end(); ++itr) {
+	for (auto itr = inputPipeMap.begin(); itr != inputPipeMap.end(); ++itr) {
 		itr->second = nullptr;
 	}
-	outputPipeMap.clear();
-	//namePipeList.erase(namePipeList.begin());
+	inputPipeMap.clear();
 }
 
 void LoadBalancer::Updata()
 {
 	CreateServerProcess();
+	Sleep(10000);
+	CreateOutputPipe(0);
 }
 
 void LoadBalancer::CreateServerProcess()
@@ -34,10 +35,10 @@ void LoadBalancer::CreateServerProcess()
 	query << "Server.exe " << processNumber;								//コマンドラインMS作成
 	process->CreateProcessThread(query.str());
 	Sleep(500);
-	CreateServerPipe(processNumber);
+	CreateInputPipe(processNumber);
 }
 
-void LoadBalancer::CreateServerPipe(int _pipeNumber)
+void LoadBalancer::CreateInputPipe(int _pipeNumber)
 {
 	//インプットの作成
 	std::stringstream query;
@@ -45,24 +46,40 @@ void LoadBalancer::CreateServerPipe(int _pipeNumber)
 	//Readのスレッドを作成する
 	std::thread thread(InputPipeThread,query.str(),&dataList);
 	thread.detach();
+
 	//stringstreamのバッファ削除
 	query.str("");
 	query.clear(std::stringstream::goodbit);
 
-	//アウトプットの作成
-	/*
-	query << SERVEROUTPUT << _pipeNumber;
-	if (!pipe->CreateServer(query.str())) {
+}
+
+void LoadBalancer::CreateOutputPipe(int _pipeNumber)
+{
+	std::stringstream query;
+	std::unique_ptr<NamedPipe> pipe = std::make_unique <NamedPipe>();
+
+	query << OUTPUTPIPE << _pipeNumber;
+	while (1) {
+		pipe = std::make_unique <NamedPipe>();
+		if (pipe->CreateClient(query.str())) {
+			break;
+		}
 		pipe = nullptr;
-		return;
 	}
-	if (!pipe->ConnectRecv()) {
-		pipe = nullptr;
+
+	char szBuff[255] = "aaa";
+	if (pipe->Write(szBuff, strlen(szBuff)) == 0) {
 		return;
 	}
 
-	outputPipeMap.insert(std::make_pair(query.str(), pipe));					//接続したタイミングでパイプを登録
-	*/
+	Sleep(1000);
+	char Buff[255] = "EXIT";
+	if (pipe->Write(Buff, strlen(Buff)) == 0) {
+		return;
+	}
+
+	pipe = nullptr;
+
 }
 
 void InputPipeThread(std::string _pipeName,std::vector<OutputData>* _dataList) {
