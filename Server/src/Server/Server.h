@@ -4,7 +4,7 @@
 class Server
 {
 public:
-	Server();
+	Server(std::string _port="49155");
 	~Server();
 	void AcceptLoop();										//ƒƒCƒ“ŠÖ”‚ÅŒÄ‚Ôƒ‹[ƒv
 

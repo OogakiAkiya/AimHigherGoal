@@ -16,4 +16,5 @@ private:
 
 	std::vector<PROCESS_INFORMATION> processList;
 	int serverAmount=0;
+	std::map<std::string, int> serverList;
 };

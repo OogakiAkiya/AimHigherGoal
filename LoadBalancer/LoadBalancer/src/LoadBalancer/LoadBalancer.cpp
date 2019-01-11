@@ -10,6 +10,13 @@ LoadBalancer::LoadBalancer()
 
 LoadBalancer::~LoadBalancer()
 {
+	//serverListのデータ一覧表示
+	for (int i = 0; i < serverAmount; i++) {
+		std::stringstream query;
+		query << PORTNUMBER + i;
+		printf("ポート番号:%s,アクセス数=%d\n",query.str().c_str(), serverList[query.str()]);
+	}
+
 	//プロセス削除
 	for (auto process : processList) {
 		EnumWindows(EnumWindowsProc, (LPARAM)&process);
@@ -19,14 +26,24 @@ LoadBalancer::~LoadBalancer()
 
 void LoadBalancer::Updata()
 {
-	std::stringstream query;						//webサーバーに送るデータ
-	query << "Server.exe "<<(PORTNUMBER+serverAmount);
-	std::thread thread(CreateProcessThread, query.str(), &processList);
-	//std::thread thread(CreateProcessThread, "./GameServer/Server.exe", &processList);
-	thread.detach();
-	serverAmount++;
-	Sleep(1000);
+	for (int i = 0; i < 2; i++) {
+		//サーバー作成
+		std::stringstream query;
+		query << "Server.exe " << PORTNUMBER + serverAmount;								//コマンドラインMS作成
+		std::thread thread(CreateProcessThread, query.str(), &processList);
+		//std::thread thread(CreateProcessThread, "./GameServer/Server.exe", &processList);
+		thread.detach();																	//
+		
+		//queryのバッファーの削除
+		query.str("");
+		query.clear(std::stringstream::goodbit);
 
+		//サーバー情報の追加
+		query << PORTNUMBER + serverAmount;
+		serverList.insert(std::make_pair(query.str(), 0));
+		serverAmount++;
+		Sleep(1000);
+	}
 }
 
 

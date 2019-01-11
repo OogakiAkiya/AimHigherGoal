@@ -13,7 +13,7 @@
 using namespace std;
 #pragma comment(lib,"Ws2_32.lib")
 
-Server::Server()
+Server::Server(std::string _port)
 {
 	//シングルトン作成
 	Cipher::GetInstance();
@@ -27,7 +27,7 @@ Server::Server()
 		SetProtocolVersion_IPv4().								//IPv4
 		SetProtocol_TCP().										//TCP
 		SetIpAddress("0,0,0,0").								//アドレス指定
-		SetPortNumber("49155").									//ポート番号
+		SetPortNumber(_port).									//ポート番号
 		SetAsynchronous().										//非同期化
 		ServerCreate(socket);									//サーバーソケット生成
 	clientController=std::make_unique<ClientController>();
