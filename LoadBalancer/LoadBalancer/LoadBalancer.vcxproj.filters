@@ -13,24 +13,54 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="ソース ファイル\LoadBalancer">
+    <Filter Include="ソース ファイル\Library">
+      <UniqueIdentifier>{67e9e2c3-9917-4323-8e87-daf590e460e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\NamePipe">
+      <UniqueIdentifier>{64778073-c216-4273-a771-803f6aede1ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\LoadBalancer">
       <UniqueIdentifier>{25f4787b-8b2b-4898-828f-cc14c1f9821e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\Process">
+      <UniqueIdentifier>{9bb83962-9ff4-41b3-9c3d-bb7d251f0c37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\Mutex">
+      <UniqueIdentifier>{255f7079-fb1a-40c8-866c-21fb70bbaaa2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\LoadBalancer\LoadBalancer.cpp">
-      <Filter>ソース ファイル\LoadBalancer</Filter>
-    </ClCompile>
     <ClCompile Include="src\main.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="src\Library\LoadBalancer\LoadBalancer.cpp">
+      <Filter>ソース ファイル\Library\LoadBalancer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\NamedPipe\NamedPipe.cpp">
+      <Filter>ソース ファイル\Library\NamePipe</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\Process\Process.cpp">
+      <Filter>ソース ファイル\Library\Process</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\Mutex\ExtensionMutex.cpp">
+      <Filter>ソース ファイル\Library\Mutex</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\LoadBalancer\LoadBalancer.h">
-      <Filter>ソース ファイル\LoadBalancer</Filter>
-    </ClInclude>
     <ClInclude Include="src\Include.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\LoadBalancer\LoadBalancer.h">
+      <Filter>ソース ファイル\Library\LoadBalancer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\NamedPipe\NamedPipe.h">
+      <Filter>ソース ファイル\Library\NamePipe</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\Process\Process.h">
+      <Filter>ソース ファイル\Library\Process</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\Mutex\ExtensionMutex.h">
+      <Filter>ソース ファイル\Library\Mutex</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

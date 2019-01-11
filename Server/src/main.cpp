@@ -6,6 +6,7 @@ void main(int argc, char* argv[])
 {
 	std::unique_ptr<Server> server;
 
+	/*
 	if (argc > 1) {
 		int port = atoi(argv[1]);
 		printf("ポート番号=%d\n",port);
@@ -15,8 +16,9 @@ void main(int argc, char* argv[])
 	}
 	else {
 		printf("デフォルトポート番号=49155\n");
-		server = std::make_unique<Server>();
 	}
+	*/
+	server = std::make_unique<Server>();
 
 	if (server != nullptr) {
 		server->AcceptLoop();										//サーバー処理

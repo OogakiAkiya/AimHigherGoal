@@ -116,12 +116,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\LoadBalancer\LoadBalancer.cpp" />
+    <ClCompile Include="src\Library\LoadBalancer\LoadBalancer.cpp" />
+    <ClCompile Include="src\Library\Mutex\ExtensionMutex.cpp" />
+    <ClCompile Include="src\Library\NamedPipe\NamedPipe.cpp" />
+    <ClCompile Include="src\Library\Process\Process.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Include.h" />
-    <ClInclude Include="src\LoadBalancer\LoadBalancer.h" />
+    <ClInclude Include="src\Library\LoadBalancer\LoadBalancer.h" />
+    <ClInclude Include="src\Library\Mutex\ExtensionMutex.h" />
+    <ClInclude Include="src\Library\NamedPipe\NamedPipe.h" />
+    <ClInclude Include="src\Library\Process\Process.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
