@@ -28,6 +28,18 @@
     <Filter Include="ソース ファイル\Library\Mutex">
       <UniqueIdentifier>{255f7079-fb1a-40c8-866c-21fb70bbaaa2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Library\Cipher">
+      <UniqueIdentifier>{f1c4bfa0-3413-4250-9b65-903dbb9dfc30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\Socket">
+      <UniqueIdentifier>{db30808d-2e5a-48dd-8233-c8a43f49078e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Server">
+      <UniqueIdentifier>{90aec424-f92d-413d-a1c8-0d170fa05dc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Library\Data">
+      <UniqueIdentifier>{cff7b8b0-2c37-4af6-ac43-aa1d9290dfe7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -45,6 +57,18 @@
     <ClCompile Include="src\Library\Mutex\ExtensionMutex.cpp">
       <Filter>ソース ファイル\Library\Mutex</Filter>
     </ClCompile>
+    <ClCompile Include="src\Library\Socket\Socket.cpp">
+      <Filter>ソース ファイル\Library\Socket</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Server\Client.cpp">
+      <Filter>ソース ファイル\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Server\ClientController.cpp">
+      <Filter>ソース ファイル\Server</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\Data\Data.cpp">
+      <Filter>ソース ファイル\Library\Data</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Include.h">
@@ -61,6 +85,18 @@
     </ClInclude>
     <ClInclude Include="src\Library\Mutex\ExtensionMutex.h">
       <Filter>ソース ファイル\Library\Mutex</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\Socket\Socket.h">
+      <Filter>ソース ファイル\Library\Socket</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Server\Client.h">
+      <Filter>ソース ファイル\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Server\ClientController.h">
+      <Filter>ソース ファイル\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\Data\Data.h">
+      <Filter>ソース ファイル\Library\Data</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
