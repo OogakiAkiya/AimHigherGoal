@@ -1,4 +1,5 @@
 #include"../Include.h"
+#include"../Library/NamedPipe/NamedPipe.h"
 #include"../Library/Data/Data.h"
 #include"../Library/Cipher/OpenSSLAES.h"
 #include"../Library/Cipher/OpenSSLRSA.h"
@@ -18,10 +19,10 @@ ClientController::~ClientController()
 {
 	//解放処理
 	roomNumberList.clear();
-	for (int i = 0; i < socketList.size(); i++) {
-		socketList[i]=nullptr;
+	for (int i = 0; i < clientList.size(); i++) {
+		clientList[i]=nullptr;
 	}
-	socketList.clear();
+	clientList.clear();
 }
 
 void PosRegistration(std::string _data)
@@ -38,18 +39,18 @@ void ClientController::Update()
 	DBCreateData();
 }
 
-void ClientController::SetSocket(std::shared_ptr<Client> _socket)
+void ClientController::AddClient(std::shared_ptr<Client> _client)
 {
-	socketList.push_back(_socket);
+	clientList.push_back(_client);
 }
 
 
 void ClientController::ControllerUpdate()
 {
 	//サーバーに接続しているクライアントがいるか判定
-	if (socketList.empty() == true)return;
+	if (clientList.empty() == true)return;
 	//完全データの処理
-	for (auto& client : socketList) {
+	for (auto& client : clientList) {
 		if (client->EmptyCompleteData() == true)break;				//完全データがなければ以下処理は行わない
 		DataManipulate(client.get(), client->GetCompleteData());
 		client->DeleteCompleteData();
@@ -57,18 +58,18 @@ void ClientController::ControllerUpdate()
 
 	//切断処理が行われたソケットを削除
 	int count = 0;
-	for (int i = 0; i < socketList.size(); i++) {
-		if (socketList[i]->GetState() == -1) {
-			socketList[i] == nullptr;
-			socketList.erase(socketList.begin() + i);
+	for (int i = 0; i < clientList.size(); i++) {
+		if (clientList[i]->GetState() == -1) {
+			clientList[i] == nullptr;
+			clientList.erase(clientList.begin() + i);
 		}
 	}
 }
 
 void ClientController::SocketUpdate()
 {
-	if (socketList.empty() == true)return;
-	for (auto& client : socketList) {
+	if (clientList.empty() == true)return;
+	for (auto& client : clientList) {
 		client->Update();
 	}
 }
@@ -179,7 +180,7 @@ void ClientController::DBCreateData()
 	std::vector<std::shared_ptr<Data>> datas;		//送信するデータ一覧
 
 	//送るデータの選別
-	for (auto socket : socketList) {
+	for (auto socket : clientList) {
 		if (socket->GetPosGetFlg()) {
 			datas.push_back(socket->GetData());
 		}

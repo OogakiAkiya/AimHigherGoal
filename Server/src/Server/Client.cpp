@@ -1,4 +1,5 @@
 #include"../Include.h"
+#include"../Library/NamedPipe/NamedPipe.h"
 #include"../Library/Data/Data.h"
 #include"../Library/Cipher/OpenSSLAES.h"
 #include"../Library/Cipher/OpenSSLRSA.h"

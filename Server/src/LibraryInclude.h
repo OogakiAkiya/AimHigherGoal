@@ -1,6 +1,7 @@
 #ifndef LibraryInclude_h
 #define LibraryInclude_h
 
+#include"Library/NamedPipe/NamedPipe.h"
 #include"Library/Cipher/OpenSSLAES.h"
 #include"Library/Cipher/OpenSSLDH.h"
 #include"Library/Cipher/OpenSSLRSA.h"

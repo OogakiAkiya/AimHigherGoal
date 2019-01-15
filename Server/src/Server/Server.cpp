@@ -1,4 +1,5 @@
 #include"../Include.h"
+#include"../Library/NamedPipe/NamedPipe.h"
 #include"../Library/Mutex/ExtensionMutex.h"
 #include"../Library/Data/Data.h"
 #include"../Library/Cipher/OpenSSLAES.h"
@@ -13,59 +14,80 @@
 using namespace std;
 #pragma comment(lib,"Ws2_32.lib")
 
-Server::Server(std::string _port)
+Server::Server(int _processNumber)
 {
-	//シングルトン作成
+	//インスタンスの生成
 	Cipher::GetInstance();
-	
+	recvDataQueue = std::make_unique<std::queue<NamedPipe::PipeData>>();								//ロードバランサーに送信するデータ
+	clientController = std::make_unique<ClientController>();
+	outputPipe = std::make_unique<NamedPipe>();
+
 	//ランダム処理の初期化
 	srand(time(0));
 
-	//ソケット初期化
-	socket = make_shared<Socket>();
-	socket = socket->
-		SetProtocolVersion_IPv4().								//IPv4
-		SetProtocol_TCP().										//TCP
-		SetIpAddress("0,0,0,0").								//アドレス指定
-		SetPortNumber(_port).									//ポート番号
-		SetAsynchronous().										//非同期化
-		ServerCreate(socket);									//サーバーソケット生成
-	clientController=std::make_unique<ClientController>();
-	
+	//入出力パイプ作成
+	CreatePipe(_processNumber);
 }
 
 
 Server::~Server()
 {
 	Cipher::DeleteInstance();
-	socket = nullptr;
 	clientController = nullptr;
+	while (1) {
+		if (recvDataQueue->empty())break;
+		recvDataQueue->pop();
+	}
+	recvDataQueue = nullptr;
+
+	char buf[128]="EXIT";
+	outputPipe->Write(buf, strlen(buf));
+	outputPipe = nullptr;
 }
 
-void Server::AcceptLoop()
+void Server::Update()
 {
-	while (1) {
-		if (socket == nullptr)return;
-		AcceptSocket();
-		clientController->Update();
+	if (!recvDataQueue->empty()) {
+		NamedPipe::PipeData data=recvDataQueue->front();
+		int dataSize = *(int*)&data.data[0];					//全体のバイトサイズ
+		int idSize = *(int*)&data.data[sizeof(int)];			//IDサイズ
+		//playreIDの取得
+		char* temp = (char*)malloc(idSize);
+		memcpy(temp, &data.data[sizeof(int)*2], idSize);
+		std::shared_ptr<std::string> playerId = std::make_shared<std::string>(temp);
+		playerId->resize(idSize);																	//idのサイズが一定にならないのでresize
+		
+		//idが一致するクライアントの検索
+		//if(std::map==playerId)Add data;
+		//idのプレイヤーがいなかったら新規作成
+		//std::map->insert
+		recvDataQueue->pop();
 	}
 }
 
-
-void Server::AcceptSocket()
+void Server::CreatePipe(int _processNumber)
 {
-	std::shared_ptr<Client> clientSocket;											//クライアントのソケット情報を一時的に保存する変数
+	std::stringstream query;
 
-	//accept
-	SOCKET initSocket;
-	initSocket = INVALID_SOCKET;													//client_socket初期化
-	initSocket = socket->Accept();
-	if (initSocket == INVALID_SOCKET)return;										//アクセスがなかった場合ここで終わる
+	//入力用パイプ作成
+	std::shared_ptr<NamedPipe> pipe = std::make_shared <NamedPipe>();
+	query << INPUTPIPE << _processNumber;
+	pipe->CreateInputPipe(query.str(), recvDataQueue.get());
+	printf("入力用パイプ作成:%s", query.str().c_str());
+	pipe = nullptr;
 
-	//クライアントのソケットをコントローラークラスに追加する
-	clientSocket = std::make_shared<Client>();
-	clientSocket->GetData()->SetSocket(initSocket);									//接続のあったソケットをセット
-	clientController->SetSocket(clientSocket);										//作ったクライアント情報はSocketControllerクラスで管理
+	query.str("");
+	query.clear(std::stringstream::goodbit);
 
-	printf("アクセスがありました\n");
+
+	//出力用のパイプ作成
+	query << OUTPUTPIPE << _processNumber;
+	while (1) {
+		if (outputPipe->CreateClient(query.str())) {
+			printf("出力用パイプ作成:%s", query.str().c_str());
+			break;
+		}
+	}
+
+
 }

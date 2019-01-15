@@ -7,7 +7,7 @@ public:
 	ClientController();
 	~ClientController();
 	void Update();
-	void SetSocket(std::shared_ptr<Client> _socket);						//ソケットリストに追加
+	void AddClient(std::shared_ptr<Client> _client);						//ソケットリストに追加
 	void ControllerUpdate();												//スレッドが動作させる関数
 	void SocketUpdate();
 private:
@@ -26,7 +26,7 @@ private:
 	//---------------------------------------------------------
 	//変数
 	//---------------------------------------------------------
-	std::vector<std::shared_ptr<Client>> socketList;										//ソケット配列
+	std::vector<std::shared_ptr<Client>> clientList;										//ソケット配列
 	std::vector<int> roomNumberList;														//生成されたルーム番号を保存
 };
 

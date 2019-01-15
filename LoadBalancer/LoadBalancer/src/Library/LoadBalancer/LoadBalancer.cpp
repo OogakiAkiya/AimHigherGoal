@@ -14,15 +14,31 @@ LoadBalancer::LoadBalancer()
 	process = std::make_unique<Process>();
 	clientController = std::make_unique<ClientController>();
 	sendDataQueue = std::make_unique<std::queue<NamedPipe::PipeData>>();								//クライアントに送信するデータ
-	CreateServerProcess();
+	//CreateServerProcess();
 
-	/*
-	//入力用のパイプ作成
-	std::stringstream processName;
-	processName << INPUTPIPE << 0;
-	inputPipe->CreateInputPipe(processName.str(), sendDataQueue.get());
-	printf("入力用パイプ作成:%s", processName.str().c_str());
-	*/
+
+	std::stringstream query;
+	//入力用パイプ作成
+	std::shared_ptr<NamedPipe> pipe = std::make_shared <NamedPipe>();
+	query << INPUTPIPE << 0;
+	pipe->CreateInputPipe(query.str(), sendDataQueue.get());
+	printf("入力用パイプ作成:%s", query.str().c_str());
+	pipe = nullptr;
+
+	query.str("");
+	query.clear(std::stringstream::goodbit);
+
+
+	//出力用のパイプ作成
+	pipe = std::make_shared <NamedPipe>();
+	query << OUTPUTPIPE << 0;
+	while (1) {
+		if (pipe->CreateClient(query.str())) {
+			outputPipeMap.insert(std::make_pair(query.str(), pipe));
+			printf("出力用パイプ作成:%s", query.str().c_str());
+			break;
+		}
+	}
 }
 
 LoadBalancer::~LoadBalancer()

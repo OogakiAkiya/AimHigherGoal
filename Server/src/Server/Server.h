@@ -4,31 +4,25 @@
 class Server
 {
 public:
-	Server(std::string _port="49155");
+	Server(int _processNumber=0);
 	~Server();
-	void AcceptLoop();										//メイン関数で呼ぶループ
-
+	void Update();
 private:
-
-	//---------------------------------------------------------
-	//Winsock2を使用したソケットプログラミング
-	//---------------------------------------------------------
-	void AcceptSocket();
-
+	void CreatePipe(int _processNumber);
 	//---------------------------------------------------------
 	//定数
 	//---------------------------------------------------------
 	const char* PORTNUMBER = "49155";						//ポート番号
+	const std::string INPUTPIPE = "AimHigherGoalOutput";
+	const std::string OUTPUTPIPE = "AimHigherGoalInput";
 
 	//---------------------------------------------------------
 	//変数
 	//---------------------------------------------------------
-	std::shared_ptr<Socket> socket = nullptr;
 	std::unique_ptr<ClientController> clientController = nullptr;
+	std::unique_ptr<std::queue<NamedPipe::PipeData>> recvDataQueue;								//ロードバランサーに送信するデータ
+	std::unique_ptr<NamedPipe> outputPipe;
 	bool available = false;
-	struct addrinfo *result = NULL;
-	struct addrinfo hints;
-
 };
 
 #endif

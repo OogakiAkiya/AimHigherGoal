@@ -43,6 +43,9 @@
     <Filter Include="ソース ファイル\Library\Socket">
       <UniqueIdentifier>{f0b06b36-57b7-444a-ad23-25d082fcdc30}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Library\NamedPipe">
+      <UniqueIdentifier>{7971a2d4-b751-4fb1-8a62-40054f84eb77}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Server\Server.cpp">
@@ -80,6 +83,9 @@
     </ClCompile>
     <ClCompile Include="src\Library\Socket\Socket.cpp">
       <Filter>ソース ファイル\Library\Socket</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Library\NamedPipe\NamedPipe.cpp">
+      <Filter>ソース ファイル\Library\NamedPipe</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -121,6 +127,9 @@
     </ClInclude>
     <ClInclude Include="src\Library\Socket\Socket.h">
       <Filter>ソース ファイル\Library\Socket</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Library\NamedPipe\NamedPipe.h">
+      <Filter>ソース ファイル\Library\NamedPipe</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

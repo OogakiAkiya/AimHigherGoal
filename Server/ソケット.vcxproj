@@ -42,6 +42,7 @@
     <ClCompile Include="src\Library\Data\Data.cpp" />
     <ClCompile Include="src\Library\json\json11.cpp" />
     <ClCompile Include="src\Library\Mutex\ExtensionMutex.cpp" />
+    <ClCompile Include="src\Library\NamedPipe\NamedPipe.cpp" />
     <ClCompile Include="src\Library\Socket\Socket.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Server\Client.cpp" />
@@ -58,6 +59,7 @@
     <ClInclude Include="src\Library\Data\Data.h" />
     <ClInclude Include="src\Library\json\json11.hpp" />
     <ClInclude Include="src\Library\Mutex\ExtensionMutex.h" />
+    <ClInclude Include="src\Library\NamedPipe\NamedPipe.h" />
     <ClInclude Include="src\Library\Socket\Socket.h" />
     <ClInclude Include="src\Server\Client.h" />
     <ClInclude Include="src\Server\ClientController.h" />
