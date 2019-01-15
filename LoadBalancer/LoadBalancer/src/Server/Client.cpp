@@ -6,7 +6,7 @@
 
 Client::Client()
 {
-	pipeDataList = std::make_unique<std::queue<NamedPipe::PipeData>>();
+	pipeDataList = std::make_shared<std::queue<NamedPipe::PipeData>>();
 	data = std::make_shared<Data>();
 }
 
@@ -83,11 +83,11 @@ void Client::RecvLoop()
 			while (tempDataList.size() >= sizeof(int)) {
 				//パイプに送るデータがあるかチェック
 				int oneDataSize = *(int*)&tempDataList[0];
-				if (oneDataSize <= (int)tempDataList.size() - sizeof(int)) {
+				if (oneDataSize <= (int)tempDataList.size()) {
 					//パイプに送るデータの作成
 					NamedPipe::PipeData pipeData;
-					pipeData.byteSize=oneDataSize+sizeof(int);
-					memcpy(&pipeData.data, &tempDataList, oneDataSize+sizeof(int));
+					pipeData.byteSize=oneDataSize;
+					memcpy(&pipeData.data, &tempDataList[0], oneDataSize);
 					pipeDataList->push(pipeData);
 					tempDataList.erase(tempDataList.begin(), tempDataList.begin() + pipeData.byteSize);
 				}

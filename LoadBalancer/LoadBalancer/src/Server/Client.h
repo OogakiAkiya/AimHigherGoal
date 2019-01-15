@@ -44,7 +44,7 @@ private:
 	bool posGetFlg = false;
 	std::vector<char> tempDataList;											//一時データ配列
 	std::shared_ptr<Data> data;												//ユーザーの各データが格納されている
-	std::unique_ptr<std::queue<NamedPipe::PipeData>> pipeDataList;
+	std::shared_ptr<std::queue<NamedPipe::PipeData>> pipeDataList;
 };
 
 #endif

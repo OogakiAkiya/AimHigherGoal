@@ -47,7 +47,7 @@ void Client::StartThread()
 
 }
 
-bool Client::CreateSocket(std::string _ip)
+bool Client::CreateSocket(std::string _userId,std::string _ip)
 {
 	//既にソケットが存在する場合削除する
 	if (socket != nullptr) {
@@ -73,7 +73,7 @@ bool Client::CreateSocket(std::string _ip)
 	StartThread();
 
 	//鍵交換処理
-	ExchangeKey();
+	ExchangeKey(_userId);
 	return true;
 }
 
@@ -342,7 +342,7 @@ void Client::DataManipulate(const std::vector<char>* _data)
 
 }
 
-void Client::ExchangeKey()
+void Client::ExchangeKey(std::string _id)
 {
 	//変数生成
 	char keyBuf[EVP_MAX_KEY_LENGTH];							//鍵サイズ
@@ -354,11 +354,17 @@ void Client::ExchangeKey()
 	mutex->Lock();
 	int outlen = cipher->GetOpenSSLRSA()->Encode(endata, keyBuf, EVP_MAX_KEY_LENGTH);		//暗号化処理
 	mutex->Unlock();
-	memcpy(sendbuf, &outlen, sizeof(int));
-	memcpy(&sendbuf[sizeof(int)], &endata, outlen);
-	
+
+	int idSize = _id.size();
+	int allDataSize = sizeof(int) * 2 + idSize + outlen;
+
+	memcpy(sendbuf, &allDataSize, sizeof(int));										//全体のデータサイズ
+	memcpy(&sendbuf[sizeof(int)], &idSize, sizeof(int));							//playerIDサイズ
+	memcpy(&sendbuf[sizeof(int) * 2], _id.c_str(), idSize);							//playerID
+	memcpy(&sendbuf[sizeof(int) * 2+idSize], &endata, outlen);
+
 	//送信
-	send(socket->GetSocket(), sendbuf, sizeof(int) + outlen, 0);
+	send(socket->GetSocket(), sendbuf,allDataSize, 0);
 
 }
 

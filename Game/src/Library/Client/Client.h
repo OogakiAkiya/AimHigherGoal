@@ -5,7 +5,7 @@ class Client
 {
 public:
 	void StartThread();
-	bool CreateSocket(std::string _ip="127.0.0.1");
+	bool CreateSocket(std::string _userId,std::string _ip="127.0.0.1");
 	void Client::Recv();
 	//---------------------------------------------------------
 	//送信関数
@@ -57,7 +57,7 @@ private:
 	//---------------------------------------------------------
 	//ローカル関数
 	//---------------------------------------------------------
-	void ExchangeKey();													//鍵交換
+	void ExchangeKey(std::string _id);													//鍵交換
 
 	//---------------------------------------------------------
 	//定数
@@ -96,6 +96,7 @@ private:
 //=========================================================
 #pragma pack(1)
 //データ送信に使う最低限の構造
+
 struct BaseData
 {
 	int size;

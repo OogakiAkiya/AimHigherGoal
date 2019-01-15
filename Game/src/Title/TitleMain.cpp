@@ -83,14 +83,14 @@ void TitleMain::ImguiUpdate()
 		//ipアドレス処理
 		if (ipBufLen == 0&&successFlg==true) {
 			//ip未入力の場合(最終的にはなくなる予定)
-			if (CLIENT.CreateSocket() == false) {						//サーバーとの接続処理
+			if (CLIENT.CreateSocket(idBuf) == false) {						//サーバーとの接続処理
 				//サーバーが見つからなかった
 				msg = "Server not found";
 				successFlg = false;
 			}
 		}
 		else {
-			if (CLIENT.CreateSocket(ipBuf) == false) {					//サーバーとの接続処理
+			if (CLIENT.CreateSocket(idBuf,ipBuf) == false) {					//サーバーとの接続処理
 				//サーバーが見つからなかった
 				msg = "Server not found";
 				successFlg = false;

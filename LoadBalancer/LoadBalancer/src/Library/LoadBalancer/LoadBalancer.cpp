@@ -14,6 +14,8 @@ LoadBalancer::LoadBalancer()
 	process = std::make_unique<Process>();
 	clientController = std::make_unique<ClientController>();
 	sendDataQueue = std::make_unique<std::queue<NamedPipe::PipeData>>();								//クライアントに送信するデータ
+	recvDataQueue = std::make_unique<std::queue<NamedPipe::PipeData>>();								//クライアントに送信するデータ
+
 	//CreateServerProcess();
 
 
@@ -51,6 +53,12 @@ LoadBalancer::~LoadBalancer()
 		sendDataQueue->pop();
 	}
 	sendDataQueue = nullptr;
+	while (1) {
+		if (recvDataQueue->empty())break;
+		recvDataQueue->pop();
+	}
+	recvDataQueue = nullptr;
+
 	for (auto itr = outputPipeMap.begin(); itr != outputPipeMap.end(); ++itr) {
 		itr->second = nullptr;
 	}
@@ -64,6 +72,8 @@ void LoadBalancer::Updata()
 	if (!sendDataQueue->empty()) {
 		NamedPipe::PipeData data;
 		data=sendDataQueue->front();
+		outputPipeMap["AimHigherGoalOutput0"]->Write((char*)data.data,data.byteSize);
+		sendDataQueue->pop();
 	}
 }
 
@@ -92,7 +102,7 @@ void LoadBalancer::CreateServerProcess()
 	//入力用パイプ作成
 	std::shared_ptr<NamedPipe> pipe = std::make_shared <NamedPipe>();
 	query << INPUTPIPE << processNumber;
-	pipe->CreateInputPipe(query.str(),sendDataQueue.get());
+	pipe->CreateInputPipe(query.str(),recvDataQueue.get());
 	printf("入力用パイプ作成:%s", query.str().c_str());
 	pipe = nullptr;
 
