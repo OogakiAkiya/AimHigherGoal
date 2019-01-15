@@ -24,6 +24,11 @@ public:
 	void DeleteCompleteData();								//完全データの先頭データ削除
 	bool EmptyCompleteData();								//完全データに値が入っているかどうか調べる(空なら:true,値が入っていれば:false)
 
+	//---------------------------------------------------------
+	//new関数
+	//---------------------------------------------------------
+	void AddData(NamedPipe::PipeData* _data);
+
 private:
 	//---------------------------------------------------------
 	//ローカル関数
@@ -31,7 +36,7 @@ private:
 	void RecvLoop(int _loopType);
 	bool ExchangeKey();
 	void CreateCompleteData();
-
+	void DecryptionManipulate();
 	//---------------------------------------------------------
 	//定数
 	//---------------------------------------------------------
@@ -49,6 +54,12 @@ private:
 	std::vector<char> tempDataList;											//一時データ配列
 	std::shared_ptr<Data> data;												//ユーザーの各データが格納されている
 	std::unique_ptr<OpenSSLAES> aes;										//共通鍵暗号クラス
+
+	//new
+	std::unique_ptr<std::queue<NamedPipe::PipeData>> tempDataQueue;			//デコード前のデータ
+	std::unique_ptr<std::queue<NamedPipe::PipeData>> completeDataQueue;		//送信データ
+
+
 };
 
 #endif

@@ -47,21 +47,40 @@ Server::~Server()
 
 void Server::Update()
 {
-	if (!recvDataQueue->empty()) {
-		NamedPipe::PipeData data=recvDataQueue->front();
+	while (1) {
+		MUTEX.Lock();
+		if (recvDataQueue->empty()) {
+			MUTEX.Unlock();
+			break;
+		}
+
+		NamedPipe::PipeData data = recvDataQueue->front();
+		recvDataQueue->pop();
+		MUTEX.Unlock();
+
 		int dataSize = *(int*)&data.data[0];					//全体のバイトサイズ
 		int idSize = *(int*)&data.data[sizeof(int)];			//IDサイズ
 		//playreIDの取得
 		char* temp = (char*)malloc(idSize);
-		memcpy(temp, &data.data[sizeof(int)*2], idSize);
+		memcpy(temp, &data.data[sizeof(int) * 2], idSize);
 		std::shared_ptr<std::string> playerId = std::make_shared<std::string>(temp);
 		playerId->resize(idSize);																	//idのサイズが一定にならないのでresize
-		
-		//idが一致するクライアントの検索
-		//if(std::map==playerId)Add data;
-		//idのプレイヤーがいなかったら新規作成
-		//std::map->insert
-		recvDataQueue->pop();
+
+		//idが一致するクライアントの検索&追加
+		if (clientMap.count(playerId->c_str()) == 0) {											//重複しなかった
+			std::shared_ptr<Client> client = std::make_shared<Client>();
+			//IDの追加
+			client->GetData()->SetId(playerId);
+			clientMap.insert(std::make_pair(playerId->c_str(), client));
+			client = nullptr;
+		}
+		//dataの追加
+		clientMap[playerId->c_str()]->AddData(&data);
+	}
+
+	//client処理
+	for (auto itr = clientMap.begin(); itr != clientMap.end(); ++itr) {
+		itr->second->Update();
 	}
 }
 

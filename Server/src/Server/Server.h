@@ -20,7 +20,9 @@ private:
 	//変数
 	//---------------------------------------------------------
 	std::unique_ptr<ClientController> clientController = nullptr;
-	std::unique_ptr<std::queue<NamedPipe::PipeData>> recvDataQueue;								//ロードバランサーに送信するデータ
+	std::map<std::string, std::shared_ptr<Client>> clientMap;
+	std::unique_ptr<std::queue<NamedPipe::PipeData>> sendDataQueue;								//ロードバランサーに送信するデータ
+	std::unique_ptr<std::queue<NamedPipe::PipeData>> recvDataQueue;								//ロードバランサーからのデータを受信する
 	std::unique_ptr<NamedPipe> outputPipe;
 	bool available = false;
 };

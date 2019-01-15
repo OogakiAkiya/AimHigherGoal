@@ -10,6 +10,9 @@
 
 Client::Client()
 {
+	tempDataQueue= std::make_unique<std::queue<NamedPipe::PipeData>>();			//デコード前のデータ
+	completeDataQueue=std::make_unique<std::queue<NamedPipe::PipeData>>();		//送信データ
+
 	completeDataQueList = std::make_unique <std::queue<std::vector<char>>>();
 	data = std::make_shared<Data>();
 	aes = std::make_unique<OpenSSLAES>();
@@ -17,6 +20,17 @@ Client::Client()
 
 Client::~Client()
 {
+	while (1) {
+		if (tempDataQueue->empty())break;
+		tempDataQueue->pop();
+	}
+	tempDataQueue = nullptr;			//デコード前のデータ
+	while (1) {
+		if (completeDataQueue->empty())break;
+		completeDataQueue->pop();
+	}
+	completeDataQueue = nullptr;		//送信データ
+
 	//解放処理
 	aes=nullptr;
 	completeDataQueList = nullptr;
@@ -26,6 +40,8 @@ Client::~Client()
 
 void Client::Update()
 {
+	DecryptionManipulate();
+	/*
 	//鍵交換
 	if (!keyChangeFlg) {
 		RecvLoop(EXCHANGEKEY);
@@ -34,6 +50,7 @@ void Client::Update()
 	if (keyChangeFlg) {
 		RecvLoop(CREATECOMPLETEDATA);
 	}
+	*/
 }
 
 
@@ -83,6 +100,11 @@ bool Client::EmptyCompleteData()
 		return true;									//空
 	}
 	return false;										//値が入っている
+}
+
+void Client::AddData(NamedPipe::PipeData* _data)
+{
+	tempDataQueue->push(*_data);
 }
 
 void Client::RecvLoop(int _loopType)
@@ -176,5 +198,27 @@ void Client::CreateCompleteData()
 		else {
 			break;
 		}
+	}
+}
+
+void Client::DecryptionManipulate()
+{
+	while (1) {
+		if (tempDataQueue->empty())break;
+		NamedPipe::PipeData sendData;
+		char data[BYTESIZE];																			//復号前データ
+		char decodeData[BYTESIZE];
+
+		if (!keyChangeFlg) {
+			int idSize = *(int*)&tempDataQueue->front().data[sizeof(int)];
+			int decodeSize = tempDataQueue->front().byteSize - (sizeof(int) * 2 + idSize);
+
+			int outLen = CIPHER.GetOpenSSLRSA()->Decode(decodeData, &tempDataQueue->front().data[sizeof(int) * 2 + idSize], decodeSize);						//公開鍵暗号の復号
+			aes->SetKey((unsigned char*)decodeData, outLen);												//共通鍵を設定
+			tempDataQueue->pop();
+			keyChangeFlg = true;
+		}
+
+		//以下復号処理
 	}
 }

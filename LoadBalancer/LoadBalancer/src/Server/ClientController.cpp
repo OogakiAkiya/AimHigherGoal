@@ -1,4 +1,5 @@
 #include"../Include.h"
+#include"../Library/Mutex/ExtensionMutex.h"
 #include"../Library/Data/Data.h"
 #include"../Library/NamedPipe/NamedPipe.h"
 #include"../Library/Socket/Socket.h"
@@ -38,6 +39,7 @@ void ClientController::Update(std::queue<NamedPipe::PipeData>* _dataList)
 	ControllerUpdate();
 	SocketUpdate();
 	GetPipeData(_dataList);
+	MUTEX.Unlock();
 }
 
 void ClientController::ControllerUpdate()

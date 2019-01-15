@@ -23,7 +23,7 @@ LoadBalancer::LoadBalancer()
 	//入力用パイプ作成
 	std::shared_ptr<NamedPipe> pipe = std::make_shared <NamedPipe>();
 	query << INPUTPIPE << 0;
-	pipe->CreateInputPipe(query.str(), sendDataQueue.get());
+	pipe->CreateInputPipe(query.str(), recvDataQueue.get());
 	printf("入力用パイプ作成:%s", query.str().c_str());
 	pipe = nullptr;
 
