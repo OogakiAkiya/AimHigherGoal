@@ -20,9 +20,10 @@ private:
 	//---------------------------------------------------------
 	std::unique_ptr<Process> process;
 	std::unique_ptr<ClientController> clientController;
-	std::unique_ptr<std::queue<NamedPipe::PipeData>> dataList;								//クライアントに送信するデータ
-	std::map<std::string, std::shared_ptr<NamedPipe>>inputPipeMap;	//パイプ名,パイプ
+	std::unique_ptr<std::queue<NamedPipe::PipeData>> sendDataQueue;								//クライアントに送信するデータ
+	std::map<std::string, std::shared_ptr<NamedPipe>>outputPipeMap;	//パイプ名,パイプ
 	std::map<std::string, int> serverList;						//パイプ名,アクセス数
 	std::map<std::string, SOCKET> socketList;					//パイプ名,SOCKET
 	std::map<SOCKET, std::string>pipeList;						//SOCKET,パイプ名
+
 };

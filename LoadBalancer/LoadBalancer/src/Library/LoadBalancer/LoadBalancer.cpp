@@ -13,7 +13,16 @@ LoadBalancer::LoadBalancer()
 {
 	process = std::make_unique<Process>();
 	clientController = std::make_unique<ClientController>();
-	dataList = std::make_unique<std::queue<NamedPipe::PipeData>>();								//クライアントに送信するデータ
+	sendDataQueue = std::make_unique<std::queue<NamedPipe::PipeData>>();								//クライアントに送信するデータ
+	CreateServerProcess();
+
+	/*
+	//入力用のパイプ作成
+	std::stringstream processName;
+	processName << INPUTPIPE << 0;
+	inputPipe->CreateInputPipe(processName.str(), sendDataQueue.get());
+	printf("入力用パイプ作成:%s", processName.str().c_str());
+	*/
 }
 
 LoadBalancer::~LoadBalancer()
@@ -22,54 +31,24 @@ LoadBalancer::~LoadBalancer()
 	process = nullptr;
 	clientController = nullptr;
 	while (1) {
-		if (dataList->empty())break;
-		dataList->pop();
+		if (sendDataQueue->empty())break;
+		sendDataQueue->pop();
 	}
-	dataList = nullptr;
-	for (auto itr = inputPipeMap.begin(); itr != inputPipeMap.end(); ++itr) {
+	sendDataQueue = nullptr;
+	for (auto itr = outputPipeMap.begin(); itr != outputPipeMap.end(); ++itr) {
 		itr->second = nullptr;
 	}
-	inputPipeMap.clear();
+	outputPipeMap.clear();
 }
 
 void LoadBalancer::Updata()
 {
-	clientController->Update(dataList.get());
-	if (!dataList->empty()) {
+	clientController->Update(sendDataQueue.get());			//受信したデータをデータリストに追加する
+	//データが中に入ったかどうかの確認用
+	if (!sendDataQueue->empty()) {
 		NamedPipe::PipeData data;
-		data=dataList->front();
-		printf("%d", data.byteSize);
+		data=sendDataQueue->front();
 	}
-	/*
-	CreateServerProcess();
-	Sleep(10000);
-
-	std::stringstream query;
-	query << OUTPUTPIPE << 0;
-
-
-	Sleep(1000);
-	if (true) {
-		std::shared_ptr<NamedPipe> pipe = std::make_shared <NamedPipe>();
-		char szBuff[255] = "aaa";
-		if (pipe->CreateClient(query.str())) {
-			inputPipeMap.insert(std::make_pair(query.str(), pipe));
-			pipe->Write(szBuff, strlen(szBuff));
-			printf("\naaa成功\n");
-		}
-		pipe = nullptr;
-
-	}
-	if (true) {
-		char Buff[255] = "EXIT";
-
-		inputPipeMap[query.str()]->Write(Buff, strlen(Buff));
-		printf("\nEXIT成功\n");
-		inputPipeMap[query.str()] = nullptr;
-
-	}
-	*/
-
 }
 
 void LoadBalancer::Temp()
@@ -93,11 +72,26 @@ void LoadBalancer::CreateServerProcess()
 
 	query.str("");
 	query.clear(std::stringstream::goodbit);
-
-	std::unique_ptr<NamedPipe> pipe = std::make_unique <NamedPipe>();
-	//インプットの作成
-	query << INPUTPIPE << 0;
-
-	pipe->CreateInputPipe(query.str(),dataList.get());
+	
+	//入力用パイプ作成
+	std::shared_ptr<NamedPipe> pipe = std::make_shared <NamedPipe>();
+	query << INPUTPIPE << processNumber;
+	pipe->CreateInputPipe(query.str(),sendDataQueue.get());
+	printf("入力用パイプ作成:%s", query.str().c_str());
 	pipe = nullptr;
+
+	query.str("");
+	query.clear(std::stringstream::goodbit);
+
+	
+	//出力用のパイプ作成
+	pipe = std::make_shared <NamedPipe>();
+	query << OUTPUTPIPE << processNumber;
+	while (1) {
+		if (pipe->CreateClient(query.str())) {
+			outputPipeMap.insert(std::make_pair(query.str(), pipe));
+			printf("出力用パイプ作成:%s", query.str().c_str());
+			break;
+		}
+	}
 }
