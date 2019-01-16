@@ -118,10 +118,6 @@ void InputPipeThread(std::string _pipeName, std::queue<NamedPipe::PipeData>* _da
 			printf("スレッド終了");
 			break;
 		}
-		buf[size] = '\0';
-		printf("Server : %s", buf);
-		Sleep(1);
-
 		
 		//データの追加
 		NamedPipe::PipeData addData;

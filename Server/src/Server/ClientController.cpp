@@ -102,8 +102,8 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 		_socket->GetData()->SetZ(*(float*)&recvData[sizeof(float) * 2]);
 
 		//送信データ作成
-		UserData userData;
-		userData.data.size = sizeof(UserData) - sizeof(int);
+		TempUserData userData;
+		userData.data.size = sizeof(TempUserData) - sizeof(int);
 		userData.data.id = 0x02;
 		userData.x = _socket->GetData()->GetX();
 		userData.y = _socket->GetData()->GetY();
@@ -111,7 +111,7 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 
 
 		//送信用データの作成
-		int amountSize=CreateSendData(sendData, _socket, (char*)&userData, sizeof(UserData));
+		int amountSize=CreateSendData(sendData, _socket, (char*)&userData, sizeof(TempUserData));
 
 		//送信処理
 		send(_socket->GetSocket(), sendData, amountSize, 0);
@@ -161,12 +161,12 @@ void ClientController::DataManipulate(Client* _socket, std::vector<char>* _data)
 		int recvData = *(int*)&_data->at(sizeof(char));													//誰が攻撃されたのかがこの中に入っている
 
 		//送信データの作成
-		BaseData sendBuf;
-		sendBuf.size = sizeof(BaseData) - sizeof(int);
+		tempData sendBuf;
+		sendBuf.size = sizeof(tempData) - sizeof(int);
 		sendBuf.id = 0x18;
 
 		//送信用データの作成
-		int amountSize = CreateSendData(sendData, _socket, (char*)&sendBuf, sizeof(BaseData));
+		int amountSize = CreateSendData(sendData, _socket, (char*)&sendBuf, sizeof(tempData));
 
 		//送信処理
 		send(_socket->GetSocket(), (char*)&sendData,amountSize, 0);

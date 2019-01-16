@@ -47,6 +47,7 @@ Server::~Server()
 
 void Server::Update()
 {
+	//InputPipeにきているデータの管理
 	while (1) {
 		MUTEX.Lock();
 		if (recvDataQueue->empty()) {
@@ -81,7 +82,13 @@ void Server::Update()
 	//client処理
 	for (auto itr = clientMap.begin(); itr != clientMap.end(); ++itr) {
 		itr->second->Update();
-	}
+		//送信処理
+		while (1) {
+			if (itr->second->GetSendData()->empty())break;
+			outputPipe->Write((char*)&itr->second->GetSendData()->front(), sizeof(NamedPipe::PipeData));
+			itr->second->GetSendData()->pop();
+		}
+	}	
 }
 
 void Server::CreatePipe(int _processNumber)

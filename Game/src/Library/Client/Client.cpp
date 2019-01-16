@@ -136,23 +136,34 @@ void Client::Recv()
 void Client::SendUserInformation(Data * _data)
 {
 	//データ生成
-	UserData sendData;
-	sendData.base.id = 0x01;
-	sendData.idsize = _data->GetId()->length();
-	memcpy(&sendData.id[0], _data->GetId()->c_str(), sendData.idsize);
-	sendData.base.size = sizeof(UserData) - sizeof(int);
+	BaseData userData;
+	userData.size = sizeof(BaseData);
+	userData.playerIdSize = _data->GetId()->length();
+	memcpy(userData.playerId, _data->GetId()->c_str(), userData.playerIdSize);
+	userData.id = 0x01;
+	send(CLIENT.GetSocket(), (char*)&userData,sizeof(BaseData), 0);
 
-	char* origin = (char*)&sendData;
+	/*
+	userData.base.id = 0x01;
+	userData.idsize = _data->GetId()->length();
+	memcpy(&userData.id[0], _data->GetId()->c_str(), userData.idsize);
+	userData.base.size = sizeof(BaseData) - sizeof(int);
+
+	char* origin = (char*)&userData;
 	char encodeData[BYTESIZE];								//暗号化データを入れる
-	char senData[BYTESIZE];									//送信データ
+	char sendData[BYTESIZE];									//送信データ
 
 	//暗号処理
-	int encode_size = cipher->GetOpenSSLAES()->Encode(encodeData, origin,sendData.base.size+sizeof(UserData));
-	memcpy(senData, &encode_size, sizeof(int));
-	memcpy(&senData[sizeof(int)], encodeData, encode_size);
+	int encodeSize = cipher->GetOpenSSLAES()->Encode(encodeData, origin,sizeof(UserData));
+	int dataSize = sizeof(int) * 2 + userData.idsize+encodeSize;
 
+	memcpy(sendData, &dataSize, sizeof(int));							//全体データサイズ
+	memcpy(&sendData[sizeof(int)], &userData.idsize, sizeof(int));							//IDサイズ
+	memcpy(&sendData[sizeof(int)*2], _data->GetId()->c_str(), userData.idsize);							//ID
+	memcpy(&sendData[sizeof(int)*2+userData.idsize], encodeData, encodeSize);				//暗号文
+	*/
 	//データ送信
-	send(CLIENT.GetSocket(), senData, sizeof(int) + encode_size, 0);
+	//send(CLIENT.GetSocket(), sendData, sizeof(int) + encodeSize, 0);
 
 }
 

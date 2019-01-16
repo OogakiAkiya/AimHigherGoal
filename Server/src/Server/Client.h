@@ -24,6 +24,8 @@ public:
 	void DeleteCompleteData();								//完全データの先頭データ削除
 	bool EmptyCompleteData();								//完全データに値が入っているかどうか調べる(空なら:true,値が入っていれば:false)
 
+	//new
+	std::queue<NamedPipe::PipeData>* GetSendData();
 	//---------------------------------------------------------
 	//new関数
 	//---------------------------------------------------------
@@ -37,6 +39,10 @@ private:
 	bool ExchangeKey();
 	void CreateCompleteData();
 	void DecryptionManipulate();
+	void DataManipulater(char _id,char* _data);
+	void DBCreateData();
+	void DBGetPos(char* _data, std::shared_ptr<std::string> _userId);
+	void CreateSendData(char* _originalData, int _dataLen, char _id);
 	//---------------------------------------------------------
 	//定数
 	//---------------------------------------------------------
@@ -61,5 +67,32 @@ private:
 
 
 };
+
+#pragma pack(1)
+struct BaseData
+{
+	int size;
+	int playerIdSize;
+	char playerId[20];
+	char id;
+};
+struct Pos
+{
+	float x;
+	float y;
+	float z;
+};
+
+//座標データ
+struct UserData {
+	float x;
+	float y;
+	float z;
+	float angle;
+	int animation;
+};
+
+#pragma pack()
+
 
 #endif

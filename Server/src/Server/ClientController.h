@@ -35,15 +35,15 @@ private:
 ////////////////////////////////////////////////////////////////////
 #pragma pack(1)
 //データ送信の最低限
-struct BaseData
+struct tempData
 {
 	int size;
 	char id;
 };
 
 //ユーザー情報処理
-struct UserData {
-	BaseData data;
+struct TempUserData {
+	tempData data;
 	float x;
 	float y;
 	float z;
