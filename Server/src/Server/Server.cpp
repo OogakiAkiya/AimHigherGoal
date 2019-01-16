@@ -85,7 +85,7 @@ void Server::Update()
 		//‘—Mˆ—
 		while (1) {
 			if (itr->second->GetSendData()->empty())break;
-			outputPipe->Write((char*)&itr->second->GetSendData()->front(), sizeof(NamedPipe::PipeData));
+			outputPipe->Write((char*)&itr->second->GetSendData()->front().data, itr->second->GetSendData()->front().byteSize);
 			itr->second->GetSendData()->pop();
 		}
 	}	

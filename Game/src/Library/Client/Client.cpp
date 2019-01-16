@@ -95,10 +95,19 @@ void Client::Recv()
 
 			//一時データから完全データの作成
 			while (tempDataList.size() >= sizeof(int)) {													//何byteのデータが送られてきていいるかすら読み込めなければ抜ける
-				
 				//復号処理
-				int decodeSize = *(int*)&tempDataList[0];
-				if (decodeSize <= (int)tempDataList.size() - sizeof(int)) {
+				BaseData recvData = *(BaseData*)&tempDataList[0];
+				if (recvData.size <= (int)tempDataList.size()) {
+					int decodeSize = recvData.size - sizeof(BaseData);
+					char data[BYTESIZE];																	//復号前データ
+					char decodeData[BYTESIZE];																//復号データ
+					memcpy(data, &tempDataList[sizeof(BaseData)], decodeSize);
+					tempDataList.erase(tempDataList.begin(), tempDataList.begin() + recvData.size);		//完全データ作成に使用した分を削除
+					mutex->Lock();
+					cipher->GetOpenSSLAES()->Decode(decodeData,data,decodeSize);
+					mutex->Unlock();
+					DataManipulate(recvData.id,decodeData);
+					/*
 					char data[BYTESIZE];																	//復号前データ
 					char decodeData[BYTESIZE];																//復号データ
 					memcpy(data, &tempDataList[sizeof(int)], decodeSize);
@@ -112,6 +121,8 @@ void Client::Recv()
 
 					//完全データの処理
 					DataManipulate(&compData);
+									*/
+
 				}
 				else {
 					//完全データ作成不能になった場合
@@ -142,28 +153,6 @@ void Client::SendUserInformation(Data * _data)
 	memcpy(userData.playerId, _data->GetId()->c_str(), userData.playerIdSize);
 	userData.id = 0x01;
 	send(CLIENT.GetSocket(), (char*)&userData,sizeof(BaseData), 0);
-
-	/*
-	userData.base.id = 0x01;
-	userData.idsize = _data->GetId()->length();
-	memcpy(&userData.id[0], _data->GetId()->c_str(), userData.idsize);
-	userData.base.size = sizeof(BaseData) - sizeof(int);
-
-	char* origin = (char*)&userData;
-	char encodeData[BYTESIZE];								//暗号化データを入れる
-	char sendData[BYTESIZE];									//送信データ
-
-	//暗号処理
-	int encodeSize = cipher->GetOpenSSLAES()->Encode(encodeData, origin,sizeof(UserData));
-	int dataSize = sizeof(int) * 2 + userData.idsize+encodeSize;
-
-	memcpy(sendData, &dataSize, sizeof(int));							//全体データサイズ
-	memcpy(&sendData[sizeof(int)], &userData.idsize, sizeof(int));							//IDサイズ
-	memcpy(&sendData[sizeof(int)*2], _data->GetId()->c_str(), userData.idsize);							//ID
-	memcpy(&sendData[sizeof(int)*2+userData.idsize], encodeData, encodeSize);				//暗号文
-	*/
-	//データ送信
-	//send(CLIENT.GetSocket(), sendData, sizeof(int) + encodeSize, 0);
 
 }
 
@@ -339,6 +328,54 @@ void Client::DataManipulate(const std::vector<char>* _data)
 	}
 
 	//攻撃処理
+	case 0x18:
+		data.SetX(0.0f);					//敵の現在の座標
+		data.SetY(0.0f);
+		data.SetZ(0.0f);
+		data.SetAngle(0);
+		data.SetAnimation(DAMAGE);
+		Lock();
+		dataQueueList->push(data);
+		Unlock();
+		break;
+	}
+
+}
+
+void Client::DataManipulate(char _id, char * _data)
+{
+	Data data;
+
+	switch (_id) {
+	case 0x02: {
+		Lock();
+		playerData->SetX(*(float*)&_data[sizeof(char)]);
+		playerData->SetY(*(float*)&_data[sizeof(char) + sizeof(float) * 1]);
+		playerData->SetZ(*(float*)&_data[sizeof(char) + sizeof(float) * 2]);
+		initFlag = true;
+		Unlock();
+		break;
+	}
+
+			   //座標更新処理
+	case 0x16: {
+		float recvData = *(float*)&_data[sizeof(char) + sizeof(float) * 0];
+		data.SetX(recvData);
+		recvData = *(float*)&_data[sizeof(char) + sizeof(float) * 1];
+		data.SetY(recvData);
+		recvData = *(float*)&_data[sizeof(char) + sizeof(float) * 2];
+		data.SetZ(recvData);
+		recvData = *(float*)&_data[sizeof(char) + sizeof(float) * 3];
+		data.SetAngle(recvData);
+		recvData = *(int*)&_data[sizeof(char) + sizeof(float) * 3 + sizeof(int)];
+		data.SetAnimation(recvData);
+		Lock();
+		dataQueueList->push(data);
+		Unlock();
+		break;
+	}
+
+			   //攻撃処理
 	case 0x18:
 		data.SetX(0.0f);					//敵の現在の座標
 		data.SetY(0.0f);

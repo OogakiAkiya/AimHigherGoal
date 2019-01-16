@@ -79,13 +79,7 @@ void LoadBalancer::Updata()
 	}
 
 	//サーバー受信用処理
-	/*
 	while (1) {
-		MUTEX.Lock();
-		printf("%d\n", recvDataQueue->size());
-		MUTEX.Unlock();
-		Sleep(10);
-
 		MUTEX.Lock();
 		if (recvDataQueue->empty()) {
 			MUTEX.Unlock();
@@ -94,16 +88,9 @@ void LoadBalancer::Updata()
 		NamedPipe::PipeData recvData = recvDataQueue->front();
 		recvDataQueue->pop();
 		MUTEX.Unlock();
-		printf("dataSize=%d\n", recvData.byteSize);
+		clientController->SendAllClient(&recvData);
 	}
-	*/
-	
-	if (recvDataQueue->empty() == true) {
-		return;
-	}
-	NamedPipe::PipeData recvData = recvDataQueue->front();
-	recvDataQueue->pop();
-	&recvData.data[sizeof(int)]
+	//&recvData.data[sizeof(int)];
 }
 
 void LoadBalancer::Temp()

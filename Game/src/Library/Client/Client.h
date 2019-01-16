@@ -53,6 +53,7 @@ private:
 	Client();
 	~Client();
 	void DataManipulate(const std::vector<char>* _data);				//完成品データから移動などの処理を行う	
+	void DataManipulate(char _id,char* _data);				//完成品データから移動などの処理を行う	
 
 	//---------------------------------------------------------
 	//ローカル関数

@@ -10,6 +10,7 @@ public:
 	void ControllerUpdate();												//ƒXƒŒƒbƒh‚ª“®ì‚³‚¹‚éŠÖ”
 	void SocketUpdate();
 	void GetPipeData(std::queue<NamedPipe::PipeData>* _dataList);
+	void SendAllClient(NamedPipe::PipeData* _data);
 private:
 	void AcceptSocket();
 

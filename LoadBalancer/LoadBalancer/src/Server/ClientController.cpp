@@ -39,7 +39,6 @@ void ClientController::Update(std::queue<NamedPipe::PipeData>* _dataList)
 	ControllerUpdate();
 	SocketUpdate();
 	GetPipeData(_dataList);
-	MUTEX.Unlock();
 }
 
 void ClientController::ControllerUpdate()
@@ -75,6 +74,13 @@ void ClientController::GetPipeData(std::queue<NamedPipe::PipeData>* _dataList)
 		client->DeletePipeData();
 	}
 
+}
+
+void ClientController::SendAllClient(NamedPipe::PipeData* _data)
+{
+	for (auto client : socketList) {
+		send(client->GetSocket(), _data->data, _data->byteSize, 0);
+	}
 }
 
 
