@@ -29,36 +29,4 @@ private:
 	std::vector<std::shared_ptr<Client>> socketList;										//ソケット配列
 };
 
-////////////////////////////////////////////////////////////////////
-//以下送信データ構成
-////////////////////////////////////////////////////////////////////
-#pragma pack(1)
-//データ送信の最低限
-struct BaseData
-{
-	int size;
-	char id;
-};
-
-//ユーザー情報処理
-struct UserData {
-	BaseData data;
-	float x;
-	float y;
-	float z;
-};
-
-
-//座標データ
-struct PosData {
-	int size;
-	char id;
-	float x;
-	float y;
-	float z;
-	float angle;
-	int animation;
-};
-#pragma pack()
-
 #endif

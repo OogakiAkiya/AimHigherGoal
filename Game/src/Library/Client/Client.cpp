@@ -104,24 +104,9 @@ void Client::Recv()
 					memcpy(data, &tempDataList[sizeof(BaseData)], decodeSize);
 					tempDataList.erase(tempDataList.begin(), tempDataList.begin() + recvData.size);		//完全データ作成に使用した分を削除
 					mutex->Lock();
-					cipher->GetOpenSSLAES()->Decode(decodeData,data,decodeSize);
+					int temp=cipher->GetOpenSSLAES()->Decode(decodeData,data,decodeSize);
 					mutex->Unlock();
 					DataManipulate(recvData.id,decodeData);
-					/*
-					char data[BYTESIZE];																	//復号前データ
-					char decodeData[BYTESIZE];																//復号データ
-					memcpy(data, &tempDataList[sizeof(int)], decodeSize);
-					mutex->Lock();
-					cipher->GetOpenSSLAES()->Decode(decodeData, data, decodeSize);
-					mutex->Unlock();
-					int byteSize = *(int*)decodeData;														//4byte分だけ取得しintの値にキャスト
-					std::vector<char> compData(byteSize);													//完全データ
-					memcpy(&compData[0], &decodeData[sizeof(int)], byteSize);								//サイズ以外のデータを使用し完全データを作成
-					tempDataList.erase(tempDataList.begin(), tempDataList.begin() + (decodeSize + 4));		//完全データ作成に使用した分を削除
-
-					//完全データの処理
-					DataManipulate(&compData);
-									*/
 
 				}
 				else {
@@ -292,56 +277,6 @@ void Client::DeleteInstance()
 	}
 }
 
-
-void Client::DataManipulate(const std::vector<char>* _data)
-{
-	Data data;
-	char id = *(char*)&_data->at(0);					//なんのデータかidで判断する
-
-	switch (id) {
-	case 0x02: {
-		Lock();
-		playerData->SetX(*(float*)&_data->at(sizeof(char)));
-		playerData->SetY(*(float*)&_data->at(sizeof(char) + sizeof(float) * 1));
-		playerData->SetZ(*(float*)&_data->at(sizeof(char) + sizeof(float) * 2));
-		initFlag = true;
-		Unlock();
-		break;
-	}
-
-	//座標更新処理
-	case 0x16: {
-		float recvData = *(float*)&_data->at(sizeof(char) + sizeof(float) * 0);
-		data.SetX(recvData);
-		recvData = *(float*)&_data->at(sizeof(char) + sizeof(float) * 1);
-		data.SetY(recvData);
-		recvData = *(float*)&_data->at(sizeof(char) + sizeof(float) * 2);
-		data.SetZ(recvData);
-		recvData = *(float*)&_data->at(sizeof(char) + sizeof(float) * 3);
-		data.SetAngle(recvData);
-		recvData = *(int*)&_data->at(sizeof(char) + sizeof(float) * 3 + sizeof(int));
-		data.SetAnimation(recvData);
-		Lock();
-		dataQueueList->push(data);
-		Unlock();
-		break;
-	}
-
-	//攻撃処理
-	case 0x18:
-		data.SetX(0.0f);					//敵の現在の座標
-		data.SetY(0.0f);
-		data.SetZ(0.0f);
-		data.SetAngle(0);
-		data.SetAnimation(DAMAGE);
-		Lock();
-		dataQueueList->push(data);
-		Unlock();
-		break;
-	}
-
-}
-
 void Client::DataManipulate(char _id, char * _data)
 {
 	Data data;
@@ -349,9 +284,9 @@ void Client::DataManipulate(char _id, char * _data)
 	switch (_id) {
 	case 0x02: {
 		Lock();
-		playerData->SetX(*(float*)&_data[sizeof(char)]);
-		playerData->SetY(*(float*)&_data[sizeof(char) + sizeof(float) * 1]);
-		playerData->SetZ(*(float*)&_data[sizeof(char) + sizeof(float) * 2]);
+		playerData->SetX(*(float*)&_data[0]);
+		playerData->SetY(*(float*)&_data[sizeof(float) * 1]);
+		playerData->SetZ(*(float*)&_data[sizeof(float) * 2]);
 		initFlag = true;
 		Unlock();
 		break;
@@ -403,16 +338,17 @@ void Client::ExchangeKey(std::string _id)
 	int outlen = cipher->GetOpenSSLRSA()->Encode(endata, keyBuf, EVP_MAX_KEY_LENGTH);		//暗号化処理
 	mutex->Unlock();
 
-	int idSize = _id.size();
-	int allDataSize = sizeof(int) * 2 + idSize + outlen;
 
-	memcpy(sendbuf, &allDataSize, sizeof(int));										//全体のデータサイズ
-	memcpy(&sendbuf[sizeof(int)], &idSize, sizeof(int));							//playerIDサイズ
-	memcpy(&sendbuf[sizeof(int) * 2], _id.c_str(), idSize);							//playerID
-	memcpy(&sendbuf[sizeof(int) * 2+idSize], &endata, outlen);
+	BaseData sendData;
+	sendData.size = sizeof(BaseData) + outlen;
+	sendData.playerIdSize = _id.size();
+	memcpy(&sendData.playerId[0], _id.c_str(), sendData.playerIdSize);
+	sendData.id = 0x99;																//とりあえず
+	memcpy(sendbuf, (char*)&sendData, sizeof(BaseData));
+	memcpy(&sendbuf[sizeof(BaseData)], (char*)&endata, outlen);
 
 	//送信
-	send(socket->GetSocket(), sendbuf,allDataSize, 0);
+	send(socket->GetSocket(), sendbuf,sendData.size, 0);
 
 }
 

@@ -39,16 +39,6 @@ int Client::GetState()
 	return state;
 }
 
-void Client::SetPosGetFlg()
-{
-	posGetFlg = true;
-}
-
-bool Client::GetPosGetFlg()
-{
-	return posGetFlg;
-}
-
 NamedPipe::PipeData* Client::GetPipeData()
 {
 	return &pipeDataList->front();

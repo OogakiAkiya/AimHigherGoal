@@ -8,16 +8,12 @@ public:
 	~ClientController();
 	void Update();
 	void AddClient(std::shared_ptr<Client> _client);						//ソケットリストに追加
-	void ControllerUpdate();												//スレッドが動作させる関数
 	void SocketUpdate();
 private:
 	//---------------------------------------------------------
 	//ローカル関数
 	//---------------------------------------------------------
-	void DataManipulate(Client* _socket,std::vector<char>* _data);
 	void DBCreateData();
-	void DBGetPos(char* _data, std::shared_ptr<std::string> _userId);
-	int CreateSendData(char* _encryptionData, Client* _socket, char* _originalData, int _dataLen);
 	//---------------------------------------------------------
 	//定数
 	//---------------------------------------------------------
@@ -29,37 +25,5 @@ private:
 	std::vector<std::shared_ptr<Client>> clientList;										//ソケット配列
 	std::vector<int> roomNumberList;														//生成されたルーム番号を保存
 };
-
-////////////////////////////////////////////////////////////////////
-//以下送信データ構成
-////////////////////////////////////////////////////////////////////
-#pragma pack(1)
-//データ送信の最低限
-struct tempData
-{
-	int size;
-	char id;
-};
-
-//ユーザー情報処理
-struct TempUserData {
-	tempData data;
-	float x;
-	float y;
-	float z;
-};
-
-
-//座標データ
-struct PosData {
-	int size;
-	char id;
-	float x;
-	float y;
-	float z;
-	float angle;
-	int animation;
-};
-#pragma pack()
 
 #endif

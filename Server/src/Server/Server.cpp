@@ -19,7 +19,6 @@ Server::Server(int _processNumber)
 	//インスタンスの生成
 	Cipher::GetInstance();
 	recvDataQueue = std::make_unique<std::queue<NamedPipe::PipeData>>();								//ロードバランサーに送信するデータ
-	clientController = std::make_unique<ClientController>();
 	outputPipe = std::make_unique<NamedPipe>();
 
 	//ランダム処理の初期化
@@ -33,7 +32,6 @@ Server::Server(int _processNumber)
 Server::~Server()
 {
 	Cipher::DeleteInstance();
-	clientController = nullptr;
 	while (1) {
 		if (recvDataQueue->empty())break;
 		recvDataQueue->pop();

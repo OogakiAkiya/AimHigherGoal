@@ -14,8 +14,6 @@ public:
 	SOCKET GetSocket();
 	std::shared_ptr<Data> GetData();
 	int GetState();
-	void SetPosGetFlg();
-	bool GetPosGetFlg();
 	//---------------------------------------------------------
 	//完全データを扱う関数
 	//---------------------------------------------------------
@@ -40,8 +38,6 @@ private:
 	//変数
 	//---------------------------------------------------------
 	int state=0;															//ソケットの状態を表す(0:通常,-1:デリート待ち)
-	bool keyChangeFlg = false;
-	bool posGetFlg = false;
 	std::vector<char> tempDataList;											//一時データ配列
 	std::shared_ptr<Data> data;												//ユーザーの各データが格納されている
 	std::shared_ptr<std::queue<NamedPipe::PipeData>> pipeDataList;
