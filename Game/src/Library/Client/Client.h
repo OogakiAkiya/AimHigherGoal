@@ -113,7 +113,6 @@ struct BaseData
 //座標更新データ
 struct PosData
 {
-	BaseData base;
 	float x;
 	float y;
 	float z;

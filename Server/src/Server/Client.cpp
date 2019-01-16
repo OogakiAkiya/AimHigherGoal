@@ -168,14 +168,12 @@ void Client::DataManipulater(char _id,char* _data)
 			   //座標更新
 	case 0x15: {
 
-		char recvData[BYTESIZE];																	//データベースから取得した値が入る
-
 		//データの更新処理
-		data->SetX(*(float*)&_data[sizeof(char)]);
-		data->SetY(*(float*)&_data[sizeof(char) + sizeof(float) * 1]);
-		data->SetZ(*(float*)&_data[sizeof(char) + sizeof(float) * 2]);
-		data->SetAngle(*(float*)&_data[sizeof(char) + sizeof(float) * 3]);
-		data->SetAnimation(*(int*)&_data[sizeof(char) + sizeof(float) * 4]);
+		data->SetX(*(float*)&_data[0]);
+		data->SetY(*(float*)&_data[sizeof(float) * 1]);
+		data->SetZ(*(float*)&_data[sizeof(float) * 2]);
+		data->SetAngle(*(float*)&_data[sizeof(float) * 3]);
+		data->SetAnimation(*(int*)&_data[sizeof(float) * 4]);
 
 		//送信データ作成
 		UserData userData = { data->GetX(), data->GetY(), data->GetZ(),data->GetAngle(),data->GetAnimation() };

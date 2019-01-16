@@ -143,6 +143,38 @@ void Client::SendUserInformation(Data * _data)
 
 void Client::SendPos(Data* _data)
 {
+	char sendData[BYTESIZE];
+	char encodeData[BYTESIZE];
+	
+	//データ作成
+	PosData data;
+	data.x = _data->GetX();
+	data.y = _data->GetY();
+	data.z = _data->GetZ();
+	data.angle = _data->GetAngle();
+	data.animation = _data->GetAnimation();
+
+	//暗号処理
+	mutex->Lock();
+	int encodeSize = cipher->GetOpenSSLAES()->Encode(encodeData, (char*)&data, sizeof(PosData));
+	mutex->Unlock();
+
+	//ヘッダー作成
+	BaseData userData;
+	userData.size = sizeof(BaseData) + encodeSize;
+	userData.playerIdSize = _data->GetId()->length();
+	memcpy(userData.playerId, _data->GetId()->c_str(), userData.playerIdSize);
+	userData.id = 0x15;
+
+
+	//送信データ作成
+	memcpy(sendData, &userData, sizeof(BaseData));
+	memcpy(&sendData[sizeof(BaseData)], &encodeData,encodeSize);
+
+	//データ送信
+	send(CLIENT.GetSocket(), sendData,userData.size, 0);
+
+	/*
 	//送信データの生成
 	PosData data;
 	data.base.size = sizeof(PosData) - sizeof(int);
@@ -167,6 +199,7 @@ void Client::SendPos(Data* _data)
 
 	//データ送信
 	send(CLIENT.GetSocket(), sendData, sizeof(int) + encode_size, 0);
+	*/
 }
 
 void Client::SendAttack(std::shared_ptr<Data> _data)
@@ -294,15 +327,16 @@ void Client::DataManipulate(char _id, char * _data)
 
 			   //座標更新処理
 	case 0x16: {
-		float recvData = *(float*)&_data[sizeof(char) + sizeof(float) * 0];
+
+		float recvData = *(float*)&_data[0];
 		data.SetX(recvData);
-		recvData = *(float*)&_data[sizeof(char) + sizeof(float) * 1];
+		recvData = *(float*)&_data[sizeof(float) * 1];
 		data.SetY(recvData);
-		recvData = *(float*)&_data[sizeof(char) + sizeof(float) * 2];
+		recvData = *(float*)&_data[sizeof(float) * 2];
 		data.SetZ(recvData);
-		recvData = *(float*)&_data[sizeof(char) + sizeof(float) * 3];
+		recvData = *(float*)&_data[sizeof(float) * 3];
 		data.SetAngle(recvData);
-		recvData = *(int*)&_data[sizeof(char) + sizeof(float) * 3 + sizeof(int)];
+		recvData = *(int*)&_data[sizeof(float) * 3 + sizeof(int)];
 		data.SetAnimation(recvData);
 		Lock();
 		dataQueueList->push(data);
