@@ -102,7 +102,7 @@ struct Header
 	int size;
 	int playerIdSize;
 	char playerId[20];
-	char id;
+	unsigned char id;
 };
 
 struct BaseData

@@ -38,7 +38,15 @@ Client::~Client()
 
 void Client::Update()
 {
-	DecryptionManipulate();
+	while (1) {
+		if (tempDataQueue->empty())break;
+		//データ処理
+		Header header = *(Header*)&tempDataQueue->front().data[0];
+		DataProcess(&header);
+		//一時データの削除
+		tempDataQueue->pop();
+
+	}
 }
 
 
@@ -78,46 +86,10 @@ void Client::AddData(NamedPipe::PipeData* _data)
 	tempDataQueue->push(*_data);
 }
 
-
-bool Client::ExchangeKey(char* _decodeData)
+void Client::DataProcess(Header* _header)
 {
-	int decodeSize = tempDataQueue->front().byteSize - sizeof(Header);
-	int outLen = CIPHER.GetOpenSSLRSA()->Decode(_decodeData, &tempDataQueue->front().data[sizeof(Header)], decodeSize);						//公開鍵暗号の復号
-	aes->SetKey((unsigned char*)_decodeData, outLen);												//共通鍵を設定
-	tempDataQueue->pop();
-	keyChangeFlg = true;
-	return true;
-}
-
-void Client::DecryptionManipulate()
-{
-	while (1) {
-		if (tempDataQueue->empty())break;
-		NamedPipe::PipeData sendData;
-		char decodeData[BYTESIZE];
-
-		Header originData = *(Header*)&tempDataQueue->front().data[0];
-		
-		//鍵交換
-		if (originData.id == 0x20) {
-			ExchangeKey(decodeData);
-			return;
-		}
-
-		char oriData[BYTESIZE];
-		int  decodeSize=originData.size - sizeof(Header);
-		//復号処理
-		memcpy(&oriData, &tempDataQueue->front().data[sizeof(Header)], decodeSize);
-		int byteSize=aes->Decode(decodeData, oriData, decodeSize);
-		tempDataQueue->pop();
-		//データ処理
-		DataManipulater(originData.id, decodeData);
-	}
-}
-
-void Client::DataManipulater(char _id,char* _data)
-{
-	switch (_id) {
+	switch (_header->id) {
+	//データべースからデータの取得
 	case 0x01: {
 		char recvData[BYTESIZE];																	//データベースから取得した値が入る
 
@@ -135,15 +107,22 @@ void Client::DataManipulater(char _id,char* _data)
 		SetPosGetFlg();
 		break;
 	}
-			   //座標更新
+	//座標更新
 	case 0x15: {
+		char oriData[BYTESIZE];
+		char decodeData[BYTESIZE];
+		int  decodeSize = _header->size - sizeof(Header);
+
+		//復号処理
+		memcpy(&oriData, &tempDataQueue->front().data[sizeof(Header)], decodeSize);
+		int byteSize = aes->Decode(decodeData, oriData, decodeSize);
 
 		//データの更新処理
-		data->SetX(*(float*)&_data[0]);
-		data->SetY(*(float*)&_data[sizeof(float) * 1]);
-		data->SetZ(*(float*)&_data[sizeof(float) * 2]);
-		data->SetAngle(*(float*)&_data[sizeof(float) * 3]);
-		data->SetAnimation(*(int*)&_data[sizeof(float) * 4]);
+		data->SetX(*(float*)&decodeData[0]);
+		data->SetY(*(float*)&decodeData[sizeof(float) * 1]);
+		data->SetZ(*(float*)&decodeData[sizeof(float) * 2]);
+		data->SetAngle(*(float*)&decodeData[sizeof(float) * 3]);
+		data->SetAnimation(*(int*)&decodeData[sizeof(float) * 4]);
 
 		//送信データ作成
 		UserData userData = { data->GetX(), data->GetY(), data->GetZ(),data->GetAngle(),data->GetAnimation() };
@@ -171,8 +150,16 @@ void Client::DataManipulater(char _id,char* _data)
 		send(_socket->GetSocket(), (char*)&sendData, amountSize, 0);
 		*/
 		break;
+	//鍵交換
+	case 0xFF: {
+		char decodeData[BYTESIZE];
+		int decodeSize = tempDataQueue->front().byteSize - sizeof(Header);
+		int outLen = CIPHER.GetOpenSSLRSA()->Decode(decodeData, &tempDataQueue->front().data[sizeof(Header)], decodeSize);						//公開鍵暗号の復号
+		aes->SetKey((unsigned char*)decodeData, outLen);												//共通鍵を設定
+		break;
+	}
+	//想定外のデータが来た時
 	default:
-
 		break;
 	}
 

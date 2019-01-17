@@ -132,12 +132,12 @@ void Client::Recv()
 void Client::SendUserInformation(Data * _data)
 {
 	//データ生成
-	Header userData;
-	userData.size = sizeof(Header);
-	userData.playerIdSize = _data->GetId()->length();
-	memcpy(userData.playerId, _data->GetId()->c_str(), userData.playerIdSize);
-	userData.id = 0x01;
-	send(CLIENT.GetSocket(), (char*)&userData,sizeof(Header), 0);
+	Header header;
+	header.size = sizeof(Header);
+	header.playerIdSize = _data->GetId()->length();
+	memcpy(header.playerId, _data->GetId()->c_str(), header.playerIdSize);
+	header.id = 0x01;
+	send(CLIENT.GetSocket(), (char*)&header,sizeof(Header), 0);
 
 }
 
@@ -160,46 +160,20 @@ void Client::SendPos(Data* _data)
 	mutex->Unlock();
 
 	//ヘッダー作成
-	Header userData;
-	userData.size = sizeof(Header) + encodeSize;
-	userData.playerIdSize = _data->GetId()->length();
-	memcpy(userData.playerId, _data->GetId()->c_str(), userData.playerIdSize);
-	userData.id = 0x15;
+	Header header;
+	header.size = sizeof(Header) + encodeSize;
+	header.playerIdSize = _data->GetId()->length();
+	memcpy(header.playerId, _data->GetId()->c_str(), header.playerIdSize);
+	header.id = 0x15;
 
 
 	//送信データ作成
-	memcpy(sendData, &userData, sizeof(Header));
+	memcpy(sendData, &header, sizeof(Header));
 	memcpy(&sendData[sizeof(Header)], &encodeData,encodeSize);
 
 	//データ送信
-	send(CLIENT.GetSocket(), sendData,userData.size, 0);
+	send(CLIENT.GetSocket(), sendData,header.size, 0);
 
-	/*
-	//送信データの生成
-	PosData data;
-	data.base.size = sizeof(PosData) - sizeof(int);
-	data.base.id = 0x15;
-	data.x = _data->GetX();
-	data.y = _data->GetY();
-	data.z = _data->GetZ();
-	data.angle = _data->GetAngle();
-	data.animation = _data->GetAnimation();
-
-	//変数生成
-	char* origin = (char*)&data;
-	char encodeData[BYTESIZE];										//暗号化データを入れる
-	char sendData[BYTESIZE];										//送信データ
-
-	//暗号処理
-	mutex->Lock();
-	int encode_size = cipher->GetOpenSSLAES()->Encode(encodeData, origin, sizeof(PosData));
-	mutex->Unlock();
-	memcpy(sendData, &encode_size, sizeof(int));
-	memcpy(&sendData[sizeof(int)], encodeData, encode_size);
-
-	//データ送信
-	send(CLIENT.GetSocket(), sendData, sizeof(int) + encode_size, 0);
-	*/
 }
 
 void Client::SendAttack(std::shared_ptr<Data> _data)
@@ -215,6 +189,7 @@ void Client::SendAttack(std::shared_ptr<Data> _data)
 
 		//データ送信(当たった場合)
 		if (length <= 2.0f) {
+			/*
 			char encodeData[BYTESIZE];					//暗号データ
 			char sendData[BYTESIZE];					//送信データ
 
@@ -233,6 +208,7 @@ void Client::SendAttack(std::shared_ptr<Data> _data)
 
 			//送信処理
 			send(CLIENT.GetSocket(), (char*)&sendData, sizeof(int) + encodeSize, 0);
+			*/
 		}
 	}
 }
@@ -377,7 +353,7 @@ void Client::ExchangeKey(std::string _id)
 	sendData.size = sizeof(Header) + outlen;
 	sendData.playerIdSize = _id.size();
 	memcpy(&sendData.playerId[0], _id.c_str(), sendData.playerIdSize);
-	sendData.id = 0x20;																//とりあえず
+	sendData.id = 0xFF;
 	memcpy(sendbuf, (char*)&sendData, sizeof(Header));
 	memcpy(&sendbuf[sizeof(Header)], (char*)&endata, outlen);
 
