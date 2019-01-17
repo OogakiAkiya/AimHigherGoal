@@ -73,16 +73,6 @@ void LoadBalancer::SendUpdate()
 			}
 
 			//プロセス追加処理
-			if (test == true) {
-				CreateServerProcess();
-				for (auto pipe : outputPipeMap) {
-					if (targetPipe->GetCount() > pipe.second->GetCount())targetPipe = pipe.second;
-				}
-				test = false;
-			}
-
-
-			//プロセス追加処理
 			if (addProcessFlg == true) {
 				CreateServerProcess();
 				for (auto pipe : outputPipeMap) {
@@ -129,7 +119,7 @@ void LoadBalancer::CreateServerProcess()
 	query.clear(std::stringstream::goodbit);
 	
 	//入力用パイプ作成
-	std::shared_ptr<NamedPipe> pipe = std::make_shared <NamedPipe>();
+	std::shared_ptr<NamedPipe> pipe = std::make_shared <NamedPipe>("LoadBalancer");
 	query << INPUTPIPE << processNumber;
 	pipe->CreateInputPipe(query.str(),recvDataQueue.get());
 	printf("LoadBalancer>>入力用パイプ作成:%s\n", query.str().c_str());
@@ -140,7 +130,7 @@ void LoadBalancer::CreateServerProcess()
 
 	
 	//出力用のパイプ作成
-	pipe = std::make_shared <NamedPipe>();
+	pipe = std::make_shared <NamedPipe>("LoadBalancer");
 	query << OUTPUTPIPE << processNumber;
 	while (1) {
 		if (pipe->CreateClient(query.str())) {

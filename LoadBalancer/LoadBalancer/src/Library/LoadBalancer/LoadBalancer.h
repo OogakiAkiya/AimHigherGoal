@@ -20,7 +20,6 @@ private:
 	//---------------------------------------------------------
 	//変数
 	//---------------------------------------------------------
-	bool test = true;
 	std::unique_ptr<Process> process;
 	std::unique_ptr<ClientController> clientController;
 	std::unique_ptr<std::queue<NamedPipe::PipeData>> sendDataQueue;								//サーバーに送信するデータ

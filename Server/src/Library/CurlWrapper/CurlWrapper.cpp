@@ -40,13 +40,13 @@ void CurlWrapper::HTTPConnect(std::string* _data, std::string _url, std::string 
 		switch (code) {
 		case CURLE_BAD_FUNCTION_ARGUMENT:
 		case CURLE_OPERATION_TIMEDOUT:
-			printf("%sがタイムアウトしました\n", _userID.c_str());
+			printf("Server>>%s Time Out\n", _userID.c_str());
 			break;
 		case CURLE_RECV_ERROR:
-			printf("%sがネットワークデータの受信に失敗しました", _userID.c_str());
+			printf("Server>>%s Reception Error\n", _userID.c_str());
 			break;
 		default:
-			printf("%s:curl ErrorCode=%d\n", _userID.c_str(),code);
+			printf("Server>>%s:curl ErrorCode=%d\n", _userID.c_str(),code);
 			break;
 		}
 

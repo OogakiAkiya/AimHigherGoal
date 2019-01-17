@@ -2,10 +2,16 @@
 #include"../Mutex/ExtensionMutex.h"
 #include"NamedPipe.h"
 
-void InputPipeThread(std::string _pipeName, std::queue<NamedPipe::PipeData>* _dataList);
+void InputPipeThread(std::string _discriminationName,std::string _pipeName, std::queue<NamedPipe::PipeData>* _dataList);
 
 
-NamedPipe::NamedPipe() {
+NamedPipe::NamedPipe()
+{
+}
+
+NamedPipe::NamedPipe(std::string _discriminationName)
+{
+	discriminationName = _discriminationName;
 }
 
 NamedPipe::~NamedPipe()
@@ -35,7 +41,7 @@ bool NamedPipe::CreateServer(std::string _pipeName)
 	);
 
 	if (pipeHandle == INVALID_HANDLE_VALUE) {
-		printf("Create ServerPipe Error\n");
+		printf("%s>>Create ServerPipe Error\n",discriminationName.c_str());
 		return false;
 	}
 	deleteFlg = true;
@@ -57,7 +63,7 @@ bool NamedPipe::CreateClient(std::string _pipeName)
 		NULL);
 
 	if (pipeHandle == INVALID_HANDLE_VALUE) {
-		printf("Create  ClientPipe Error\n");
+		printf("%s>>Create  ClientPipe Error\n",discriminationName.c_str());
 		return false;
 	}
 	return true;
@@ -67,11 +73,11 @@ bool NamedPipe::CreateClient(std::string _pipeName)
 bool NamedPipe::ConnectRecv()
 {
 	if (!ConnectNamedPipe(pipeHandle, NULL)) {
-		printf("LoadBalancer>>ConnectPipe Error\n");
+		printf("%s>>ConnectPipe Error\n",discriminationName.c_str());
 		CloseHandle(pipeHandle);
 		return false;
 	}
-	printf("接続が来ました\n");
+	printf("%s>>Connect Recv Pipe\n", discriminationName.c_str());
 	return true;
 }
 
@@ -79,7 +85,7 @@ int NamedPipe::Read(char * _data,int _dataLength)
 {
 	DWORD dwBytesRead;
 	if (!ReadFile(pipeHandle, _data, _dataLength, &dwBytesRead, NULL)) {
-		printf("ReadFile Error\n");
+		printf("%s>>ReadFile Error\n", discriminationName.c_str());
 		return 0;
 	}
 	return dwBytesRead;
@@ -89,7 +95,7 @@ int NamedPipe::Write(char * _data, int _dataLengeh)
 {
 	DWORD writeSize;
 	if (!WriteFile(pipeHandle, _data, _dataLengeh, &writeSize, NULL)) {
-		printf("Write Error");
+		printf("%s>>Write Error", discriminationName.c_str());
 		return 0;
 	}
 	return writeSize;
@@ -98,7 +104,7 @@ int NamedPipe::Write(char * _data, int _dataLengeh)
 void NamedPipe::CreateInputPipe(std::string _pipeName,std::queue<PipeData>* _dataList)
 {
 	//Readのスレッドを作成する
-	std::thread thread(InputPipeThread, _pipeName, _dataList);
+	std::thread thread(InputPipeThread,discriminationName, _pipeName, _dataList);
 	thread.detach();
 }
 
@@ -123,8 +129,8 @@ std::string* NamedPipe::GetPipeName()
 	return &pipeName;
 }
 
-void InputPipeThread(std::string _pipeName, std::queue<NamedPipe::PipeData>* _dataList) {
-	std::unique_ptr<NamedPipe> pipe = std::make_unique <NamedPipe>();
+void InputPipeThread(std::string _discriminationName,std::string _pipeName, std::queue<NamedPipe::PipeData>* _dataList) {
+	std::unique_ptr<NamedPipe> pipe = std::make_unique <NamedPipe>(_discriminationName);
 	if (!pipe->CreateServer(_pipeName)) {
 		pipe = nullptr;
 		return;
@@ -138,7 +144,7 @@ void InputPipeThread(std::string _pipeName, std::queue<NamedPipe::PipeData>* _da
 		int size = pipe->Read(buf, sizeof(buf));
 		//スレッド終了処理
 		if (!strncmp("EXIT", buf, 4)) { // Exit Check
-			printf("スレッド終了");
+			printf("%s>>InputPipeThread Finish\n",_discriminationName.c_str());
 			break;
 		}
 		

@@ -15,10 +15,13 @@ using namespace std;
 
 Server::Server(int _processNumber)
 {
+	processNumber = _processNumber;
+	std::stringstream discriminationName;
+	discriminationName << "Server" << _processNumber;
 	//インスタンスの生成
 	Cipher::GetInstance();
 	recvDataQueue = std::make_unique<std::queue<NamedPipe::PipeData>>();								//ロードバランサーに送信するデータ
-	outputPipe = std::make_unique<NamedPipe>();
+	outputPipe = std::make_unique<NamedPipe>(discriminationName.str());
 
 	//ランダム処理の初期化
 	srand(time(0));
@@ -57,12 +60,14 @@ void Server::Update()
 void Server::CreatePipe(int _processNumber)
 {
 	std::stringstream query;
+	std::stringstream discriminationName;
+	discriminationName<< "Server" << _processNumber;
 
 	//入力用パイプ作成
-	std::shared_ptr<NamedPipe> pipe = std::make_shared <NamedPipe>();
+	std::shared_ptr<NamedPipe> pipe = std::make_shared <NamedPipe>(discriminationName.str());
 	query << INPUTPIPE << _processNumber;
 	pipe->CreateInputPipe(query.str(), recvDataQueue.get());
-	printf("Server>>入力用パイプ作成:%s\n", query.str().c_str());
+	printf("Server%d>>入力用パイプ作成:%s\n",_processNumber, query.str().c_str());
 	pipe = nullptr;
 
 	query.str("");
@@ -73,7 +78,7 @@ void Server::CreatePipe(int _processNumber)
 	query << OUTPUTPIPE << _processNumber;
 	while (1) {
 		if (outputPipe->CreateClient(query.str())) {
-			printf("Server>>出力用パイプ作成:%s\n", query.str().c_str());
+			printf("Server%d>>出力用パイプ作成:%s\n",_processNumber,query.str().c_str());
 			break;
 		}
 	}

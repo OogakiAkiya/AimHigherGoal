@@ -28,9 +28,6 @@
     <Filter Include="ソース ファイル\Library\Mutex">
       <UniqueIdentifier>{255f7079-fb1a-40c8-866c-21fb70bbaaa2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Library\Cipher">
-      <UniqueIdentifier>{f1c4bfa0-3413-4250-9b65-903dbb9dfc30}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Library\Socket">
       <UniqueIdentifier>{db30808d-2e5a-48dd-8233-c8a43f49078e}</UniqueIdentifier>
     </Filter>

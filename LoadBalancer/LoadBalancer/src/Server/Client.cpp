@@ -85,7 +85,7 @@ void Client::RecvLoop()
 		}
 		else if (iResult == 0) {
 			//Ú‘±‚ðI—¹‚·‚é‚Æ‚«
-			printf("Ø’f‚³‚ê‚Ü‚µ‚½\n");
+			printf("LoadBalancer>>Ø’f‚³‚ê‚Ü‚µ‚½\n");
 			state = -1;
 			return;
 		}
@@ -95,7 +95,7 @@ void Client::RecvLoop()
 		}
 		else {
 			//Ú‘±ƒGƒ‰[‚ª‹N‚±‚Á‚½Žž
-			printf("recv failed:%d\n%d", WSAGetLastError(), iResult);
+			printf("LoadBalancer>>recv failed:%d\n%d", WSAGetLastError(), iResult);
 			state = -1;
 			return;
 		}

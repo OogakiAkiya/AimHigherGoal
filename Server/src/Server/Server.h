@@ -25,6 +25,7 @@ private:
 	std::unique_ptr<std::queue<NamedPipe::PipeData>> sendDataQueue;								//ロードバランサーに送信するデータ
 	std::unique_ptr<std::queue<NamedPipe::PipeData>> recvDataQueue;								//ロードバランサーからのデータを受信する
 	std::unique_ptr<NamedPipe> outputPipe;
+	int processNumber;
 	bool available = false;
 };
 

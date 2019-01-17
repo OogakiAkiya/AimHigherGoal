@@ -9,8 +9,8 @@ public:
 	};
 
 #pragma pack()
-
 	NamedPipe();
+	NamedPipe(std::string _discriminationName);
 	~NamedPipe();
 	bool CreateServer(std::string _pipeName);
 	bool CreateClient(std::string _pipeName);
@@ -27,4 +27,5 @@ private:
 	HANDLE pipeHandle = INVALID_HANDLE_VALUE;
 	bool deleteFlg=false;									//デストラクタでserverかclientかを判断する
 	std::string pipeName;
+	std::string discriminationName="";
 };

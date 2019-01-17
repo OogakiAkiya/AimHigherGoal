@@ -99,6 +99,6 @@ void ClientController::AcceptSocket()
 	clientSocket = std::make_shared<Client>();
 	clientSocket->GetData()->SetSocket(initSocket);									//接続のあったソケットをセット
 	socketList.push_back(clientSocket);
-	printf("アクセスがありました\n");
+	printf("LoadBalancer>>Access Socket\n");
 }
 
