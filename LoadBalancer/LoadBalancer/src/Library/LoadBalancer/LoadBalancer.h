@@ -1,4 +1,4 @@
-
+struct UserData;
 class LoadBalancer {
 public:
 	LoadBalancer();
@@ -22,9 +22,15 @@ private:
 	std::unique_ptr<std::queue<NamedPipe::PipeData>> sendDataQueue;								//サーバーに送信するデータ
 	std::unique_ptr<std::queue<NamedPipe::PipeData>> recvDataQueue;								//サーバーからのデータを受信する
 
+	//使ってる
 	std::map<std::string, std::shared_ptr<NamedPipe>>outputPipeMap;	//パイプ名,パイプ
+	//まだ使ってない
 	std::map<std::string, int> serverList;						//パイプ名,アクセス数
 	std::map<std::string, SOCKET> socketList;					//パイプ名,SOCKET
-	std::map<SOCKET, std::string>pipeList;						//SOCKET,パイプ名
+	std::map<std::string, UserData>userMap;						//ユーザー名,ユーザーデータ
+};
 
+struct UserData{
+	std::string pipeName;
+	SOCKET socket;
 };

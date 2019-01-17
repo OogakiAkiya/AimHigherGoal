@@ -59,8 +59,8 @@ LoadBalancer::~LoadBalancer()
 	}
 	recvDataQueue = nullptr;
 
-	for (auto itr = outputPipeMap.begin(); itr != outputPipeMap.end(); ++itr) {
-		itr->second = nullptr;
+	for (auto& pipe : outputPipeMap) {
+		pipe.second = nullptr;
 	}
 	outputPipeMap.clear();
 }
@@ -72,8 +72,8 @@ void LoadBalancer::Updata()
 	//サーバー送信用データの処理
 	while (1) {
 		if (sendDataQueue->empty())break;
-		NamedPipe::PipeData data;
-		data = sendDataQueue->front();
+		NamedPipe::PipeData data=sendDataQueue->front();
+		//playerIDからパイプ名を特定
 		outputPipeMap["AimHigherGoalOutput0"]->Write((char*)data.data, data.byteSize);
 		sendDataQueue->pop();
 	}

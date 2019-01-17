@@ -65,11 +65,6 @@ OpenSSLAES* Client::GetAES()
 	return aes.get();
 }
 
-void Client::SetPosGetFlg()
-{
-	posGetFlg = true;
-}
-
 bool Client::GetPosGetFlg()
 {
 	return posGetFlg;
@@ -91,7 +86,7 @@ void Client::DataProcess(Header* _header)
 	switch (_header->id) {
 	//データべースからデータの取得
 	case 0x01: {
-		char recvData[BYTESIZE];																	//データベースから取得した値が入る
+		char recvData[BYTESIZE];								//データベースから取得した値が入る
 
 		//プレイヤーの座標取得
 		DBGetPos(recvData, data->GetId());
@@ -104,7 +99,7 @@ void Client::DataProcess(Header* _header)
 		//送信データ作成
 		Pos pos = { data->GetX(), data->GetY(), data->GetZ() };
 		CreateSendData((char*)&pos, sizeof(Pos), 0x02);
-		SetPosGetFlg();
+		posGetFlg =true;
 		break;
 	}
 	//座標更新
@@ -131,25 +126,25 @@ void Client::DataProcess(Header* _header)
 		break;
 	}
 	//攻撃処理
-	case 0x17:
-		/*
-		char sendData[BYTESIZE];																				//送信データ
+	case 0x17: {
+		char oriData[BYTESIZE];
+		char decodeData[BYTESIZE];
+		int  decodeSize = _header->size - sizeof(Header);
 
-		//今は使ってないが複数のPCとつなげた場合ここを使用することになる
-		int recvData = *(int*)&_data->at(sizeof(char));													//誰が攻撃されたのかがこの中に入っている
-
-		//送信データの作成
-		tempData sendBuf;
-		sendBuf.size = sizeof(tempData) - sizeof(int);
-		sendBuf.id = 0x18;
-
-		//送信用データの作成
-		int amountSize = CreateSendData(sendData, _socket, (char*)&sendBuf, sizeof(tempData));
+		//復号処理
+		memcpy(&oriData, &tempDataQueue->front().data[sizeof(Header)], decodeSize);
+		int byteSize = aes->Decode(decodeData, oriData, decodeSize);
+		int recvData = *(int*)&decodeData[0];													//誰が攻撃されたのかがこの中に入っている
 
 		//送信処理
-		send(_socket->GetSocket(), (char*)&sendData, amountSize, 0);
-		*/
+		CreateSendData(nullptr, 0, 0x18);
 		break;
+	}
+	//切断処理
+	case 0xFE : {
+		posGetFlg = false;
+		break;
+	}
 	//鍵交換
 	case 0xFF: {
 		char decodeData[BYTESIZE];
@@ -158,7 +153,7 @@ void Client::DataProcess(Header* _header)
 		aes->SetKey((unsigned char*)decodeData, outLen);												//共通鍵を設定
 		break;
 	}
-	//想定外のデータが来た時
+	//想定外のデータが来た時の処理(予定)
 	default:
 		break;
 	}
@@ -209,13 +204,14 @@ void Client::CreateSendData(char * _originalData, int _dataLen,char _id)
 	char encode[BYTESIZE];																		//暗号化データ
 	char oridata[BYTESIZE];
 	Header headerData;
-	memcpy(oridata, _originalData, _dataLen);
+
 	//暗号化
 	if (_dataLen > 0) {
-		encodeSize = aes->Encode(encode, &oridata[0], _dataLen);				//暗号化
+		memcpy(oridata, _originalData, _dataLen);
+		encodeSize = aes->Encode(encode, &oridata[0], _dataLen);
 	}
 
-	//ヘッダー部作成
+	//ヘッダー作成
 	headerData.size = sizeof(Header)+encodeSize;
 	headerData.playerIdSize = data->GetId()->length();
 	memcpy(headerData.playerId, data->GetId()->c_str(), headerData.playerIdSize);

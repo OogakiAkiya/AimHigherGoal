@@ -11,7 +11,6 @@
 #include"Library/CurlWrapper/CurlWrapper.h"
 #include"Library/Socket/Socket.h"
 #include"Server/Client.h"
-#include"Server/ClientController.h"
 #include"Server/Server.h"
 
 #endif

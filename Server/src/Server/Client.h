@@ -16,7 +16,6 @@ public:
 	SOCKET GetSocket();
 	std::shared_ptr<Data> GetData();
 	OpenSSLAES* GetAES();
-	void SetPosGetFlg();
 	bool GetPosGetFlg();
 
 	std::queue<NamedPipe::PipeData>* GetSendData();

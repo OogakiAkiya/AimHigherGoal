@@ -52,7 +52,7 @@ private:
 	//---------------------------------------------------------
 	Client();
 	~Client();
-	void DataManipulate(char _id,char* _data);							//受信データから移動などの処理を行う	
+	void DataProcess(char _id,char* _data);							//受信データから移動などの処理を行う	
 
 	//---------------------------------------------------------
 	//ローカル関数
@@ -66,6 +66,7 @@ private:
 	static const int DAMAGE = 13;										//ダメージを受けた
 	static const int BYTESIZE = 256;									//送受信に使用するchar配列のデータ量
 	static const int ENEMYAMOUNT = 3;
+
 	//---------------------------------------------------------
 	//変数
 	//---------------------------------------------------------
@@ -123,14 +124,6 @@ struct PosData
 	float angle;
 	int animation;
 };
-
-//攻撃データ
-struct AttckData
-{
-	BaseData base;
-	int socket;
-};
-
 #pragma pack()
 
 #endif

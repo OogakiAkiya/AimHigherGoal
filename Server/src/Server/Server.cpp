@@ -8,7 +8,6 @@
 #include"../Library/Socket/Socket.h"
 #include"../Library/CurlWrapper/CurlWrapper.h"
 #include"Client.h"
-#include "ClientController.h"
 #include "Server.h"
 
 using namespace std;
@@ -103,22 +102,22 @@ void Server::InputPipeProcessing()
 			break;
 		}
 
-		NamedPipe::PipeData data = recvDataQueue->front();
+		NamedPipe::PipeData data = recvDataQueue->front();					//パイプから来たデータの取得
 		recvDataQueue->pop();
 		MUTEX.Unlock();
 
-		int dataSize = *(int*)&data.data[0];					//全体のバイトサイズ
-		int idSize = *(int*)&data.data[sizeof(int)];			//IDサイズ
 		//playreIDの取得
-		char* temp = (char*)malloc(idSize);
+		int idSize = *(int*)&data.data[sizeof(int)];						//IDサイズ
+		char* temp = new char[idSize];
 		memcpy(temp, &data.data[sizeof(int) * 2], idSize);
 		std::shared_ptr<std::string> playerId = std::make_shared<std::string>(temp);
-		playerId->resize(idSize);																	//idのサイズが一定にならないのでresize
+		delete temp;
+		playerId->resize(idSize);											//idのサイズが一定にならないのでresize
 
 		//idが一致するクライアントの検索&追加
-		if (clientMap.count(playerId->c_str()) == 0) {											//重複しなかった
+		if (clientMap.count(playerId->c_str()) == 0) {
+			//クライアントの追加
 			std::shared_ptr<Client> client = std::make_shared<Client>();
-			//IDの追加
 			client->GetData()->SetId(playerId);
 			clientMap.insert(std::make_pair(playerId->c_str(), client));
 			client = nullptr;

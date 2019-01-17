@@ -47,6 +47,7 @@ void ClientController::ControllerUpdate()
 	int count = 0;
 	for (int i = 0; i < socketList.size(); i++) {
 		if (socketList[i]->GetState() == -1) {
+			//ソケット削除
 			socketList[i] == nullptr;
 			socketList.erase(socketList.begin() + i);
 		}
