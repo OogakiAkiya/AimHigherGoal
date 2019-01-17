@@ -16,31 +16,7 @@ LoadBalancer::LoadBalancer()
 	sendDataQueue = std::make_unique<std::queue<NamedPipe::PipeData>>();								//サーバーに送信するデータ
 	recvDataQueue = std::make_unique<std::queue<NamedPipe::PipeData>>();								//サーバーから受信するデータ
 
-	//CreateServerProcess();
-
-
-	std::stringstream query;
-	//入力用パイプ作成
-	std::shared_ptr<NamedPipe> pipe = std::make_shared <NamedPipe>();
-	query << INPUTPIPE << 0;
-	pipe->CreateInputPipe(query.str(),recvDataQueue.get());
-	printf("入力用パイプ作成:%s", query.str().c_str());
-	pipe = nullptr;
-
-	query.str("");
-	query.clear(std::stringstream::goodbit);
-
-
-	//出力用のパイプ作成
-	pipe = std::make_shared <NamedPipe>();
-	query << OUTPUTPIPE << 0;
-	while (1) {
-		if (pipe->CreateClient(query.str())) {
-			outputPipeMap.insert(std::make_pair(query.str(), pipe));
-			printf("出力用パイプ作成:%s", query.str().c_str());
-			break;
-		}
-	}
+	CreateServerProcess();
 }
 
 LoadBalancer::~LoadBalancer()
@@ -70,31 +46,64 @@ void LoadBalancer::Updata()
 	clientController->Update(sendDataQueue.get());			//受信したデータをデータリストに追加する
 
 	//サーバー送信用データの処理
+	SendUpdate();
+	//サーバー受信用処理
+	RecvUpdate();
+}
+
+void LoadBalancer::SendUpdate()
+{
 	while (1) {
+		//データ読み取り
 		if (sendDataQueue->empty())break;
-		NamedPipe::PipeData data=sendDataQueue->front();
+		NamedPipe::PipeData data = sendDataQueue->front();
 		Header header = *(Header*)&data.data[0];				//ヘッダー
-		std::string userId =std::string(header.playerId);		//プレイヤーID
+		std::string userId = std::string(header.playerId);		//プレイヤーID
 		userId.resize(header.playerIdSize);
 
-		if (userMap.count(userId)==0) {
+		if (userMap.count(userId) == 0) {
+			bool addProcessFlg = true;
 			//ユーザーの追加
-			std::shared_ptr<NamedPipe>targetPipe=nullptr;
+			std::shared_ptr<NamedPipe>targetPipe = nullptr;
 			for (auto pipe : outputPipeMap) {
+				int processCount = pipe.second->GetCount();
+				if (processCount< ACCESSLIMIT)addProcessFlg=false;
 				if (targetPipe == nullptr)targetPipe = pipe.second;
-				if(targetPipe->GetCount()>pipe.second->GetCount())targetPipe = pipe.second;
+				if (targetPipe->GetCount() > processCount)targetPipe = pipe.second;
+			}
+
+			//プロセス追加処理
+			if (test == true) {
+				CreateServerProcess();
+				for (auto pipe : outputPipeMap) {
+					if (targetPipe->GetCount() > pipe.second->GetCount())targetPipe = pipe.second;
+				}
+				test = false;
+			}
+
+
+			//プロセス追加処理
+			if (addProcessFlg == true) {
+				CreateServerProcess();
+				for (auto pipe : outputPipeMap) {
+					if (targetPipe->GetCount() > pipe.second->GetCount())targetPipe = pipe.second;
+				}
+
 			}
 			userMap.insert(std::make_pair(userId, *targetPipe->GetPipeName()));
 			targetPipe->CountUp();
 			targetPipe = nullptr;
+			
+
 		}
 		//playerIDからパイプ名を特定
 		outputPipeMap[userMap[userId]]->Write((char*)data.data, data.byteSize);
 		sendDataQueue->pop();
-
 	}
+}
 
-	//サーバー受信用処理
+void LoadBalancer::RecvUpdate()
+{
 	while (1) {
 		MUTEX.Lock();
 		if (recvDataQueue->empty()) {
@@ -115,7 +124,6 @@ void LoadBalancer::CreateServerProcess()
 	int processNumber = process->GetProcessAmount();
 	query << "Server.exe " << processNumber;								//コマンドラインMS作成
 	process->CreateProcessThread(query.str());
-	Sleep(500);
 
 	query.str("");
 	query.clear(std::stringstream::goodbit);
@@ -124,7 +132,7 @@ void LoadBalancer::CreateServerProcess()
 	std::shared_ptr<NamedPipe> pipe = std::make_shared <NamedPipe>();
 	query << INPUTPIPE << processNumber;
 	pipe->CreateInputPipe(query.str(),recvDataQueue.get());
-	printf("入力用パイプ作成:%s", query.str().c_str());
+	printf("LoadBalancer>>入力用パイプ作成:%s\n", query.str().c_str());
 	pipe = nullptr;
 
 	query.str("");
@@ -137,7 +145,7 @@ void LoadBalancer::CreateServerProcess()
 	while (1) {
 		if (pipe->CreateClient(query.str())) {
 			outputPipeMap.insert(std::make_pair(query.str(), pipe));
-			printf("出力用パイプ作成:%s", query.str().c_str());
+			printf("LoadBalancer>>出力用パイプ作成:%s\n", query.str().c_str());
 			break;
 		}
 	}

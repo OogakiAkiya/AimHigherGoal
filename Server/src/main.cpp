@@ -4,9 +4,11 @@
 
 void main(int argc, char* argv[])
 {
+	int processNumber = atoi(argv[1]);
+
 	ExtensionMutex::GetInstance();
 	std::unique_ptr<Server> server;
-	server = std::make_unique<Server>();
+	server = std::make_unique<Server>(processNumber);
 
 	if (server != nullptr) {
 		while (1) {

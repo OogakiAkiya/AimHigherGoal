@@ -67,7 +67,7 @@ bool NamedPipe::CreateClient(std::string _pipeName)
 bool NamedPipe::ConnectRecv()
 {
 	if (!ConnectNamedPipe(pipeHandle, NULL)) {
-		printf("ConnectPipe Error\n");
+		printf("LoadBalancer>>ConnectPipe Error\n");
 		CloseHandle(pipeHandle);
 		return false;
 	}

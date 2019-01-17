@@ -29,6 +29,8 @@ void CurlWrapper::HTTPConnect(std::string* _data, std::string _url, std::string 
 	curl_easy_setopt(curl, CURLOPT_POSTFIELDS,_postData.c_str());						//送信データの設定
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, BufferWriter);						//書込み関数設定
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buf);									//書込み変数設定
+	curl_easy_setopt(curl, CURLOPT_TIMEOUT, 3L);										//タイムアウト
+	curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 3L);									//接続タイムアウト
 
 																							//送信
 	code = curl_easy_perform(curl);														//URLへの接続

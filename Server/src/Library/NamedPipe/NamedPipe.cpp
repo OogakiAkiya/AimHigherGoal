@@ -87,7 +87,7 @@ int NamedPipe::Write(char * _data, int _dataLengeh)
 {
 	DWORD writeSize;
 	if (!WriteFile(pipeHandle, _data, _dataLengeh, &writeSize, NULL)) {
-		printf("Write Error");
+		printf("Write Error\n");
 		return 0;
 	}
 	return writeSize;

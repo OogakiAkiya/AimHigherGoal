@@ -62,7 +62,7 @@ void Server::CreatePipe(int _processNumber)
 	std::shared_ptr<NamedPipe> pipe = std::make_shared <NamedPipe>();
 	query << INPUTPIPE << _processNumber;
 	pipe->CreateInputPipe(query.str(), recvDataQueue.get());
-	printf("入力用パイプ作成:%s", query.str().c_str());
+	printf("Server>>入力用パイプ作成:%s\n", query.str().c_str());
 	pipe = nullptr;
 
 	query.str("");
@@ -73,7 +73,7 @@ void Server::CreatePipe(int _processNumber)
 	query << OUTPUTPIPE << _processNumber;
 	while (1) {
 		if (outputPipe->CreateClient(query.str())) {
-			printf("出力用パイプ作成:%s", query.str().c_str());
+			printf("Server>>出力用パイプ作成:%s\n", query.str().c_str());
 			break;
 		}
 	}

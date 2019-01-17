@@ -94,7 +94,7 @@ void Enemy::Update()
 
 		//特定のアニメーションの変更処理
 		if (data->GetAnimation() == WAIT || data->GetAnimation() == WALK || data->GetAnimation() == RUN) {
-			ChangeAnimation(data->GetAnimation(), true,0.8f);
+			ChangeAnimation(data->GetAnimation(), true, 0.8f);
 		}
 		else {
 			ChangeAnimation(data->GetAnimation(), false, 0.8f);
