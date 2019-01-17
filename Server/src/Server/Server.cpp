@@ -46,6 +46,56 @@ Server::~Server()
 void Server::Update()
 {
 	//InputPipeにきているデータの管理
+	InputPipeProcessing();
+
+	//client更新処理
+	ClientUpdate();
+
+	//データベースにクライアントの情報を登録する
+	DBRegistration();
+}
+
+void Server::CreatePipe(int _processNumber)
+{
+	std::stringstream query;
+
+	//入力用パイプ作成
+	std::shared_ptr<NamedPipe> pipe = std::make_shared <NamedPipe>();
+	query << INPUTPIPE << _processNumber;
+	pipe->CreateInputPipe(query.str(), recvDataQueue.get());
+	printf("入力用パイプ作成:%s", query.str().c_str());
+	pipe = nullptr;
+
+	query.str("");
+	query.clear(std::stringstream::goodbit);
+
+
+	//出力用のパイプ作成
+	query << OUTPUTPIPE << _processNumber;
+	while (1) {
+		if (outputPipe->CreateClient(query.str())) {
+			printf("出力用パイプ作成:%s", query.str().c_str());
+			break;
+		}
+	}
+
+
+}
+
+void Server::ClientUpdate()
+{
+	for (auto client : clientMap) {
+		client.second->Update();
+		while (1) {
+			if (client.second->GetSendData()->empty())break;
+			outputPipe->Write((char*)&client.second->GetSendData()->front().data, client.second->GetSendData()->front().byteSize);
+			client.second->GetSendData()->pop();
+		}
+	}
+}
+
+void Server::InputPipeProcessing()
+{
 	while (1) {
 		MUTEX.Lock();
 		if (recvDataQueue->empty()) {
@@ -77,41 +127,43 @@ void Server::Update()
 		clientMap[playerId->c_str()]->AddData(&data);
 	}
 
-	//client処理
-	for (auto itr = clientMap.begin(); itr != clientMap.end(); ++itr) {
-		itr->second->Update();
-		//送信処理
-		while (1) {
-			if (itr->second->GetSendData()->empty())break;
-			outputPipe->Write((char*)&itr->second->GetSendData()->front().data, itr->second->GetSendData()->front().byteSize);
-			itr->second->GetSendData()->pop();
-		}
-	}	
 }
 
-void Server::CreatePipe(int _processNumber)
+void PosRegistration(std::string _data)
 {
-	std::stringstream query;
-
-	//入力用パイプ作成
-	std::shared_ptr<NamedPipe> pipe = std::make_shared <NamedPipe>();
-	query << INPUTPIPE << _processNumber;
-	pipe->CreateInputPipe(query.str(), recvDataQueue.get());
-	printf("入力用パイプ作成:%s", query.str().c_str());
-	pipe = nullptr;
-
-	query.str("");
-	query.clear(std::stringstream::goodbit);
+	std::unique_ptr<CurlWrapper> curl = std::make_unique<CurlWrapper>();
+	curl->HTTPConnect(nullptr, "http://lifestyle-qa.com/update_user_arraydata.php", _data, "DBCreateData");
+	curl = nullptr;
+}
 
 
-	//出力用のパイプ作成
-	query << OUTPUTPIPE << _processNumber;
-	while (1) {
-		if (outputPipe->CreateClient(query.str())) {
-			printf("出力用パイプ作成:%s", query.str().c_str());
-			break;
+void Server::DBRegistration()
+{
+	std::stringstream query;						//webサーバーに送るデータ
+	std::string output;								//queryのままだとエラーが起こりstring型に入れるとなくなる
+	std::vector<std::shared_ptr<Data>> datas;		//送信するデータ一覧
+
+	//送るデータの選別
+	for (auto client : clientMap) {
+		if (client.second->GetPosGetFlg()) {
+			datas.push_back(client.second->GetData());
 		}
 	}
 
+	if (datas.size() <= 0)return;
+
+	//データの作成
+	query << "amount=" << datas.size();
+	for (int i = 0; i < datas.size(); i++) {
+		query << "&" << "player" << i << "=" << datas[i]->GetId()->c_str();
+		query << "&" << "x" << i << "=" << datas[i]->GetX();
+		query << "&" << "y" << i << "=" << datas[i]->GetY();
+		query << "&" << "z" << i << "=" << datas[i]->GetZ();
+	}
+	query >> output;
+
+	std::thread thread(PosRegistration, output);
+	thread.detach();
 
 }
+

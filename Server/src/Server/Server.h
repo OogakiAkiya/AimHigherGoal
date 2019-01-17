@@ -9,6 +9,9 @@ public:
 	void Update();
 private:
 	void CreatePipe(int _processNumber);
+	void ClientUpdate();
+	void InputPipeProcessing();
+	void DBRegistration();
 	//---------------------------------------------------------
 	//’è”
 	//---------------------------------------------------------

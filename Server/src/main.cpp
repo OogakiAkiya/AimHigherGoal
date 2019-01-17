@@ -1,7 +1,6 @@
 #include"Include.h"
 #include"Library/Mutex/ExtensionMutex.h"
 #include"LibraryInclude.h"
-using namespace std;
 
 void main(int argc, char* argv[])
 {

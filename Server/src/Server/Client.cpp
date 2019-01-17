@@ -39,16 +39,6 @@ Client::~Client()
 void Client::Update()
 {
 	DecryptionManipulate();
-	/*
-	//鍵交換
-	if (!keyChangeFlg) {
-		RecvLoop(EXCHANGEKEY);
-	}
-	//完全データ作成処理
-	if (keyChangeFlg) {
-		RecvLoop(CREATECOMPLETEDATA);
-	}
-	*/
 }
 
 
@@ -89,29 +79,14 @@ void Client::AddData(NamedPipe::PipeData* _data)
 }
 
 
-bool Client::ExchangeKey()
+bool Client::ExchangeKey(char* _decodeData)
 {
-	while (tempDataList.size() >= sizeof(int)) {
-		//復号に十分なデータがあるかチェック
-		int decodeSize = *(int*)&tempDataList[0];
-		if (decodeSize <= (int)tempDataList.size() - sizeof(int)) {
-
-			//変数宣言
-			char data[BYTESIZE];																			//復号前データ
-			char decodeData[BYTESIZE];
-
-			//復号処理
-			memcpy(data, &tempDataList[sizeof(int)], decodeSize);											//復号するデータのコピー
-			int outLen = CIPHER.GetOpenSSLRSA()->Decode(decodeData, data, decodeSize);						//公開鍵暗号の復号
-			aes->SetKey((unsigned char*)decodeData, outLen);												//共通鍵を設定
-			tempDataList.erase(tempDataList.begin(), tempDataList.begin() + (decodeSize + sizeof(int)));	//完全データ作成に使用した分を削除
-			keyChangeFlg = true;
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
+	int decodeSize = tempDataQueue->front().byteSize - sizeof(Header);
+	int outLen = CIPHER.GetOpenSSLRSA()->Decode(_decodeData, &tempDataQueue->front().data[sizeof(Header)], decodeSize);						//公開鍵暗号の復号
+	aes->SetKey((unsigned char*)_decodeData, outLen);												//共通鍵を設定
+	tempDataQueue->pop();
+	keyChangeFlg = true;
+	return true;
 }
 
 void Client::DecryptionManipulate()
@@ -121,23 +96,18 @@ void Client::DecryptionManipulate()
 		NamedPipe::PipeData sendData;
 		char decodeData[BYTESIZE];
 
+		Header originData = *(Header*)&tempDataQueue->front().data[0];
+		
 		//鍵交換
-		if (!keyChangeFlg) {
-			BaseData originData = *(BaseData*)&tempDataQueue->front().data[0];
-
-			int decodeSize = tempDataQueue->front().byteSize - sizeof(BaseData);
-			int outLen = CIPHER.GetOpenSSLRSA()->Decode(decodeData, &tempDataQueue->front().data[sizeof(BaseData)], decodeSize);						//公開鍵暗号の復号
-			aes->SetKey((unsigned char*)decodeData, outLen);												//共通鍵を設定
-			tempDataQueue->pop();
-			keyChangeFlg = true;
+		if (originData.id == 0x20) {
+			ExchangeKey(decodeData);
 			return;
 		}
 
-		//復号処理
-		BaseData originData = *(BaseData*)&tempDataQueue->front().data[0];
 		char oriData[BYTESIZE];
-		int  decodeSize=originData.size - sizeof(BaseData);
-		memcpy(&oriData, &tempDataQueue->front().data[sizeof(BaseData)], decodeSize);
+		int  decodeSize=originData.size - sizeof(Header);
+		//復号処理
+		memcpy(&oriData, &tempDataQueue->front().data[sizeof(Header)], decodeSize);
 		int byteSize=aes->Decode(decodeData, oriData, decodeSize);
 		tempDataQueue->pop();
 		//データ処理
@@ -201,39 +171,10 @@ void Client::DataManipulater(char _id,char* _data)
 		send(_socket->GetSocket(), (char*)&sendData, amountSize, 0);
 		*/
 		break;
+	default:
+
+		break;
 	}
-
-}
-
-//クライアント全ての座標更新
-void Client::DBCreateData()
-{
-	/*
-	std::stringstream query;						//webサーバーに送るデータ
-	std::string output;								//queryのままだとエラーが起こりstring型に入れるとなくなる
-	std::vector<std::shared_ptr<Data>> datas;		//送信するデータ一覧
-
-	//送るデータの選別
-	for (auto socket : clientList) {
-		if (socket->GetPosGetFlg()) {
-			datas.push_back(socket->GetData());
-		}
-	}
-	if (datas.size() <= 0)return;
-
-	//データの作成
-	query << "amount=" << datas.size();
-	for (int i = 0; i < datas.size(); i++) {
-		query << "&" << "player" << i << "=" << datas[i]->GetId()->c_str();
-		query << "&" << "x" << i << "=" << datas[i]->GetX();
-		query << "&" << "y" << i << "=" << datas[i]->GetY();
-		query << "&" << "z" << i << "=" << datas[i]->GetZ();
-	}
-	query >> output;
-
-	std::thread thread(PosRegistration, output);
-	thread.detach();
-	*/
 
 }
 
@@ -280,7 +221,7 @@ void Client::CreateSendData(char * _originalData, int _dataLen,char _id)
 	int encodeSize=0;
 	char encode[BYTESIZE];																		//暗号化データ
 	char oridata[BYTESIZE];
-	BaseData headerData;
+	Header headerData;
 	memcpy(oridata, _originalData, _dataLen);
 	//暗号化
 	if (_dataLen > 0) {
@@ -288,7 +229,7 @@ void Client::CreateSendData(char * _originalData, int _dataLen,char _id)
 	}
 
 	//ヘッダー部作成
-	headerData.size = sizeof(BaseData)+encodeSize;
+	headerData.size = sizeof(Header)+encodeSize;
 	headerData.playerIdSize = data->GetId()->length();
 	memcpy(headerData.playerId, data->GetId()->c_str(), headerData.playerIdSize);
 	headerData.id = _id;
@@ -296,7 +237,7 @@ void Client::CreateSendData(char * _originalData, int _dataLen,char _id)
 
 	NamedPipe::PipeData sendData;
 	sendData.byteSize = headerData.size;
-	memcpy(sendData.data, &headerData, sizeof(BaseData));
-	memcpy(&sendData.data[sizeof(BaseData)], encode, encodeSize);
+	memcpy(sendData.data, &headerData, sizeof(Header));
+	memcpy(&sendData.data[sizeof(Header)], encode, encodeSize);
 	completeDataQueue->push(sendData);
 }

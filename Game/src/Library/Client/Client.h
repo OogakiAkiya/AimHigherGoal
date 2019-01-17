@@ -96,12 +96,15 @@ private:
 //=========================================================
 #pragma pack(1)
 //データ送信に使う最低限の構造
-struct SendData
+
+struct Header
 {
 	int size;
-	int idSize;
-	char id[20];
+	int playerIdSize;
+	char playerId[20];
+	char id;
 };
+
 struct BaseData
 {
 	int size;
@@ -109,6 +112,7 @@ struct BaseData
 	char playerId[20];
 	char id;
 };
+
 
 //座標更新データ
 struct PosData

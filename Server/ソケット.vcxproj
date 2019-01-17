@@ -46,7 +46,6 @@
     <ClCompile Include="src\Library\Socket\Socket.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Server\Client.cpp" />
-    <ClCompile Include="src\Server\ClientController.cpp" />
     <ClCompile Include="src\Server\Server.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -62,7 +61,6 @@
     <ClInclude Include="src\Library\NamedPipe\NamedPipe.h" />
     <ClInclude Include="src\Library\Socket\Socket.h" />
     <ClInclude Include="src\Server\Client.h" />
-    <ClInclude Include="src\Server\ClientController.h" />
     <ClInclude Include="src\Server\Server.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

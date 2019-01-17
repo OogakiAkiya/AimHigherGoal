@@ -1,3 +1,5 @@
-﻿  main.cpp
+﻿  LoadBalancer.cpp
+  main.cpp
 c:\aimhighergoal\loadbalancer\loadbalancer\src\main.cpp(13): warning C4326: 'main' の戻り値の型には、'int' を使用してください。'void' は使用できません
+  コードを生成中...
   LoadBalancer.vcxproj -> C:\AimHigherGoal\LoadBalancer\Debug\LoadBalancer.exe

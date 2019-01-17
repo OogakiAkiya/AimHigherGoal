@@ -96,12 +96,12 @@ void Client::Recv()
 			//一時データから完全データの作成
 			while (tempDataList.size() >= sizeof(int)) {													//何byteのデータが送られてきていいるかすら読み込めなければ抜ける
 				//復号処理
-				BaseData recvData = *(BaseData*)&tempDataList[0];
+				Header recvData = *(Header*)&tempDataList[0];
 				if (recvData.size <= (int)tempDataList.size()) {
-					int decodeSize = recvData.size - sizeof(BaseData);
+					int decodeSize = recvData.size - sizeof(Header);
 					char data[BYTESIZE];																	//復号前データ
 					char decodeData[BYTESIZE];																//復号データ
-					memcpy(data, &tempDataList[sizeof(BaseData)], decodeSize);
+					memcpy(data, &tempDataList[sizeof(Header)], decodeSize);
 					tempDataList.erase(tempDataList.begin(), tempDataList.begin() + recvData.size);		//完全データ作成に使用した分を削除
 					mutex->Lock();
 					int temp=cipher->GetOpenSSLAES()->Decode(decodeData,data,decodeSize);
@@ -132,12 +132,12 @@ void Client::Recv()
 void Client::SendUserInformation(Data * _data)
 {
 	//データ生成
-	BaseData userData;
-	userData.size = sizeof(BaseData);
+	Header userData;
+	userData.size = sizeof(Header);
 	userData.playerIdSize = _data->GetId()->length();
 	memcpy(userData.playerId, _data->GetId()->c_str(), userData.playerIdSize);
 	userData.id = 0x01;
-	send(CLIENT.GetSocket(), (char*)&userData,sizeof(BaseData), 0);
+	send(CLIENT.GetSocket(), (char*)&userData,sizeof(Header), 0);
 
 }
 
@@ -160,16 +160,16 @@ void Client::SendPos(Data* _data)
 	mutex->Unlock();
 
 	//ヘッダー作成
-	BaseData userData;
-	userData.size = sizeof(BaseData) + encodeSize;
+	Header userData;
+	userData.size = sizeof(Header) + encodeSize;
 	userData.playerIdSize = _data->GetId()->length();
 	memcpy(userData.playerId, _data->GetId()->c_str(), userData.playerIdSize);
 	userData.id = 0x15;
 
 
 	//送信データ作成
-	memcpy(sendData, &userData, sizeof(BaseData));
-	memcpy(&sendData[sizeof(BaseData)], &encodeData,encodeSize);
+	memcpy(sendData, &userData, sizeof(Header));
+	memcpy(&sendData[sizeof(Header)], &encodeData,encodeSize);
 
 	//データ送信
 	send(CLIENT.GetSocket(), sendData,userData.size, 0);
@@ -373,13 +373,13 @@ void Client::ExchangeKey(std::string _id)
 	mutex->Unlock();
 
 
-	BaseData sendData;
-	sendData.size = sizeof(BaseData) + outlen;
+	Header sendData;
+	sendData.size = sizeof(Header) + outlen;
 	sendData.playerIdSize = _id.size();
 	memcpy(&sendData.playerId[0], _id.c_str(), sendData.playerIdSize);
-	sendData.id = 0x99;																//とりあえず
-	memcpy(sendbuf, (char*)&sendData, sizeof(BaseData));
-	memcpy(&sendbuf[sizeof(BaseData)], (char*)&endata, outlen);
+	sendData.id = 0x20;																//とりあえず
+	memcpy(sendbuf, (char*)&sendData, sizeof(Header));
+	memcpy(&sendbuf[sizeof(Header)], (char*)&endata, outlen);
 
 	//送信
 	send(socket->GetSocket(), sendbuf,sendData.size, 0);

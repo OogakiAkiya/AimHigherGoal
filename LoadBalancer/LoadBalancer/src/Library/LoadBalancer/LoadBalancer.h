@@ -4,7 +4,6 @@ public:
 	LoadBalancer();
 	~LoadBalancer();
 	void Updata();
-	void Temp();
 private:
 	void CreateServerProcess();
 
@@ -29,13 +28,3 @@ private:
 	std::map<SOCKET, std::string>pipeList;						//SOCKET,ƒpƒCƒv–¼
 
 };
-
-#pragma pack(1)
-struct SendDataBase
-{
-	int size;
-	int playerIdSize;
-	char playerId[20];
-	char id;
-};
-#pragma pack()

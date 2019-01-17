@@ -90,17 +90,6 @@ void LoadBalancer::Updata()
 		MUTEX.Unlock();
 		clientController->SendAllClient(&recvData);
 	}
-	//&recvData.data[sizeof(int)];
-}
-
-void LoadBalancer::Temp()
-{
-	/*
-	for (auto data : dataList) {
-		printf("%s\n", data.data);
-	}
-	Sleep(2000);
-	*/
 }
 
 void LoadBalancer::CreateServerProcess()

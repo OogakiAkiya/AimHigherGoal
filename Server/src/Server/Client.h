@@ -24,10 +24,9 @@ private:
 	//---------------------------------------------------------
 	//ローカル関数
 	//---------------------------------------------------------
-	bool ExchangeKey();
+	bool ExchangeKey(char* _decodeData);
 	void DecryptionManipulate();
 	void DataManipulater(char _id,char* _data);
-	void DBCreateData();
 	void DBGetPos(char* _data, std::shared_ptr<std::string> _userId);
 	void CreateSendData(char* _originalData, int _dataLen, char _id);
 	//---------------------------------------------------------
@@ -42,7 +41,6 @@ private:
 	//---------------------------------------------------------
 	bool keyChangeFlg = false;
 	bool posGetFlg = false;
-	std::vector<char> tempDataList;											//一時データ配列
 	std::shared_ptr<Data> data;												//ユーザーの各データが格納されている
 	std::unique_ptr<OpenSSLAES> aes;										//共通鍵暗号クラス
 	std::unique_ptr<std::queue<NamedPipe::PipeData>> tempDataQueue;			//デコード前のデータ
@@ -52,7 +50,7 @@ private:
 };
 
 #pragma pack(1)
-struct BaseData
+struct Header
 {
 	int size;
 	int playerIdSize;

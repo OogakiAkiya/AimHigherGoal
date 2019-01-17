@@ -63,9 +63,6 @@
     <ClCompile Include="src\Server\Client.cpp">
       <Filter>ソース ファイル\Server</Filter>
     </ClCompile>
-    <ClCompile Include="src\Server\ClientController.cpp">
-      <Filter>ソース ファイル\Server</Filter>
-    </ClCompile>
     <ClCompile Include="src\Library\Cipher\OpenSSLRSA.cpp">
       <Filter>ソース ファイル\Library\Cipher\OpenSSLRSA</Filter>
     </ClCompile>
@@ -102,9 +99,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="src\Server\Client.h">
-      <Filter>ソース ファイル\Server</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Server\ClientController.h">
       <Filter>ソース ファイル\Server</Filter>
     </ClInclude>
     <ClInclude Include="src\Library\Cipher\OpenSSLRSA.h">
