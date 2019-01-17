@@ -73,9 +73,25 @@ void LoadBalancer::Updata()
 	while (1) {
 		if (sendDataQueue->empty())break;
 		NamedPipe::PipeData data=sendDataQueue->front();
+		Header header = *(Header*)&data.data[0];				//ヘッダー
+		std::string userId =std::string(header.playerId);		//プレイヤーID
+		userId.resize(header.playerIdSize);
+
+		if (userMap.count(userId)==0) {
+			//ユーザーの追加
+			std::shared_ptr<NamedPipe>targetPipe=nullptr;
+			for (auto pipe : outputPipeMap) {
+				if (targetPipe == nullptr)targetPipe = pipe.second;
+				if(targetPipe->GetCount()>pipe.second->GetCount())targetPipe = pipe.second;
+			}
+			userMap.insert(std::make_pair(userId, *targetPipe->GetPipeName()));
+			targetPipe->CountUp();
+			targetPipe = nullptr;
+		}
 		//playerIDからパイプ名を特定
-		outputPipeMap["AimHigherGoalOutput0"]->Write((char*)data.data, data.byteSize);
+		outputPipeMap[userMap[userId]]->Write((char*)data.data, data.byteSize);
 		sendDataQueue->pop();
+
 	}
 
 	//サーバー受信用処理

@@ -20,6 +20,7 @@ NamedPipe::~NamedPipe()
 
 bool NamedPipe::CreateServer(std::string _pipeName)
 {
+	pipeName = _pipeName;
 	std::stringstream query;
 	query << "\\\\.\\pipe\\" << _pipeName;
 	//名前付きパイプの作成
@@ -43,6 +44,7 @@ bool NamedPipe::CreateServer(std::string _pipeName)
 
 bool NamedPipe::CreateClient(std::string _pipeName)
 {
+	pipeName = _pipeName;
 	std::stringstream query;
 	query << "\\\\.\\pipe\\" << _pipeName;
 
@@ -98,6 +100,27 @@ void NamedPipe::CreateInputPipe(std::string _pipeName,std::queue<PipeData>* _dat
 	//Readのスレッドを作成する
 	std::thread thread(InputPipeThread, _pipeName, _dataList);
 	thread.detach();
+}
+
+void NamedPipe::CountUp()
+{
+	count++;
+}
+
+void NamedPipe::CountDown()
+{
+	count--;
+	if (count < 0)count = 0;
+}
+
+int NamedPipe::GetCount()
+{
+	return count;
+}
+
+std::string* NamedPipe::GetPipeName()
+{
+	return &pipeName;
 }
 
 void InputPipeThread(std::string _pipeName, std::queue<NamedPipe::PipeData>* _dataList) {
