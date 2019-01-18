@@ -6,27 +6,27 @@ class ClientController
 public:
 	ClientController();
 	~ClientController();
-	void Update(std::queue<NamedPipe::PipeData>* _dataList);
-	void ControllerUpdate();												//スレッドが動作させる関数
-	void SocketUpdate();
-	void GetPipeData(std::queue<NamedPipe::PipeData>* _dataList);
+	void Update(std::queue<NamedPipe::PipeData>* _dataList);				//更新処理
+	void SendAllClient(char* _data,int _dataLength);
 	void SendAllClient(NamedPipe::PipeData* _data);
-private:
-	void AcceptSocket();
 
+private:
+	void AcceptSocket();													//accept処理
+	void GetOutputPipeData(std::queue<NamedPipe::PipeData>* _dataList);		//パイプに送る用のデータを取得
+	void SocketUpdate();													//各ソケットの更新処理
+	void ControllerUpdate();												//スレッドが動作させる関数
 
 	//---------------------------------------------------------
 	//定数
 	//---------------------------------------------------------
 	static const int BYTESIZE = 128;
-	const char* PORTNUMBER = "49155";						//ポート番号
-
+	const char* PORTNUMBER = "49155";										//ポート番号
 
 	//---------------------------------------------------------
 	//変数
 	//---------------------------------------------------------
-	std::shared_ptr<Socket> socket = nullptr;
-	std::vector<std::shared_ptr<Client>> socketList;										//ソケット配列
+	std::shared_ptr<Socket> socket = nullptr;								//Accept用ソケット
+	std::vector<std::shared_ptr<Client>> socketList;						//ソケット配列
 };
 
 #endif

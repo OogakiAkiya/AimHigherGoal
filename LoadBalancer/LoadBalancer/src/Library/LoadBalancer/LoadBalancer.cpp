@@ -43,10 +43,12 @@ LoadBalancer::~LoadBalancer()
 
 void LoadBalancer::Updata()
 {
-	clientController->Update(sendDataQueue.get());			//受信したデータをデータリストに追加する
+	//受信したデータをデータリストに追加する
+	clientController->Update(sendDataQueue.get());
 
 	//サーバー送信用データの処理
 	SendUpdate();
+
 	//サーバー受信用処理
 	RecvUpdate();
 }
@@ -63,7 +65,7 @@ void LoadBalancer::SendUpdate()
 
 		if (userMap.count(userId) == 0) {
 			bool addProcessFlg = true;
-			//ユーザーの追加
+			//既存のユーザーにいないならユーザーの追加
 			std::shared_ptr<NamedPipe>targetPipe = nullptr;
 			for (auto pipe : outputPipeMap) {
 				int processCount = pipe.second->GetCount();
@@ -85,6 +87,7 @@ void LoadBalancer::SendUpdate()
 				printf("\n%s\n", string.c_str());
 
 			}
+			//マップに登録
 			userMap.insert(std::make_pair(userId, *targetPipe->GetPipeName()));
 			targetPipe->CountUp();
 			targetPipe = nullptr;
@@ -99,6 +102,21 @@ void LoadBalancer::SendUpdate()
 
 void LoadBalancer::RecvUpdate()
 {
+	//一括送信
+	std::vector<char> sendData;
+	MUTEX.Lock();
+	for (int i = 0, nowSize = 0; i < recvDataQueue->size(); i++) {
+		sendData.resize(nowSize+recvDataQueue->front().byteSize);
+		memcpy(&sendData[nowSize], &recvDataQueue->front().data[0], recvDataQueue->front().byteSize);
+		nowSize += recvDataQueue->front().byteSize;
+		recvDataQueue->pop();
+	}
+	MUTEX.Unlock();
+
+	clientController->SendAllClient(&sendData[0], sendData.size());
+
+
+	/*
 	while (1) {
 		MUTEX.Lock();
 		if (recvDataQueue->empty()) {
@@ -108,8 +126,11 @@ void LoadBalancer::RecvUpdate()
 		NamedPipe::PipeData recvData = recvDataQueue->front();
 		recvDataQueue->pop();
 		MUTEX.Unlock();
+
+		//全てのユーザーに送る
 		clientController->SendAllClient(&recvData);
 	}
+	*/
 }
 
 void LoadBalancer::CreateServerProcess()

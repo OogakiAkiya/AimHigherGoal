@@ -1,4 +1,5 @@
 #include"../Include.h"
+#include"../Library/Mutex/ExtensionMutex.h"
 #include"../Library/Data/Data.h"
 #include"../Library/NamedPipe/NamedPipe.h"
 #include"../Library/Socket/Socket.h"
@@ -6,14 +7,14 @@
 
 Client::Client()
 {
-	pipeDataList = std::make_shared<std::queue<NamedPipe::PipeData>>();
+	outputPipeDataList = std::make_shared<std::queue<NamedPipe::PipeData>>();
 	data = std::make_shared<Data>();
 }
 
 Client::~Client()
 {
 	//‰ğ•úˆ—
-	pipeDataList = nullptr;
+	outputPipeDataList = nullptr;
 	data = nullptr;
 
 }
@@ -39,19 +40,19 @@ int Client::GetState()
 	return state;
 }
 
-NamedPipe::PipeData* Client::GetPipeData()
+NamedPipe::PipeData* Client::GetOutputPipeData()
 {
-	return &pipeDataList->front();
+	return &outputPipeDataList->front();
 }
 
 void Client::DeletePipeData()
 {
-	pipeDataList->pop();
+	outputPipeDataList->pop();
 }
 
 bool Client::EmptyPipeData()
 {
-	if (pipeDataList->empty() == true) {
+	if (outputPipeDataList->empty() == true) {
 		return true;									//‹ó
 	}
 	return false;										//’l‚ª“ü‚Á‚Ä‚¢‚é
@@ -78,7 +79,7 @@ void Client::RecvLoop()
 					NamedPipe::PipeData pipeData;
 					pipeData.byteSize=oneDataSize;
 					memcpy(&pipeData.data, &tempDataList[0], oneDataSize);
-					pipeDataList->push(pipeData);
+					outputPipeDataList->push(pipeData);
 					tempDataList.erase(tempDataList.begin(), tempDataList.begin() + pipeData.byteSize);
 				}
 				else {
@@ -97,7 +98,7 @@ void Client::RecvLoop()
 			return;
 		}
 		else if (WSAGetLastError() == 10054) {
-			//‘å—ÊØ’f‚ª‹N‚±‚Á‚½ê‡DOSUŒ‚‚ğ‹^‚¢‚±‚±‚É—ˆ‚é
+			//‘å—ÊØ’f‚Ì‚É‹N‚±‚é
 			printf("LoadBalancer>>Ø’f‚³‚ê‚Ü‚µ‚½\n");
 			state = -1;
 			return;

@@ -52,7 +52,7 @@ private:
 	//---------------------------------------------------------
 	std::unique_ptr<std::string> ip;									//IPアドレス
 	std::unique_ptr<std::string> port;									//ポート番号
-	SOCKET m_socket;													//ソケット
+	SOCKET m_socket = INVALID_SOCKET;													//ソケット
 	bool asynchronousFlg = false;										//非同期フラグ
 	struct addrinfo *result = nullptr, hints;							//ソケット設定用変数
 

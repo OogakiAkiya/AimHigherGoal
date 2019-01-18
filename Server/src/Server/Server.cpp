@@ -18,6 +18,7 @@ Server::Server(int _processNumber)
 	processNumber = _processNumber;
 	std::stringstream discriminationName;
 	discriminationName << "Server" << _processNumber;
+
 	//インスタンスの生成
 	Cipher::GetInstance();
 	recvDataQueue = std::make_unique<std::queue<NamedPipe::PipeData>>();								//ロードバランサーに送信するデータ
@@ -113,11 +114,8 @@ void Server::InputPipeProcessing()
 
 		//playreIDの取得
 		int idSize = *(int*)&data.data[sizeof(int)];						//IDサイズ
-		char* temp = new char[idSize];
-		memcpy(temp, &data.data[sizeof(int) * 2], idSize);
-		std::shared_ptr<std::string> playerId = std::make_shared<std::string>(temp);
-		delete temp;
-		playerId->resize(idSize);											//idのサイズが一定にならないのでresize
+		std::shared_ptr<std::string> playerId = std::make_shared<std::string>(&data.data[sizeof(int)*2]);
+		playerId->resize(idSize);
 
 		//idが一致するクライアントの検索&追加
 		if (clientMap.count(playerId->c_str()) == 0) {
@@ -127,6 +125,7 @@ void Server::InputPipeProcessing()
 			clientMap.insert(std::make_pair(playerId->c_str(), client));
 			client = nullptr;
 		}
+
 		//dataの追加
 		clientMap[playerId->c_str()]->AddData(&data);
 	}

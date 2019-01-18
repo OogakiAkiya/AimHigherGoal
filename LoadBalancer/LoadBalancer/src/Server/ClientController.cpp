@@ -38,7 +38,7 @@ void ClientController::Update(std::queue<NamedPipe::PipeData>* _dataList)
 	AcceptSocket();
 	ControllerUpdate();
 	SocketUpdate();
-	GetPipeData(_dataList);
+	GetOutputPipeData(_dataList);
 }
 
 void ClientController::ControllerUpdate()
@@ -62,14 +62,15 @@ void ClientController::SocketUpdate()
 	}
 }
 
-void ClientController::GetPipeData(std::queue<NamedPipe::PipeData>* _dataList)
+void ClientController::GetOutputPipeData(std::queue<NamedPipe::PipeData>* _dataList)
 {
 	//サーバーに接続しているクライアントがいるか判定
 	if (socketList.empty() == true)return;
+
 	//パイプデータの処理
 	for (auto& client : socketList) {
 		if (client->EmptyPipeData() == true)break;				//完全データがなければ以下処理は行わない
-		NamedPipe::PipeData pipeData = *client->GetPipeData();
+		NamedPipe::PipeData pipeData = *client->GetOutputPipeData();
 		_dataList->push(pipeData);
 		//データの削除
 		client->DeletePipeData();
@@ -77,11 +78,19 @@ void ClientController::GetPipeData(std::queue<NamedPipe::PipeData>* _dataList)
 
 }
 
+void ClientController::SendAllClient(char* _data, int _dataLength)
+{
+	for (auto client : socketList) {
+		send(client->GetSocket(), _data,_dataLength, 0);
+	}
+}
+
 void ClientController::SendAllClient(NamedPipe::PipeData* _data)
 {
 	for (auto client : socketList) {
 		send(client->GetSocket(), _data->data, _data->byteSize, 0);
 	}
+
 }
 
 

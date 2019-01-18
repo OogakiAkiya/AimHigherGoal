@@ -28,14 +28,15 @@ Client::~Client()
 {
 	//切断メッセージ処理
 	//ヘッダー作成
-	Header header;
-	header.size = sizeof(Header);
-	header.playerIdSize = playerData->GetId()->length();
-	memcpy(header.playerId, playerData->GetId()->c_str(), header.playerIdSize);
-	header.id = 0xFE;
-	//データ送信
-	send(CLIENT.GetSocket(), (char*)&header, header.size, 0);
-
+	if (socket!=nullptr) {
+		Header header;
+		header.size = sizeof(Header);
+		header.playerIdSize = playerData->GetId()->length();
+		memcpy(header.playerId, playerData->GetId()->c_str(), header.playerIdSize);
+		header.id = 0xFE;
+		//データ送信
+		send(CLIENT.GetSocket(), (char*)&header, header.size, 0);
+	}
 
 	//解放処理
 	if(thread!=nullptr)thread->detach();
@@ -117,8 +118,13 @@ void Client::Recv()
 					mutex->Lock();
 					int temp=cipher->GetOpenSSLAES()->Decode(decodeData,data,decodeSize);
 					mutex->Unlock();
-					DataProcess(recvData.id,decodeData);
 
+					//自分の情報だけ取得する
+					std::string targetName=std::string(recvData.playerId);
+					targetName.resize(recvData.playerIdSize);
+					if (targetName == *playerData->GetId()) {
+						DataProcess(recvData.id, decodeData);
+					}
 				}
 				else {
 					//完全データ作成不能になった場合
