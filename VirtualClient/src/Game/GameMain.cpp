@@ -30,7 +30,7 @@ void GameMain::Update()
 	ImGui::Begin("Client Controler", imgui->GetApperFlg());						//ウインドウ作成
 	//ウインドウに配置するオブジェクト
 
-	const char* items[] = {"1","10", "100", "1000", "10000"};
+	const char* items[] = {"1","10", "100", "1000"};
 	static int item_current = 0;
 	ImGui::Combo("", &item_current, items, IM_ARRAYSIZE(items));
 
@@ -41,21 +41,20 @@ void GameMain::Update()
 		if (item_current == 1)loop = 10;
 		if (item_current == 2)loop = 100;
 		if (item_current == 3)loop = 1000;
-		if (item_current == 4)loop = 5000;
 
 		int nowSize = clientList.size();
 		clientList.resize(nowSize + loop);
 		for (int i = nowSize; i < loop+nowSize; i++) {
 			std::shared_ptr<Client> temp = std::make_shared<Client>();
-			temp->CreateSocket();
-			query << i;
+			query << "test" << i;
 			temp->GetPlayerData()->SetId(query.str());
+			temp->CreateSocket();
 			query.str("");
 			query.clear(std::stringstream::goodbit);
 
 			//追加処理
 			clientList[i] = temp;
-			if (item_current == 4)Sleep(10);
+			Sleep(10);
 		}
 	}
 

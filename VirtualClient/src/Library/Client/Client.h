@@ -15,7 +15,6 @@ public:
 	//---------------------------------------------------------
 	void SendUserInformation(Data* _data);
 	void SendPos(Data* _data);
-	void SendAttack(Data* _data);
 
 	//---------------------------------------------------------
 	//情報取得
@@ -45,14 +44,10 @@ public:
 
 private:
 	//---------------------------------------------------------
-	//コンストラクター・デストラクター
-	//---------------------------------------------------------
-	void DataManipulate(const std::vector<char>* _data);				//完成品データから移動などの処理を行う	
-
-	//---------------------------------------------------------
 	//ローカル関数
 	//---------------------------------------------------------
-	void ExchangeKey();													//鍵交換
+	void ExchangeKey(std::string _id);
+	void DataProcess(char _id, char * _data);
 
 	//---------------------------------------------------------
 	//定数
@@ -83,37 +78,33 @@ private:
 //=========================================================
 #pragma pack(1)
 //データ送信に使う最低限の構造
+
+struct Header
+{
+	int size;
+	int playerIdSize;
+	char playerId[20];
+	unsigned char id;
+};
+
 struct BaseData
 {
 	int size;
+	int playerIdSize;
+	char playerId[20];
 	char id;
 };
 
-//ユーザー情報確認処理
-struct UserData {
-	BaseData base;
-	int idsize;
-	char id[20];
-};
 
 //座標更新データ
 struct PosData
 {
-	BaseData base;
 	float x;
 	float y;
 	float z;
 	float angle;
 	int animation;
 };
-
-//攻撃データ
-struct AttckData
-{
-	BaseData base;
-	int socket;
-};
-
 #pragma pack()
 
 #endif

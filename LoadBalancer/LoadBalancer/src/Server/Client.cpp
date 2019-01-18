@@ -81,6 +81,9 @@ void Client::RecvLoop()
 					pipeDataList->push(pipeData);
 					tempDataList.erase(tempDataList.begin(), tempDataList.begin() + pipeData.byteSize);
 				}
+				else {
+					break;
+				}
 			}
 		}
 		else if (iResult == 0) {
@@ -93,6 +96,13 @@ void Client::RecvLoop()
 			//”ñ“¯Šú‚Ìê‡client‚ªsend‚µ‚Ä‚¢‚È‚©‚Á‚½‚Æ‚«‚É‚¨‚±‚éƒGƒ‰[
 			return;
 		}
+		else if (WSAGetLastError() == 10054) {
+			//‘å—ÊØ’f‚ª‹N‚±‚Á‚½ê‡DOSUŒ‚‚ð‹^‚¢‚±‚±‚É—ˆ‚é
+			printf("LoadBalancer>>Ø’f‚³‚ê‚Ü‚µ‚½\n");
+			state = -1;
+			return;
+		}
+
 		else {
 			//Ú‘±ƒGƒ‰[‚ª‹N‚±‚Á‚½Žž
 			printf("LoadBalancer>>recv failed:%d\n%d", WSAGetLastError(), iResult);

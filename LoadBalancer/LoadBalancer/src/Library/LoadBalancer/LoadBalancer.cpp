@@ -75,9 +75,14 @@ void LoadBalancer::SendUpdate()
 			//ƒvƒƒZƒX’Ç‰Áˆ—
 			if (addProcessFlg == true) {
 				CreateServerProcess();
+				std::string string;
 				for (auto pipe : outputPipeMap) {
-					if (targetPipe->GetCount() > pipe.second->GetCount())targetPipe = pipe.second;
+					if (targetPipe->GetCount() > pipe.second->GetCount()) {
+						targetPipe = pipe.second;
+					}
+					string = *targetPipe->GetPipeName();
 				}
+				printf("\n%s\n", string.c_str());
 
 			}
 			userMap.insert(std::make_pair(userId, *targetPipe->GetPipeName()));

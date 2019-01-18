@@ -12,7 +12,7 @@ private:
 	//定数
 	//---------------------------------------------------------
 	static const int PORTNUMBER = 49155;						//ポート番号
-	static const int ACCESSLIMIT = 2000;						//ポート番号
+	static const int ACCESSLIMIT = 100;						//ポート番号
 
 	const std::string INPUTPIPE = "AimHigherGoalInput";
 	const std::string OUTPUTPIPE = "AimHigherGoalOutput";
