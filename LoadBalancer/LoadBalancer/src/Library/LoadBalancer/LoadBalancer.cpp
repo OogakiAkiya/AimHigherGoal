@@ -114,23 +114,6 @@ void LoadBalancer::RecvUpdate()
 	MUTEX.Unlock();
 
 	clientController->SendAllClient(&sendData[0], sendData.size());
-
-
-	/*
-	while (1) {
-		MUTEX.Lock();
-		if (recvDataQueue->empty()) {
-			MUTEX.Unlock();
-			break;
-		}
-		NamedPipe::PipeData recvData = recvDataQueue->front();
-		recvDataQueue->pop();
-		MUTEX.Unlock();
-
-		//全てのユーザーに送る
-		clientController->SendAllClient(&recvData);
-	}
-	*/
 }
 
 void LoadBalancer::CreateServerProcess()

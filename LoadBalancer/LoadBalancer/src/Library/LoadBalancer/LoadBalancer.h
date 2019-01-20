@@ -12,7 +12,7 @@ private:
 	//定数
 	//---------------------------------------------------------
 	static const int PORTNUMBER = 49155;									//ポート番号
-	static const int ACCESSLIMIT = 1000;										//サーバー一つ当たりのアクセス限界
+	static const int ACCESSLIMIT = 1000;									//サーバー一つ当たりのアクセス限界
 
 	const std::string INPUTPIPE = "AimHigherGoalInput";
 	const std::string OUTPUTPIPE = "AimHigherGoalOutput";
@@ -26,6 +26,7 @@ private:
 	std::unique_ptr<std::queue<NamedPipe::PipeData>> recvDataQueue;			//サーバーからのデータを受信する
 	std::map<std::string, std::shared_ptr<NamedPipe>> outputPipeMap;		//パイプ名,パイプ
 	std::map<std::string, std::string> userMap;								//ユーザー名,パイプ名
+
 };
 
 #pragma pack(1)

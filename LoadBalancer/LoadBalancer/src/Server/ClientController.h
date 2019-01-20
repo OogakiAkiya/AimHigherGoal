@@ -8,7 +8,6 @@ public:
 	~ClientController();
 	void Update(std::queue<NamedPipe::PipeData>* _dataList);				//更新処理
 	void SendAllClient(char* _data,int _dataLength);
-	void SendAllClient(NamedPipe::PipeData* _data);
 
 private:
 	void AcceptSocket();													//accept処理
@@ -27,6 +26,10 @@ private:
 	//---------------------------------------------------------
 	std::shared_ptr<Socket> socket = nullptr;								//Accept用ソケット
 	std::vector<std::shared_ptr<Client>> socketList;						//ソケット配列
+	std::unique_ptr<std::thread> thread=nullptr;
+	std::vector<Client*> sendList;
+
+	bool threadFlg = true;
 };
 
 #endif

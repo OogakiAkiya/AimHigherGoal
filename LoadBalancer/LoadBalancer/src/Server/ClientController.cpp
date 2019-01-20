@@ -69,7 +69,7 @@ void ClientController::GetOutputPipeData(std::queue<NamedPipe::PipeData>* _dataL
 
 	//パイプデータの処理
 	for (auto& client : socketList) {
-		if (client->EmptyPipeData() == true)break;				//完全データがなければ以下処理は行わない
+		if (client->EmptyPipeData() == true)break;									//完全データがなければ以下処理は行わない
 		NamedPipe::PipeData pipeData = *client->GetOutputPipeData();
 		_dataList->push(pipeData);
 		//データの削除
@@ -84,15 +84,6 @@ void ClientController::SendAllClient(char* _data, int _dataLength)
 		send(client->GetSocket(), _data,_dataLength, 0);
 	}
 }
-
-void ClientController::SendAllClient(NamedPipe::PipeData* _data)
-{
-	for (auto client : socketList) {
-		send(client->GetSocket(), _data->data, _data->byteSize, 0);
-	}
-
-}
-
 
 void ClientController::AcceptSocket()
 {
