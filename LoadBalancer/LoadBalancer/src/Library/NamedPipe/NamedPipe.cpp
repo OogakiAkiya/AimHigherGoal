@@ -95,7 +95,7 @@ int NamedPipe::Write(char * _data, int _dataLengeh)
 {
 	DWORD writeSize;
 	if (!WriteFile(pipeHandle, _data, _dataLengeh, &writeSize, NULL)) {
-		printf("%s>>Write Error", discriminationName.c_str());
+		printf("%s>>Write Error\n", discriminationName.c_str());
 		return 0;
 	}
 	return writeSize;
@@ -140,8 +140,8 @@ void InputPipeThread(std::string _discriminationName,std::string _pipeName, std:
 		return;
 	}
 	while (1) {
-		char buf[256];
-		int size = pipe->Read(buf, sizeof(buf));
+		char buf[NamedPipe::RECVBYTESIZE];
+		int size = pipe->Read(buf, NamedPipe::RECVBYTESIZE);
 		//スレッド終了処理
 		if (!strncmp("EXIT", buf, 4)) { // Exit Check
 			printf("%s>>InputPipeThread Finish\n",_discriminationName.c_str());

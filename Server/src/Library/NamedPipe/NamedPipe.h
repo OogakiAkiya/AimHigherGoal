@@ -5,7 +5,7 @@ public:
 	struct PipeData
 	{
 		int byteSize;
-		char data[256];						//256バイト+int型分
+		char data[256];
 	};
 #pragma pack()
 
@@ -22,6 +22,12 @@ public:
 	void CountDown();																	//カウントを1減少させる
 	int GetCount();																		//カウントを返す
 	std::string* GetPipeName();															//パイプ名を返す
+
+	//---------------------------------------------------------
+	//定数
+	//---------------------------------------------------------
+	static const int RECVBYTESIZE = 1024 * 10;												//受信に使用する配列データのサイズ
+
 private:
 	HANDLE pipeHandle = INVALID_HANDLE_VALUE;											//パイプハンドル
 	std::string pipeName;																//パイプ名が入る

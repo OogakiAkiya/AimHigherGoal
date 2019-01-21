@@ -135,7 +135,7 @@ void Server::InputPipeProcessing()
 void PosRegistration(std::string _data)
 {
 	std::unique_ptr<CurlWrapper> curl = std::make_unique<CurlWrapper>();
-	curl->HTTPConnect(nullptr, "http://lifestyle-qa.com/update_user_arraydata.php", _data, "DBCreateData");
+	curl->HTTPConnect(nullptr, "http://lifestyle-qa.com/update_user_arraydata.php", _data);
 	curl = nullptr;
 }
 

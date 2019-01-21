@@ -77,11 +77,11 @@ void Client::Recv()
 {
 	//ローカル変数作成
 	int iResult;																						//recv結果が入る(受信したバイト数が入る)
-	char rec[BYTESIZE * 2];																				//受け取ったデータを格納
+	char rec[RECVBYTESIZE];																				//受け取ったデータを格納
 
 	//受信
 	while (1) {
-		iResult = socket->Recv(rec, BYTESIZE);
+		iResult = socket->Recv(rec, RECVBYTESIZE);
 		if (iResult > 0) {
 
 			//受信データを一時データ配列に追加

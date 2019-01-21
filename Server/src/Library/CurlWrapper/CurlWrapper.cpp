@@ -17,7 +17,7 @@ CurlWrapper::~CurlWrapper()
 	curl = nullptr;
 }
 
-void CurlWrapper::HTTPConnect(std::string* _data, std::string _url, std::string _postData,std::string _userID)
+void CurlWrapper::HTTPConnect(std::string* _data, std::string _url, std::string _postData)
 {
 	//ユーザー追加処理
 	if (curl == NULL)return;
@@ -29,10 +29,10 @@ void CurlWrapper::HTTPConnect(std::string* _data, std::string _url, std::string 
 	curl_easy_setopt(curl, CURLOPT_POSTFIELDS,_postData.c_str());						//送信データの設定
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, BufferWriter);						//書込み関数設定
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buf);									//書込み変数設定
-	curl_easy_setopt(curl, CURLOPT_TIMEOUT, 3L);										//タイムアウト
-	curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 3L);									//接続タイムアウト
+	curl_easy_setopt(curl, CURLOPT_TIMEOUT, 5L);										//タイムアウト
+	curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 5L);									//接続タイムアウト
 
-																							//送信
+																						//送信
 	code = curl_easy_perform(curl);														//URLへの接続
 
 	//送信失敗したかの判断
@@ -40,13 +40,13 @@ void CurlWrapper::HTTPConnect(std::string* _data, std::string _url, std::string 
 		switch (code) {
 		case CURLE_BAD_FUNCTION_ARGUMENT:
 		case CURLE_OPERATION_TIMEDOUT:
-			printf("Server>>%s Time Out\n", _userID.c_str());
+			printf("Server>> Time Out\n");
 			break;
 		case CURLE_RECV_ERROR:
-			printf("Server>>%s Reception Error\n", _userID.c_str());
+			printf("Server>> Reception Error\n");
 			break;
 		default:
-			printf("Server>>%s:curl ErrorCode=%d\n", _userID.c_str(),code);
+			printf("Server>>curl ErrorCode=%d\n",code);
 			break;
 		}
 

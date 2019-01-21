@@ -61,10 +61,10 @@ bool Client::EmptyPipeData()
 void Client::RecvLoop()
 {
 		int iResult;										//送られてきたデータ量が格納される
-		char rec[BYTESIZE*2];								//受信データ
+		char rec[RECVBYTESIZE];								//受信データ
 
 		//受信
-		iResult = recv(data->GetSocket(), rec, sizeof(rec), 0);
+		iResult = recv(data->GetSocket(), rec, RECVBYTESIZE, 0);
 		if (iResult > 0) {
 			//受信データを一時データ配列に追加
 			int nowSize = tempDataList.size();										//一時データ配列に何byteデータが入っているかを見る

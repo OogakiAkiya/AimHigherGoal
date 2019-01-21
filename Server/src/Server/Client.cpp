@@ -174,7 +174,7 @@ void Client::DBGetPos(char * _data, std::shared_ptr<std::string> _userId)
 	query >> output;
 
 	std::unique_ptr<CurlWrapper> curl = std::make_unique<CurlWrapper>();
-	curl->HTTPConnect(&buf, "http://lifestyle-qa.com/get_pos.php", output.c_str(), *_userId.get());
+	curl->HTTPConnect(&buf, "http://lifestyle-qa.com/get_pos.php", output.c_str());
 	curl = nullptr;
 
 	//json‚©‚ç’l‚ÌŽæ“¾
