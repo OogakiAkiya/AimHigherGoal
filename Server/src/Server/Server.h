@@ -26,6 +26,7 @@ private:
 	std::unique_ptr<std::queue<NamedPipe::PipeData>> recvDataQueue;								//ロードバランサーからのデータを受信する
 	std::unique_ptr<NamedPipe> outputPipe;
 	int processNumber;
+	std::shared_ptr<std::string> query;																			//Http通信で送信するデータ
 	bool available = false;
 };
 

@@ -18,7 +18,10 @@ private:
 	std::vector<std::shared_ptr<CharacterBase>> characterList;
 	//お試し
 	std::weak_ptr<XFILE> s_mesh;						//メッシュ
-	D3DXMATRIX s_mat;					//座標用行列
+	D3DXMATRIX s_mat;									//座標用行列
+	std::weak_ptr<XFILE> boxMesh;						//メッシュ
+	D3DXMATRIX boxMat;									//座標用行列
+
 };
 
 #endif

@@ -17,11 +17,11 @@ CurlWrapper::~CurlWrapper()
 	curl = nullptr;
 }
 
-void CurlWrapper::HTTPConnect(std::string* _data, std::string _url, std::string _postData)
+bool CurlWrapper::HTTPConnect(std::string* _data, std::string _url, std::string _postData)
 {
 	//ユーザー追加処理
-	if (curl == NULL)return;
-	std::string buf;																		//受け取ったデータを格納する
+	if (curl == NULL)return false;
+	std::string buf;																	//受け取ったデータを格納する
 
 	//接続設定
 	curl_easy_setopt(curl, CURLOPT_URL,_url.c_str());
@@ -29,8 +29,8 @@ void CurlWrapper::HTTPConnect(std::string* _data, std::string _url, std::string 
 	curl_easy_setopt(curl, CURLOPT_POSTFIELDS,_postData.c_str());						//送信データの設定
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, BufferWriter);						//書込み関数設定
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buf);									//書込み変数設定
-	curl_easy_setopt(curl, CURLOPT_TIMEOUT, 5L);										//タイムアウト
-	curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 5L);									//接続タイムアウト
+	curl_easy_setopt(curl, CURLOPT_TIMEOUT, 3L);										//タイムアウト
+	curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 3L);								//接続タイムアウト
 
 																						//送信
 	code = curl_easy_perform(curl);														//URLへの接続
@@ -41,18 +41,26 @@ void CurlWrapper::HTTPConnect(std::string* _data, std::string _url, std::string 
 		case CURLE_BAD_FUNCTION_ARGUMENT:
 		case CURLE_OPERATION_TIMEDOUT:
 			printf("Server>> Time Out\n");
+			return false;
 			break;
 		case CURLE_RECV_ERROR:
 			printf("Server>> Reception Error\n");
+			return false;
+			break;
+		case CURLE_COULDNT_RESOLVE_HOST:
+			printf("Server>>インターネットの接続が不安定です。接続を確認してください。\n");
+			return false;
 			break;
 		default:
 			printf("Server>>curl ErrorCode=%d\n",code);
+			return false;
 			break;
 		}
 
 	}
 
 	if (_data != nullptr)*_data = buf;
+	return true;
 }
 
 

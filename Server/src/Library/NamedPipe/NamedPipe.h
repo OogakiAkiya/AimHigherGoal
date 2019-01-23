@@ -16,7 +16,7 @@ public:
 	bool CreateClient(std::string _pipeName);											//送信用パイプを作成
 	bool ConnectRecv();																	//CreateServerの後に接続先を待つ
 	int Read(char* _data, int _dataLength);												//_dataに受信したデータを受け取る
-	int Write(char* _data, int _dataLengeh);											//_dataを送信する
+	int Write(char* _data, int _dataLength);											//_dataを送信する
 	void CreateInputPipe(std::string _pipeName,std::queue<PipeData>* _dataList);		//受信用のスレッドを作成する
 	void CountUp();																		//カウントを1増加させる
 	void CountDown();																	//カウントを1減少させる
@@ -26,7 +26,7 @@ public:
 	//---------------------------------------------------------
 	//定数
 	//---------------------------------------------------------
-	static const int RECVBYTESIZE = 1024 * 10;												//受信に使用する配列データのサイズ
+	static const int RECVBYTESIZE = 256;												//受信に使用する配列データのサイズ
 
 private:
 	HANDLE pipeHandle = INVALID_HANDLE_VALUE;											//パイプハンドル

@@ -95,8 +95,15 @@ void LoadBalancer::SendUpdate()
 
 		}
 		//playerID‚©‚çƒpƒCƒv–¼‚ð“Á’è
-		outputPipeMap[userMap[userId]]->Write((char*)data.data, data.byteSize);
+		int error=outputPipeMap[userMap[userId]]->Write((char*)data.data, data.byteSize);
 		sendDataQueue->pop();
+		//if (error <= 0) {
+		//	while (1) {
+		//		if (sendDataQueue->empty())break;
+		//		sendDataQueue->pop();
+		//	}
+		//}
+
 	}
 }
 

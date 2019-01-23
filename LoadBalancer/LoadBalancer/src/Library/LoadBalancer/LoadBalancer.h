@@ -12,7 +12,7 @@ private:
 	//定数
 	//---------------------------------------------------------
 	static const int PORTNUMBER = 49155;									//ポート番号
-	static const int ACCESSLIMIT = 1000;									//サーバー一つ当たりのアクセス限界
+	static const int ACCESSLIMIT = 100;									//サーバー一つ当たりのアクセス限界
 
 	const std::string INPUTPIPE = "AimHigherGoalInput";
 	const std::string OUTPUTPIPE = "AimHigherGoalOutput";

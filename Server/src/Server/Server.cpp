@@ -132,19 +132,22 @@ void Server::InputPipeProcessing()
 
 }
 
-void PosRegistration(std::string _data)
+void PosRegistration(std::shared_ptr<std::string> _data)
 {
+	std::shared_ptr<std::string> data = _data;
 	std::unique_ptr<CurlWrapper> curl = std::make_unique<CurlWrapper>();
-	curl->HTTPConnect(nullptr, "http://lifestyle-qa.com/update_user_arraydata.php", _data);
+	curl->HTTPConnect(nullptr, "http://lifestyle-qa.com/update_user_arraydata.php", *data.get());
 	curl = nullptr;
+	data = nullptr;
 }
 
 
 void Server::DBRegistration()
 {
-	std::stringstream query;						//webサーバーに送るデータ
-	std::string output;								//queryのままだとエラーが起こりstring型に入れるとなくなる
-	std::vector<std::shared_ptr<Data>> datas;		//送信するデータ一覧
+	query = make_shared<std::string>();
+
+	std::stringstream tempQuery;						//webサーバーに送るデータ
+	std::vector<std::shared_ptr<Data>> datas;			//送信するデータ一覧
 
 	//送るデータの選別
 	for (auto client : clientMap) {
@@ -156,17 +159,17 @@ void Server::DBRegistration()
 	if (datas.size() <= 0)return;
 
 	//データの作成
-	query << "amount=" << datas.size();
+	tempQuery << "amount=" << datas.size();
 	for (int i = 0; i < datas.size(); i++) {
-		query << "&" << "player" << i << "=" << datas[i]->GetId()->c_str();
-		query << "&" << "x" << i << "=" << datas[i]->GetX();
-		query << "&" << "y" << i << "=" << datas[i]->GetY();
-		query << "&" << "z" << i << "=" << datas[i]->GetZ();
+		tempQuery << "&" << "player" << i << "=" << datas[i]->GetId()->c_str();
+		tempQuery << "&" << "x" << i << "=" << datas[i]->GetX();
+		tempQuery << "&" << "y" << i << "=" << datas[i]->GetY();
+		tempQuery << "&" << "z" << i << "=" << datas[i]->GetZ();
 	}
-	query >> output;
+	tempQuery >> *query;
 
-	std::thread thread(PosRegistration, output);
+	std::thread thread(PosRegistration,query);
 	thread.detach();
-
+	query = nullptr;
 }
 

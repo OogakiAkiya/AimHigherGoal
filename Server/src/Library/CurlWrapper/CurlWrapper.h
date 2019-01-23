@@ -9,7 +9,7 @@ public:
 	//---------------------------------------------------------
 	//データの送受信
 	//---------------------------------------------------------
-	void HTTPConnect(std::string* _data, std::string _url, std::string _postData);		//HTTP通信を行う
+	bool HTTPConnect(std::string* _data, std::string _url, std::string _postData);		//HTTP通信を行う
 
 private:
 	//---------------------------------------------------------

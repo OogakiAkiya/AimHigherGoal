@@ -29,6 +29,11 @@ GameMain::GameMain()
 	//空(一時的に作成)
 	D3DXMatrixTranslation(&s_mat, 0.0f, 0.0f, 1.0f);
 	s_mesh=CHECKMESH.Get("images/Sky.x");
+
+	//ブロック(一時的に作成)
+	D3DXMatrixTranslation(&boxMat, 0.0f, 0.0f, 0.0f);
+	boxMesh = CHECKMESH.Get("images/box/box.x");
+
 }
 
 GameMain::~GameMain()
@@ -69,10 +74,12 @@ void GameMain::Render3D()
 		element->Render3D();
 	}
 
+	boxMesh.lock()->Draw(DEV, &boxMat);
+
 	//環境描画
 	DEV->SetRenderState(D3DRS_LIGHTING, FALSE);			//ライトOFF
 	feald->Draw();										//地面描画
-	s_mesh.lock()->Draw(DEV, &s_mat);							//空描画(一時的)
+	s_mesh.lock()->Draw(DEV, &s_mat);					//空描画(一時的)
 	DEV->SetRenderState(D3DRS_LIGHTING, TRUE);			//ライトON
 
 }

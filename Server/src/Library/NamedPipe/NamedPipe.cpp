@@ -91,11 +91,14 @@ int NamedPipe::Read(char * _data,int _dataLength)
 	return dwBytesRead;
 }
 
-int NamedPipe::Write(char * _data, int _dataLengeh)
+int NamedPipe::Write(char * _data, int _dataLength)
 {
+	if (_dataLength > 255 || _dataLength < 0)return -1;
+
 	DWORD writeSize;
-	if (!WriteFile(pipeHandle, _data, _dataLengeh, &writeSize, NULL)) {
+	if (!WriteFile(pipeHandle, _data, _dataLength, &writeSize, NULL)) {
 		printf("%s>>Write Error", discriminationName.c_str());
+		printf("%s>>data=%s,size=%d\n", discriminationName.c_str(), _data, _dataLength);
 		return 0;
 	}
 	return writeSize;
